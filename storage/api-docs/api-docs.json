@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "Tutor4all API",
-        "description": "This is tutor4all api",
+        "title": "Invited API",
+        "description": "This is Invited api",
         "termsOfService": "",
         "contact": {
             "email": "marslanali@gmail.com"
@@ -13,7 +13,7 @@
         },
         "version": "1.0.0"
     },
-    "host": "http://invited.shayansolutions.com/",
+    "host": "invited.shayansolutions.com",
     "basePath": "/",
     "schemes": [
         "http",

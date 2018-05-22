@@ -1,0 +1,121 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Tutor4all API",
+        "description": "This is tutor4all api",
+        "termsOfService": "",
+        "contact": {
+            "email": "marslanali@gmail.com"
+        },
+        "license": {
+            "name": "Private License",
+            "url": "#"
+        },
+        "version": "1.0.0"
+    },
+    "host": "localhost:8000",
+    "basePath": "/",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "paths": {
+
+        "/register-user": {
+            "post": {
+                "summary": "Register User",
+                "description": "",
+                "operationId": "addUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Email address",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "description": "Phone number",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "Password",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password_confirmation",
+                        "in": "query",
+                        "description": "Confirm Password",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password_confirmation",
+                        "in": "query",
+                        "description": "Confirm Password",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "device_token",
+                        "in": "query",
+                        "description": "Device Token",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User Registered Successfully"
+                    },
+                    "422": {
+                        "description": "Unable to register user"
+                    }
+                }
+            }
+        },
+        "/user-notification": {
+            "post": {
+                "summary": "Notification",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notification send successfully"
+                    },
+                    "422": {
+                        "description": "Unable to send notification"
+                    }
+                }
+            }
+        }
+    },
+
+    "definitions": {}
+}

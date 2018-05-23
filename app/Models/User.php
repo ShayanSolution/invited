@@ -111,9 +111,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         if(!$user){
             return $user;
         }
-        if(isset($request['device_token']) && !empty($request['device_token'])){
-            self::where('id','=',$user->id)->update(['device_token'=>$request['device_token']]);
-        }
         return $user;
     }
     

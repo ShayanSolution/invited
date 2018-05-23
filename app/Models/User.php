@@ -100,26 +100,21 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     public function findForPassport($username) {
-        if(Request::input('role') === 'admin'){
-            return self::where('email', $username)->first();
-        }else{
-            $request  = Request::all();
-            if(isset($request['username']) && !empty($request['username'])){
-                //$user = self::where('phone', $username)->where('confirmed','=',1)->first();
-                $user = self::where('phone', $username)->first();
-            }
-            elseif(isset($request['email']) && !empty($request['email'])){
-                $username = $request['email'];
+        $request  = Request::all();
+        if(isset($request['username']) && !empty($request['username'])){
+            //$user = self::where('phone', $username)->where('confirmed','=',1)->first();
+            $user = self::where('phone', $username)->first();
+            if(empty($user)){
                 $user = self::where('email', $username)->first();
             }
-            if(!$user){
-                return $user;
-            }
-            if(isset($request['device_token']) && !empty($request['device_token'])){
-                self::where('id','=',$user->id)->update(['device_token'=>$request['device_token']]);
-            }
+        }
+        if(!$user){
             return $user;
         }
+        if(isset($request['device_token']) && !empty($request['device_token'])){
+            self::where('id','=',$user->id)->update(['device_token'=>$request['device_token']]);
+        }
+        return $user;
     }
     
     public function findBookedUser($tutor_id){

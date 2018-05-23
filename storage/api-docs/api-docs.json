@@ -20,7 +20,6 @@
         "https"
     ],
     "paths": {
-
         "/register-user": {
             "post": {
                 "summary": "Register User",
@@ -114,8 +113,47 @@
                     }
                 }
             }
-        }
+        },
+        "/create-list": {
+            "post": {
+                "summary": "Create List",
+                "description": "",
+                "operationId": "addList",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "contact_list",
+                        "in": "query",
+                        "description": "Contact List",
+                        "required": true,
+                        "type": "string",
+                        "multiLine": true,
+                        "format": "text"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Contact List Created Successfully"
+                    },
+                    "422": {
+                        "description": "Unable to create list"
+                    }
+                }
+            }
+        },
     },
-
     "definitions": {}
 }

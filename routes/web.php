@@ -24,6 +24,7 @@ $router->get('appKey', function () {
 });
 $router->post('register-user', 'AuthenticationController@postRegisterUser');
 Route::post('/user-notification','UserController@sendUserNotification');
+Route::post('/create-list','ListController@CreateUserContactList');
 // route for creating access_token
 $router->post('login', 'AccessTokenController@createAccessToken');
 $router->get('get-phone-code', 'AuthenticationController@getPhoneVerificationCode');

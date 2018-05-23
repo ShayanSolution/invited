@@ -32,5 +32,8 @@ class ContactList extends Model
         }else{
             return self::create($request)->id;           
         }
+    }    
+    public static function getList($user_id){
+     return  self::where('user_id',$user_id)->first();
     }
 }

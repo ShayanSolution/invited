@@ -24,7 +24,7 @@ $router->get('appKey', function () {
 });
 $router->post('register-user', 'AuthenticationController@postRegisterUser');
 Route::post('/user-notification','UserController@sendUserNotification');
-//Route::post('/create-list','ListController@CreateUserContactList');
+Route::post('/create-list','ListController@CreateUserContactList');
 Route::get('/get-contact-list','ListController@getUserContactList');
 Route::post('/create-event','EventController@CreateEvent');
 // route for creating access_token
@@ -38,7 +38,7 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
         //'middleware' => "scope:admin"
     ]);
 
-    Route::post('/create-list','ListController@CreateUserContactList');
+    //Route::post('/create-list','ListController@CreateUserContactList');
 
     $router->get('get-tutors', [
         'uses'       => 'UserController@getTutors',

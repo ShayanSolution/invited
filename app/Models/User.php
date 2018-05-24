@@ -79,6 +79,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasOne('App\Models\Profile');
     }
 
+    public function event()
+    {
+        return $this->hasOne('App\Models\Event');
+    }
+
     public function transaction()
     {
         return $this->hasMany('App\Models\Transaction');

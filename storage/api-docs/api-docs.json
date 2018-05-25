@@ -127,6 +127,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Event Title",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
                         "name": "contact_list",
                         "in": "query",
                         "description": "Contact List",

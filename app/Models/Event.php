@@ -23,7 +23,8 @@ class Event extends Model
         'latitude',
         'payment_method',
         'user_id',
-        'event_time'
+        'event_time',
+        'title'
     ];
 
     public function user()

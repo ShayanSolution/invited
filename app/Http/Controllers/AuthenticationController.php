@@ -345,7 +345,7 @@ class AuthenticationController extends Controller
     public function postRegisterUser(Request $request){
         $this->validate($request,[
             'email' => 'required|email|unique:users',
-            'phone' => 'required|digits_between:11,20|unique:users',
+            'phone' => 'required|unique:users',
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required|min:6',
         ]);

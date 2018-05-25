@@ -31,12 +31,21 @@ class ListController extends Controller
     public function getUserContactList(Request $request){
        $request = $request->all();
        $user_id = $request['user_id'];
-       $list = ContactList::getList($user_id);
-       if($list){
+       $user_list = ContactList::getList($user_id);
+
+       if($user_list){
+           $user_contact_list =[];
+           $index = 0;
+           foreach($user_list as $list){
+               $user_contact_list[$index]['id'] = $list->id;
+               $user_contact_list[$index]['list_name'] = $list->list_name;
+               $user_contact_list[$index]['contacts'] = json_decode($list->contact_list);
+               $index++;
+           }
            $users = json_decode($list->contact_list);
            return response()->json(
                [
-                   'user_contact_list' => $users,
+                   'user_contact_list' => $user_contact_list,
                ], 200
            );
        }else{

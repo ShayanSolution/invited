@@ -32,8 +32,8 @@ class ListController extends Controller
        $request = $request->all();
        $user_id = $request['user_id'];
        $user_list = ContactList::getList($user_id);
-        
-       if($user_list){
+       
+       if(!empty($user_list->first())){
            $user_contact_list =[];
            $index = 0;
            foreach($user_list as $list){
@@ -52,7 +52,7 @@ class ListController extends Controller
            return response()->json(
                [
                    'status' => 'error',
-                   'message' => 'Unable find list'
+                   'message' => 'Unable to find list'
                ], 422
            );
        }

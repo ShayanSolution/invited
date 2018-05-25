@@ -127,13 +127,6 @@
                 ],
                 "parameters": [
                     {
-                        "name": "title",
-                        "in": "query",
-                        "description": "Event Title",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
                         "name": "contact_list",
                         "in": "query",
                         "description": "Contact List",
@@ -211,6 +204,13 @@
                     "application/json"
                 ],
                 "parameters": [
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Event Title",
+                        "required": true,
+                        "type": "string"
+                    },
                     {
                         "name": "user_id",
                         "in": "query",

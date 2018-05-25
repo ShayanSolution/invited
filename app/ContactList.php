@@ -21,6 +21,7 @@ class ContactList extends Model
     protected $fillable = [
         'user_id',
         'contact_list',
+        'list_name'
     ];
     
     public static function CreateList($request){

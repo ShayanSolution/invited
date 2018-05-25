@@ -138,7 +138,7 @@
                     {
                         "name": "list_name",
                         "in": "query",
-                        "description": "list name",
+                        "description": "List Name",
                         "required": true,
                         "type": "string"
                     },

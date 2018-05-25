@@ -33,12 +33,6 @@ class Event extends Model
 
     public static function CreateEvent($request){
         $request = $request->all();
-        $user_id = $request['user_id'];
-        $event_list = self::where('user_id',$user_id)->first();
-        if($event_list){
-            return  self::where('user_id',$user_id)->update($request);
-        }else{
-            return self::create($request)->id;
-        }
+        return self::create($request)->id;
     }
 }

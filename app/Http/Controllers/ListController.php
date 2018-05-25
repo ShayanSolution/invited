@@ -32,8 +32,8 @@ class ListController extends Controller
        $request = $request->all();
        $user_id = $request['user_id'];
        $user_list = ContactList::getList($user_id);
-
-       if(!empty($user_list)){
+        
+       if($user_list){
            $user_contact_list =[];
            $index = 0;
            foreach($user_list as $list){

@@ -138,7 +138,7 @@
                     {
                         "name": "list_name",
                         "in": "query",
-                        "description": "User id",
+                        "description": "list name",
                         "required": true,
                         "type": "string"
                     },

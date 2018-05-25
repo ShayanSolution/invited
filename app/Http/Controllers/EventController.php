@@ -18,13 +18,13 @@ class EventController extends Controller
         if($list){
             return [
                 'status' => 'success',
-                'messages' => 'List Created Successfully',
+                'messages' => 'Event Created Successfully',
             ];
         }else{
             return response()->json(
                 [
                     'status' => 'error',
-                    'message' => 'Unable to create list'
+                    'message' => 'Unable to create event'
                 ], 422
             );
         }

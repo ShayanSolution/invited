@@ -212,6 +212,13 @@
                         "type": "string"
                     },
                     {
+                        "name": "event_address",
+                        "in": "query",
+                        "description": "Event Address",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
                         "name": "user_id",
                         "in": "query",
                         "description": "User id",
@@ -238,14 +245,14 @@
                         "name": "longitude",
                         "in": "query",
                         "description": "longitude",
-                        "required": true,
+                        "required": false,
                         "type": "string"
                     },
                     {
                         "name": "latitude",
                         "in": "query",
                         "description": "latitude",
-                        "required": true,
+                        "required": false,
                         "type": "string"
                     }
 
@@ -256,6 +263,68 @@
                     },
                     "422": {
                         "description": "Unable to create list"
+                    }
+                }
+            }
+        },
+        "/get-event": {
+            "get": {
+                "summary": "Get Event",
+                "description": "",
+                "operationId": "getEvent",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Event list"
+                    },
+                    "422": {
+                        "description": "Unable to find event list"
+                    }
+                }
+            }
+        },
+        "/get-request": {
+            "get": {
+                "summary": "Get Event Request",
+                "description": "",
+                "operationId": "getEventRequest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "request_to",
+                        "in": "query",
+                        "description": "Requst to",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Event requests"
+                    },
+                    "422": {
+                        "description": "Unable to find event request list"
                     }
                 }
             }

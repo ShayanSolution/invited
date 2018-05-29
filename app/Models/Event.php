@@ -24,7 +24,8 @@ class Event extends Model
         'payment_method',
         'user_id',
         'event_time',
-        'title'
+        'title',
+        'event_address'
     ];
 
     public function user()
@@ -35,5 +36,9 @@ class Event extends Model
     public static function CreateEvent($request){
         $request = $request->all();
         return self::create($request)->id;
+    }
+
+    public static function getEvents($id){
+        return self::where('user_id',$id)->get();
     }
 }

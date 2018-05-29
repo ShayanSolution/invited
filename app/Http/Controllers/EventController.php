@@ -23,6 +23,16 @@ class EventController extends Controller
             'event_time' => 'required'
         ]);
         
+        $user_list = ContactList::getList($request['user_id']);
+        if(empty($user_list->first())){
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to create event'
+                ], 422
+            );
+
+        }
         //create event
         $event_id = Event::CreateEvent($request);
         //create event request and send notifications to user list.

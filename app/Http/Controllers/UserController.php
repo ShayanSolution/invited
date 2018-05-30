@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\URL;
 use Log;
 use Illuminate\Support\Facades\Config;
 use App\Jobs\SendPushNotification;
-
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -593,5 +593,22 @@ class UserController extends Controller
             ))
         ));
         PushNotification::app('appNameIOS')->to($device_token)->send($message);
+    }
+
+    /**
+     * Get the guard to be used during authentication.
+     *
+     * @return \Illuminate\Contracts\Auth\StatefulGuard
+     */
+    protected function guard()
+    {
+        return Auth::guard('api');
+    }
+
+    public function logoutApi(Request $request)
+    {
+        if (Auth::check()) {
+            Auth::user()->AauthAcessToken()->delete();
+        }
     }
 }

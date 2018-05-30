@@ -29,10 +29,14 @@ Route::get('/get-contact-list','ListController@getUserContactList');
 Route::post('/create-event','EventController@CreateEvent');
 // route for creating access_token
 $router->post('login', 'AccessTokenController@createAccessToken');
+
 Route::get('/get-event','EventController@getUserEvents');
 Route::get('/get-request','EventController@getEventRequests');
 
 $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($router) {
+
+    Route::get('/logout','UserController@logoutApi');
+
     //Dashboard Routes
     $router->get('dashboard-pie-chart-totals',  [
         'uses'       => 'UserController@getDashboardTotalOfPieCharts',

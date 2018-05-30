@@ -104,6 +104,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->belongsTo('App\Models\Role');
     }
 
+    public function AauthAcessToken(){
+        return $this->hasMany('App\Models\OauthAccessToken');
+    }
+
     public function findForPassport($username) {
         $request  = Request::all();
         if(isset($request['username']) && !empty($request['username'])){

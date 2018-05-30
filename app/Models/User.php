@@ -271,7 +271,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
             'uid' => md5(microtime()),
-            'device_token' => $request->device_token
+            'device_token' => $request->device_token,
+            'firstName' =>$request->firstName,
+            'lastName' =>$request->lastName,
         ]);
         $user_id = $user['id'];
         $user->profile()->create(['user_id'=>$user_id]);

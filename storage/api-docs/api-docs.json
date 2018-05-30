@@ -33,6 +33,20 @@
                 ],
                 "parameters": [
                     {
+                        "name": "firstName",
+                        "in": "query",
+                        "description": "First Name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "lastName",
+                        "in": "query",
+                        "description": "Last Name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
                         "name": "email",
                         "in": "query",
                         "description": "Email address",

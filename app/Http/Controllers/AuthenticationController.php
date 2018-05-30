@@ -348,6 +348,8 @@ class AuthenticationController extends Controller
             'phone' => 'required|unique:users',
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required|min:6',
+            'firstName'=>'required',
+            'lastName'=>'required'
         ]);
         $user = User::registerUser($request);
         

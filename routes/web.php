@@ -32,6 +32,8 @@ $router->post('login', 'AccessTokenController@createAccessToken');
 
 Route::get('/get-event','EventController@getUserEvents');
 Route::get('/get-request','EventController@getEventRequests');
+Route::get('/accept-request','EventController@acceptRequest');
+Route::get('/reject-request','EventController@rejectRequest');
 
 $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($router) {
 

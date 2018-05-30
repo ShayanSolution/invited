@@ -328,6 +328,68 @@
                     }
                 }
             }
+        },
+        "/accept-request": {
+            "get": {
+                "summary": "Accept Request",
+                "description": "",
+                "operationId": "confirmRequest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Request id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request accepted successfully"
+                    },
+                    "422": {
+                        "description": "Unable to accept request"
+                    }
+                }
+            }
+        },
+        "/reject-request": {
+            "get": {
+                "summary": "Reject Request",
+                "description": "",
+                "operationId": "rejectRequest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Request id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request rejected "
+                    },
+                    "422": {
+                        "description": "Unable to reject request"
+                    }
+                }
+            }
         }
     },
     "definitions": {}

@@ -154,5 +154,55 @@ class EventController extends Controller
             );
         }
     }
+    
+    public function acceptRequest(Request $request){
+
+        $this->validate($request,[
+            'id' => 'required'
+        ]);
+        $id = $request['id'];
+        $accepted = RequestsEvent::acceptRequest($id);
+
+        if($accepted){
+
+            return response()->json(
+                [
+                    'status' => 'Request accepted successfully',
+                ], 200
+            );
+        }else{
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to accept'
+                ], 422
+            );
+        }
+    }
+
+    public function rejectRequest(Request $request){
+
+        $this->validate($request,[
+            'id' => 'required'
+        ]);
+        $id = $request['id'];
+        $accepted = RequestsEvent::rejectRequest($id);
+
+        if($accepted){
+
+            return response()->json(
+                [
+                    'status' => 'Request rejected successfully',
+                ], 200
+            );
+        }else{
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to reject request'
+                ], 422
+            );
+        }
+    }
 
 }

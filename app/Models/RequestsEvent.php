@@ -55,4 +55,16 @@ class RequestsEvent extends Model
         return array('event_request'=>$request_count);
     }
 
+    public static function acceptRequest($id){
+
+      return  self::where('id',$id)->update(['confirmed'=>1]);
+
+    }
+
+    public static function rejectRequest($id){
+
+        return  self::where('id',$id)->update(['confirmed'=>0]);
+
+    }
+
 }

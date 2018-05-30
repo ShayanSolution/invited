@@ -103,17 +103,20 @@ class EventController extends Controller
     }
 
     public function getUserEvents(Request $request){
+
         $this->validate($request,[
             'user_id' => 'required'
         ]);
         $request = $request->all();
         $user_id = $request['user_id'];
         $events = Event::getEvents($user_id);
+        $total_events = count($events);
         if($events){
 
             return response()->json(
                 [
-                    'User Event' => $events,
+                    'total_events'=>$total_events,
+                    'user_events' => $events
                 ], 200
             );
         }else{
@@ -139,7 +142,6 @@ class EventController extends Controller
 
             return response()->json(
                 [
-                    'total-count' => $total_count['total_count'],
                     'event_requests' => $total_count['event_request'],
                 ], 200
             );

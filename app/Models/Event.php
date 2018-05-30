@@ -41,4 +41,8 @@ class Event extends Model
     public static function getEvents($id){
         return self::where('user_id',$id)->get();
     }
+    
+    public static function getEventByID($id){
+        return self::where('id',$id)->first();
+    }
 }

@@ -32,18 +32,27 @@ class RequestsEvent extends Model
         $index = 0;
        foreach ($request_event as $event)
        {
-           $event_requests  = self::select('event_id',DB::raw('count(event_id) as total'))
+           $event_requests  = self::select('event_id','created_by',DB::raw('count(event_id) as total'))
                                ->groupBy('event_id')
                                ->where('event_id','=',$event->event_id)
                                ->get();
+
            foreach ($event_requests as $request){
+
+               $created_by = User::where('id',$request->created_by)->first();
+               $event = Event::getEventByID($request->event_id);
+
                $request_count[$index]['event_id'] = $request->event_id;
                $request_count[$index]['total'] = $request->total;
+               $request_count[$index]['create_by'] = $created_by->firstName." ".$created_by->lastName;
+               $request_count[$index]['address'] = $event->event_address;
+               $request_count[$index]['event_time'] = $event->event_time;
                $index++;
+
            }
        }
         
-        return array('total_count'=>$total_count,'event_request'=>$request_count);
+        return array('event_request'=>$request_count);
     }
 
 }

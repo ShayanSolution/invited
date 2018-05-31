@@ -24,54 +24,37 @@ $router->get('appKey', function () {
 });
 $router->post('register-user', 'AuthenticationController@postRegisterUser');
 Route::post('/user-notification','UserController@sendUserNotification');
-Route::post('/create-list','ListController@CreateUserContactList');
-Route::get('/get-contact-list','ListController@getUserContactList');
-Route::post('/create-event','EventController@CreateEvent');
+
+
+
 // route for creating access_token
 $router->post('login', 'AccessTokenController@createAccessToken');
 
-Route::get('/get-event','EventController@getUserEvents');
-Route::get('/get-request','EventController@getEventRequests');
-Route::get('/accept-request','EventController@acceptRequest');
-Route::get('/reject-request','EventController@rejectRequest');
 
 $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($router) {
 
     Route::get('/logout','UserController@logoutApi');
-
     //Dashboard Routes
     $router->get('dashboard-pie-chart-totals',  [
         'uses'       => 'UserController@getDashboardTotalOfPieCharts',
         //'middleware' => "scope:admin"
     ]);
+    Route::post('/create-list','ListController@CreateUserContactList');
 
-    //Route::post('/create-list','ListController@CreateUserContactList');
+    Route::get('/get-event','EventController@getUserEvents');
 
-    $router->get('get-tutors', [
-        'uses'       => 'UserController@getTutors',
-        //'middleware' => "scope:users,users:create"
-    ]);
+    Route::post('/create-event','EventController@CreateEvent');
 
-    $router->post('users', [
-        'uses'       => 'UserController@store',
-        'middleware' => "scope:users,users:create"
-    ]);
-    $router->get('users',  [
-        'uses'       => 'UserController@index',
-        'middleware' => "scope:users,users:list"
-    ]);
-    $router->get('users/{id}', [
-        'uses'       => 'UserController@show',
-        'middleware' => "scope:users,users:read"
-    ]);
-    $router->put('users/{id}', [
-        'uses'       => 'UserController@update',
-        'middleware' => "scope:users,users:write"
-    ]);
-    $router->delete('users/{id}', [
-        'uses'       => 'UserController@destroy',
-        'middleware' => "scope:users,users:delete"
-    ]);
+    Route::get('/get-contact-list','ListController@getUserContactList');
+
+    Route::get('/get-event','EventController@getUserEvents');
+
+    Route::get('/get-request','EventController@getEventRequests');
+
+    Route::get('/accept-request','EventController@acceptRequest');
+
+    Route::get('/reject-request','EventController@rejectRequest');
+
 });
 
 

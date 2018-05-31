@@ -44,7 +44,7 @@ class RequestsEvent extends Model
 
                $request_count[$index]['event_id'] = $request->event_id;
                $request_count[$index]['total'] = $request->total;
-               $request_count[$index]['create_by'] = $created_by->firstName." ".$created_by->lastName;
+               $request_count[$index]['create_by'] = $created_by->email;
                $request_count[$index]['address'] = $event->event_address;
                $request_count[$index]['event_time'] = $event->event_time;
                $index++;

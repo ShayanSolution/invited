@@ -347,9 +347,7 @@ class AuthenticationController extends Controller
             'email' => 'required|email|unique:users',
             'phone' => 'required|unique:users',
             'password' => 'required|min:6|confirmed',
-            'password_confirmation' => 'required|min:6',
-            'firstName'=>'required',
-            'lastName'=>'required'
+            'password_confirmation' => 'required|min:6'
         ]);
         $user = User::registerUser($request);
         
@@ -365,7 +363,7 @@ class AuthenticationController extends Controller
             return response()->json(
                 [
                     'status' => 'error',
-                    'message' => 'Invalid or expired phone verification',
+                    'message' => 'Unable to register user',
                 ], 422
             );
         }

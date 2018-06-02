@@ -90,7 +90,7 @@ class EventController extends Controller
                     $user = User::where('phone', $phone)->first();
                     //create event request
                     if(!empty($user)){
-                        
+
                         $request = RequestsEvent::CreateRequestEvent($created_by, $user, $event_id);
                         $device_token = $user->device_token;
                         if (!empty($device_token)) {
@@ -115,12 +115,14 @@ class EventController extends Controller
         $request = $request->all();
         $user_id = $request['user_id'];
         $events = Event::getEvents($user_id);
+        $user_list = ContactList::getUserListCount($user_id);
         $total_events = count($events);
         if($events){
 
             return response()->json(
                 [
                     'total_events'=>$total_events,
+                    'totl_invited'=>count($user_list),
                     'user_events' => $events
                 ], 200
             );

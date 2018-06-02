@@ -47,7 +47,7 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     Route::get('/get-contact-list','ListController@getUserContactList');
 
-    Route::get('/get-event','EventController@getUserEvents');
+    //Route::get('/get-event','EventController@getUserEvents');
 
     Route::get('/get-request','EventController@getEventRequests');
 

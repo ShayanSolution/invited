@@ -31,4 +31,20 @@ class ContactList extends Model
     public static function getList($user_id){
      return  self::where('user_id',$user_id)->get();
     }
+
+    public static function getUserListCount($user_id){
+
+        $lists = ContactList::where('user_id',$user_id)->get();
+        $user_list = [];
+        $index = 0;
+        foreach ($lists as $list){
+            $users = json_decode($list->contact_list);
+            foreach ($users as $user){
+                $user_list[$index]['phone'] = $user->phone;
+                $index++;
+            }
+
+        }
+        return $user_list;
+    }
 }

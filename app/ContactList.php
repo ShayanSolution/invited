@@ -28,8 +28,8 @@ class ContactList extends Model
         $request = $request->all();
         return self::create($request)->id;
     }    
-    public static function getList($user_id){
-     return  self::where('user_id',$user_id)->get();
+    public static function getList($user_id,$id){
+     return  self::where('user_id',$user_id)->where('id',$id)->get();
     }
 
     public static function getUserListCount($user_id){

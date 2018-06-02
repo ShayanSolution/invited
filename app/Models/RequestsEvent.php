@@ -21,7 +21,10 @@ class RequestsEvent extends Model
     protected $fillable = ['created_by','request_to','confirmed','event_id'];
     
     public static function CreateRequestEvent($created_by,$user,$event_id){
-        return  RequestsEvent::create(['created_by' => $created_by, 'request_to'=>$user->id,'event_id'=>$event_id,'confirmed'=>0])->id;
+        $request = RequestsEvent::where('request_to',$user->id)->where('event_id',$event_id)->first();
+        if(empty($request->id)){
+            return  RequestsEvent::create(['created_by' => $created_by, 'request_to'=>$user->id,'event_id'=>$event_id,'confirmed'=>2])->id;
+        }
     }
 
     public static function getEventRequest($request_to){
@@ -41,12 +44,12 @@ class RequestsEvent extends Model
 
                $created_by = User::where('id',$request->created_by)->first();
                $event = Event::getEventByID($request->event_id);
-
                $request_count[$index]['event_id'] = $request->event_id;
                $request_count[$index]['total'] = $request->total;
                $request_count[$index]['create_by'] = $created_by->email;
                $request_count[$index]['address'] = $event->event_address;
                $request_count[$index]['event_time'] = $event->event_time;
+               $request_count[$index]['event_title'] = $event->title;
                $index++;
 
            }
@@ -55,15 +58,15 @@ class RequestsEvent extends Model
         return array('event_request'=>$request_count);
     }
 
-    public static function acceptRequest($id){
+    public static function acceptRequest($event_id,$request_to){
 
-      return  self::where('id',$id)->update(['confirmed'=>1]);
+      return  self::where('event_id',$event_id)->where('request_to',$request_to)->update(['confirmed'=>1]);
 
     }
 
-    public static function rejectRequest($id){
+    public static function rejectRequest($event_id,$request_to){
 
-        return  self::where('id',$id)->update(['confirmed'=>0]);
+        return  self::where('event_id',$event_id)->where('request_to',$request_to)->update(['confirmed'=>0]);
 
     }
 

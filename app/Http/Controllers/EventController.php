@@ -20,10 +20,13 @@ class EventController extends Controller
             'payment_method' => 'required',
             'event_address' => 'required',
             'title' => 'required',
-            'event_time' => 'required'
+            'event_time' => 'required',
+            'list_id' => 'required',
         ]);
-        
-        $user_list = ContactList::getList($request['user_id']);
+
+        //list id
+        $list_id = $request['user_id'];
+        $user_list = ContactList::getList($request['user_id'],$list_id);
         if(empty($user_list->first())){
             return response()->json(
                 [
@@ -31,12 +34,12 @@ class EventController extends Controller
                     'message' => 'Unable to create event'
                 ], 422
             );
-
         }
+
         //create event
         $event_id = Event::CreateEvent($request);
         //create event request and send notifications to user list.
-        $this->sendUserNotification($request,$event_id);
+        $this->sendUserNotification($request,$event_id,$list_id);
         
         if($event_id){
             return [
@@ -75,13 +78,13 @@ class EventController extends Controller
 
     }
 
-    public function sendUserNotification(Request $request,$event_id){
+    public function sendUserNotification(Request $request,$event_id,$list_id){
 
         $request = $request->all();
         $created_by = $request['user_id'];
         $created_user = User::where('id',$created_by)->first();
         //get list against user id.
-        $user_list = ContactList::getList($created_by);
+        $user_list = ContactList::getList($created_by,$list_id);
 
         if(!empty($user_list->first())) {
             foreach ($user_list as $list) {
@@ -90,13 +93,12 @@ class EventController extends Controller
                     $user = User::where('phone', $phone)->first();
                     //create event request
                     if(!empty($user)){
-
                         $request = RequestsEvent::CreateRequestEvent($created_by, $user, $event_id);
                         $device_token = $user->device_token;
                         if (!empty($device_token)) {
                             //send notification to user list
                             //Log::info("Request Cycle with Queues Begins");
-                            $job = new SendPushNotification($device_token, $created_user,$event_id,$user);
+                            $job = new SendPushNotification($device_token, $created_user, $event_id, $user);
                             dispatch($job);
                             // Log::info('Request Cycle with Queues Ends');
                         }
@@ -165,11 +167,13 @@ class EventController extends Controller
     public function acceptRequest(Request $request){
 
         $this->validate($request,[
-            'id' => 'required'
+            'event_id' => 'required',
+            'request_to' => 'required'
         ]);
-        $id = $request['id'];
-        $accepted = RequestsEvent::acceptRequest($id);
-
+        $event_id = $request['event_id'];
+        $id = $request['request_to'];
+        $accepted = RequestsEvent::acceptRequest($event_id,$id);
+        $this->sendRequestNotification($id,$event_id,$request_status = "accepted");
         if($accepted){
 
             return response()->json(
@@ -190,10 +194,13 @@ class EventController extends Controller
     public function rejectRequest(Request $request){
 
         $this->validate($request,[
-            'id' => 'required'
+            'event_id' => 'required',
+            'request_to' => 'required'
         ]);
-        $id = $request['id'];
-        $accepted = RequestsEvent::rejectRequest($id);
+        $event_id = $request['event_id'];
+        $id = $request['request_to'];
+        $accepted = RequestsEvent::rejectRequest($event_id,$id);
+        $this->sendRequestNotification($id,$event_id,$request_status = "rejected");
 
         if($accepted){
 
@@ -212,4 +219,38 @@ class EventController extends Controller
         }
     }
 
+    public function sendRequestNotification($id,$event_id,$request_status=null){
+
+        $request_acctepted_user = User::where('id',$id)->first();
+
+        if($request_acctepted_user){
+
+            if(!empty($request_acctepted_user->firstName)){
+                $user_name = $request_acctepted_user->firstName;
+            }else{
+                $user_name = $request_acctepted_user->phone;
+            }
+
+            if(!empty($request_acctepted_user->device_token)){
+                $message = PushNotification::Message($user_name." $request_status your request "  ,array(
+                    'badge' => 1,
+                    'sound' => 'example.aiff',
+
+                    'actionLocKey' => 'Action button title!',
+                    'locKey' => 'localized key',
+                    'locArgs' => array(
+                        'localized args',
+                        'localized args',
+                    ),
+                    'launchImage' => 'image.jpg',
+
+                    'custom' => array('custom_data' => array(
+                        'accepted_user' => $user_name,
+                        'event_id' => $event_id
+                    ))
+                ));
+                PushNotification::app('invitedIOS')->to($request_acctepted_user->device_token)->send($message);
+            }
+        }
+    }
 }

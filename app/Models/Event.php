@@ -25,7 +25,8 @@ class Event extends Model
         'user_id',
         'event_time',
         'title',
-        'event_address'
+        'event_address',
+        'list_id'
     ];
 
     public function user()

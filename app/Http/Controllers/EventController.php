@@ -253,4 +253,31 @@ class EventController extends Controller
             }
         }
     }
+
+    public function receivedRequest(Request $request){
+
+        $this->validate($request,[
+            'created_by' => 'required',
+        ]);
+
+        $id = $request['created_by'];
+        $requests = RequestsEvent::receivedRequest($id);
+
+        if($requests){
+
+            return response()->json(
+                [
+                    'Received Requests' => $requests,
+                ], 200
+            );
+        }else{
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to reject request'
+                ], 422
+            );
+        }
+
+    }
 }

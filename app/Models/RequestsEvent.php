@@ -70,4 +70,9 @@ class RequestsEvent extends Model
 
     }
 
+    public static function receivedRequest($created_by){
+
+        return self::where('created_by',$created_by)->get();
+    }
+
 }

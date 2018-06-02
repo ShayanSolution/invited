@@ -79,6 +79,7 @@ class EventController extends Controller
 
         $request = $request->all();
         $created_by = $request['user_id'];
+        $created_user = User::where('id',$created_by)->first();
         //get list against user id.
         $user_list = ContactList::getList($created_by);
 
@@ -93,7 +94,7 @@ class EventController extends Controller
                     if (!empty($device_token)) {
                         //send notification to user list
                         //Log::info("Request Cycle with Queues Begins");
-                        $job = new SendPushNotification($device_token, $user);
+                        $job = new SendPushNotification($device_token, $created_user,$event_id);
                         dispatch($job);
                        // Log::info('Request Cycle with Queues Ends');
                     }

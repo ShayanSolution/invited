@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Jobs;
+use App\Models\Event;
 use Davibennun\LaravelPushNotification\Facades\PushNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
@@ -14,11 +15,13 @@ class SendPushNotification extends Job
      */
     protected $token;
     protected $user;
+    protected $event_id;
 
-    public function __construct($token,$user)
+    public function __construct($token,$user,$event_id)
     {
         $this->token = $token;
         $this->user = $user;
+        $this->event_id = $event_id;
     }
 
     /**
@@ -28,7 +31,15 @@ class SendPushNotification extends Job
      */
     public function handle()
     {
-        $message = PushNotification::Message('Hello World, i`m a push message',array(
+        $event = Event::where('id',$this->event_id)->first();
+        $user = $this->user;
+        if(!empty($user->firstName)){
+            $user_name = $user->firstName;
+        }else{
+            $user_name = $user->phone;
+        }
+
+        $message = PushNotification::Message($user_name.' would like to invite you on the event '. $event->title.'.'  ,array(
             'badge' => 1,
             'sound' => 'example.aiff',
 
@@ -44,6 +55,6 @@ class SendPushNotification extends Job
                 'we' => 'want', 'send to app'
             ))
         ));
-        PushNotification::app('appNameIOS')->to($this->token)->send($message);
+        PushNotification::app('invitedIOS')->to($this->token)->send($message);
     }
 }

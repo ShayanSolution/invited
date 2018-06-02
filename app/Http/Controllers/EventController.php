@@ -89,15 +89,19 @@ class EventController extends Controller
                     $phone = $user_detail->phone;
                     $user = User::where('phone', $phone)->first();
                     //create event request
-                    $request = RequestsEvent::CreateRequestEvent($created_by, $user, $event_id);
-                    $device_token = $user->device_token;
-                    if (!empty($device_token)) {
-                        //send notification to user list
-                        //Log::info("Request Cycle with Queues Begins");
-                        $job = new SendPushNotification($device_token, $created_user,$event_id);
-                        dispatch($job);
-                       // Log::info('Request Cycle with Queues Ends');
+                    if(!empty($user)){
+                        
+                        $request = RequestsEvent::CreateRequestEvent($created_by, $user, $event_id);
+                        $device_token = $user->device_token;
+                        if (!empty($device_token)) {
+                            //send notification to user list
+                            //Log::info("Request Cycle with Queues Begins");
+                            $job = new SendPushNotification($device_token, $created_user,$event_id);
+                            dispatch($job);
+                            // Log::info('Request Cycle with Queues Ends');
+                        }
                     }
+
                 }
             }
         }

@@ -55,7 +55,7 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     Route::get('/reject-request','EventController@rejectRequest');
 
-    Route::get('/received-request','EventController@rejectRequest');
+    Route::get('/received-request','EventController@receivedRequest');
 
 });
 

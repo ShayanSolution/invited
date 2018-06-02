@@ -96,7 +96,7 @@ class EventController extends Controller
                         if (!empty($device_token)) {
                             //send notification to user list
                             //Log::info("Request Cycle with Queues Begins");
-                            $job = new SendPushNotification($device_token, $created_user,$event_id);
+                            $job = new SendPushNotification($device_token, $created_user,$event_id,$user);
                             dispatch($job);
                             // Log::info('Request Cycle with Queues Ends');
                         }

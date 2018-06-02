@@ -16,12 +16,14 @@ class SendPushNotification extends Job
     protected $token;
     protected $user;
     protected $event_id;
+    protected $request_to_user;
 
-    public function __construct($token,$user,$event_id)
+    public function __construct($token,$user,$event_id,$request_to_user)
     {
         $this->token = $token;
         $this->user = $user;
         $this->event_id = $event_id;
+        $this->request_to_user = $request_to_user;
     }
 
     /**
@@ -33,6 +35,8 @@ class SendPushNotification extends Job
     {
         $event = Event::where('id',$this->event_id)->first();
         $user = $this->user;
+        $request_to = $this->request_to_user;
+
         if(!empty($user->firstName)){
             $user_name = $user->firstName;
         }else{
@@ -51,8 +55,9 @@ class SendPushNotification extends Job
             ),
             'launchImage' => 'image.jpg',
 
-            'custom' => array('custom data' => array(
-                'we' => 'want', 'send to app'
+            'custom' => array('custom_data' => array(
+                'request_to' => $request_to->id,
+                'event_id' => $this->event_id
             ))
         ));
         PushNotification::app('invitedIOS')->to($this->token)->send($message);

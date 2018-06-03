@@ -72,7 +72,10 @@ class RequestsEvent extends Model
 
     public static function receivedRequest($created_by){
 
-        return self::where('created_by',$created_by)->get();
+        return self::select('requests.*','users.firstName','users.lastName','users.phone')
+                ->join('users','users.id','=','requests.request_to')
+                ->where('created_by',$created_by)
+                ->get();
     }
 
     public static function deleteRequest($id){

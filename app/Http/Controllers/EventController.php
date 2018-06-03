@@ -59,7 +59,8 @@ class EventController extends Controller
     public function getUserContactList(Request $request){
         $request = $request->all();
         $user_id = $request['user_id'];
-        $list = ContactList::getList($user_id);
+        $list_id = $request['list_id'];
+        $list = ContactList::getList($user_id,$list_id);
         if($list){
             $users = json_decode($list->contact_list);
             return response()->json(

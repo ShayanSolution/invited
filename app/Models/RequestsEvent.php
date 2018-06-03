@@ -76,7 +76,7 @@ class RequestsEvent extends Model
     }
 
     public static function deleteRequest($id){
-        $requests = self::find($id);
+        $requests = self::where('event_id',$id);
         $requests->delete();
     }
 

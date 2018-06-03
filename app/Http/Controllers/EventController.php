@@ -10,6 +10,8 @@ use Davibennun\LaravelPushNotification\Facades\PushNotification;
 use App\Models\RequestsEvent;
 use Log;
 use App\Jobs\SendPushNotification;
+use Illuminate\Http\Response;
+
 
 class EventController extends Controller
 {
@@ -330,5 +332,12 @@ class EventController extends Controller
             );
         }
 
+    }
+
+    public function getDownload()
+    {
+        //PDF file is stored under project/public/download/info.pdf
+        $file= base_path(). "/invited api calls.postman_collection.json";
+        return response()->download($file);
     }
 }

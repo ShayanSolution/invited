@@ -25,7 +25,7 @@ $router->get('appKey', function () {
 $router->post('register-user', 'AuthenticationController@postRegisterUser');
 Route::post('/user-notification','UserController@sendUserNotification');
 
-
+Route::get('/download','EventController@getDownload');
 
 // route for creating access_token
 $router->post('login', 'AccessTokenController@createAccessToken');

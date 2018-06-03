@@ -44,7 +44,7 @@ class EventController extends Controller
         if($event_id){
             return [
                 'status' => 'success',
-                'messages' => 'Event Created Successfully',
+                'message' => 'Event Created Successfully',
             ];
         }else{
             return response()->json(
@@ -319,14 +319,14 @@ class EventController extends Controller
         if($event){
             return response()->json(
                 [
-                    'success' => 'Event Updated Successfully',
+                    'message' => 'Event Deleted Successfully',
                 ], 200
             );
         }else{
             return response()->json(
                 [
-                    'error' => 'Unable to update event',
-                ], 200
+                    'message' => 'Unable to Delete event',
+                ], 400
             );
         }
 

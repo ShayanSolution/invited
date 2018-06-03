@@ -281,4 +281,31 @@ class EventController extends Controller
         }
 
     }
+
+    public function updateUserEvent(Request $request){
+
+        $this->validate($request,[
+            'event_id' => 'required',
+            'title' => 'required',
+            'event_address' => 'required',
+            'event_time' => 'required',
+            'payment_method' => 'required'
+        ]);
+
+        $event =Event::updateEvent($request);
+        if($event){
+            return response()->json(
+                [
+                    'success' => 'Event Updated Successfully',
+                ], 200
+            );
+        }else{
+            return response()->json(
+                [
+                    'error' => 'Unable to update event',
+                ], 200
+            );
+        }
+
+    }
 }

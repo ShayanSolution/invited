@@ -46,4 +46,16 @@ class Event extends Model
     public static function getEventByID($id){
         return self::where('id',$id)->first();
     }
+
+    public static function updateEvent($request){
+        $id = $request['event_id'];
+        self::where('id',$id)->update([
+            'title'=>$request['title'],
+            'event_address'=>$request['event_address'],
+            'event_time'=>$request['event_time'],
+            'payment_method'=>$request['payment_method'],
+        ]);
+        
+        return $id;
+    }
 }

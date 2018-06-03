@@ -32,6 +32,10 @@ class ContactList extends Model
      return  self::where('user_id',$user_id)->where('id',$id)->get();
     }
 
+    public static function getUserContactLists($user_id){
+        return  self::where('user_id',$user_id)->get();
+    }
+
     public static function getUserListCount($user_id){
 
         $lists = ContactList::where('user_id',$user_id)->get();

@@ -22,10 +22,10 @@ class EventController extends Controller
             'title' => 'required',
             'event_time' => 'required',
             'list_id' => 'required',
-        ]);dd($request);
+        ]);
 
         //list id
-        $list_id = $request['user_id'];
+        $list_id = $request['list_id'];
         $user_list = ContactList::getList($request['user_id'],$list_id);
         if(empty($user_list->first())){
             return response()->json(

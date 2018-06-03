@@ -22,7 +22,7 @@ class EventController extends Controller
             'title' => 'required',
             'event_time' => 'required',
             'list_id' => 'required',
-        ]);
+        ]);dd($request);
 
         //list id
         $list_id = $request['user_id'];

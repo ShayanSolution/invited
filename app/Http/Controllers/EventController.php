@@ -93,7 +93,7 @@ class EventController extends Controller
             foreach ($user_list as $list) {
                 foreach (json_decode($list->contact_list) as $user_detail) {
                     $phone = $user_detail->phone;
-                    $user = User::where('phone', preg_replace('/\s+/', ' ', $phone))->first();
+                    $user = User::where('phone', trim($phone))->first();
                     //create event request
                     if(!empty($user)){
                         $request = RequestsEvent::CreateRequestEvent($created_by, $user, $event_id);

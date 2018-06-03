@@ -42,8 +42,8 @@ class Event extends Model
 
     public static function getEvents($id){
         return self::select('events.*','contactlists.list_name')
-                   -> where('user_id',$id)
                    ->join('contactlists','contactlists.id','=','events.list_id')
+                   -> where('user_id',$id)
                    ->get();
     }
     

@@ -51,8 +51,6 @@ class AuthServiceProvider extends ServiceProvider
 
         //Register all policies here
         Gate::policy(User::class, UserPolicy::class);
-        
-        Passport::tokensExpireIn(now()->addDays(30));
-        Passport::refreshTokensExpireIn(now()->addDays(30));
+
     }
 }

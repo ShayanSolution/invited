@@ -35,7 +35,7 @@ class RequestsEvent extends Model
         $index = 0;
        foreach ($request_event as $event)
        {
-           $event_requests  = self::select('event_id','created_by',DB::raw('count(event_id) as total'))
+           $event_requests  = self::select('event_id','created_by',DB::raw('count(event_id) as total'),'confirmed')
                                ->groupBy('event_id')
                                ->where('event_id','=',$event->event_id)
                                ->get();
@@ -50,6 +50,7 @@ class RequestsEvent extends Model
                $request_count[$index]['address'] = $event->event_address;
                $request_count[$index]['event_time'] = $event->event_time;
                $request_count[$index]['event_title'] = $event->title;
+               $request_count[$index]['confirmed'] = $request->confirmed;
                $index++;
 
            }

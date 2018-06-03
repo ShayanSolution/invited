@@ -308,4 +308,27 @@ class EventController extends Controller
         }
 
     }
+
+    public function deleteEvent(Request $request){
+
+        $this->validate($request,[
+            'event_id' => 'required',
+        ]);
+
+        $event =Event::deleteEvent($request);
+        if($event){
+            return response()->json(
+                [
+                    'success' => 'Event Updated Successfully',
+                ], 200
+            );
+        }else{
+            return response()->json(
+                [
+                    'error' => 'Unable to update event',
+                ], 200
+            );
+        }
+
+    }
 }

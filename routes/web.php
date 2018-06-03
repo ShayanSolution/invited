@@ -49,6 +49,8 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     Route::post('/update-event','EventController@updateUserEvent');
 
+    Route::get('/delete-event','EventController@deleteEvent');
+
     Route::get('/get-request','EventController@getEventRequests');
 
     Route::get('/accept-request','EventController@acceptRequest');
@@ -56,6 +58,8 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
     Route::get('/reject-request','EventController@rejectRequest');
 
     Route::get('/received-request','EventController@receivedRequest');
+
+
 
 });
 

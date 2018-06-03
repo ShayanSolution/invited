@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\RequestsEvent;
 
 class Event extends Model
 {
@@ -55,7 +56,15 @@ class Event extends Model
             'event_time'=>$request['event_time'],
             'payment_method'=>$request['payment_method'],
         ]);
-        
+        return $id;
+    }
+
+    public static function deleteEvent($request){
+        $id = $request['event_id'];
+        $event = self::find($id);
+        $event->delete();
+        //delete event requests
+        RequestsEvent::deleteRequest($id);
         return $id;
     }
 }

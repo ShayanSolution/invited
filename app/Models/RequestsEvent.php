@@ -75,4 +75,9 @@ class RequestsEvent extends Model
         return self::where('created_by',$created_by)->get();
     }
 
+    public static function deleteRequest($id){
+        $requests = self::find($id);
+        $requests->delete();
+    }
+
 }

@@ -619,6 +619,22 @@ class UserController extends Controller
             'device_token' => 'required',
         ]);
         
+        $token = User::updateToken($request);
+        if($token){
+            
+            return response()->json(
+                [
+                    'status' => 'Device token accepted successfully',
+                ], 200
+            );
+        }else{
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to update device token'
+                ], 422
+            );
+        }
         
     }
 }

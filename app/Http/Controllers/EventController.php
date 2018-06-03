@@ -177,7 +177,8 @@ class EventController extends Controller
         $id = $request['request_to'];
         $accepted = RequestsEvent::acceptRequest($event_id,$id);
         if($accepted){
-            $this->sendRequestNotification($id,$event_id,$request_status = "accepted");
+            $created_by = RequestsEvent::createdByRequest($event_id,$id);
+            $this->sendRequestNotification($created_by->created_by,$event_id,$request_status = "accepted");
             return response()->json(
                 [
                     'status' => 'Request accepted successfully',
@@ -203,7 +204,8 @@ class EventController extends Controller
         $id = $request['request_to'];
         $accepted = RequestsEvent::rejectRequest($event_id,$id);
         if($accepted){
-            $this->sendRequestNotification($id,$event_id,$request_status = "rejected");
+            $created_by = RequestsEvent::createdByRequest($event_id,$id);
+            $this->sendRequestNotification($created_by->created_by,$event_id,$request_status = "accepted");
             return response()->json(
                 [
                     'status' => 'Request rejected successfully',

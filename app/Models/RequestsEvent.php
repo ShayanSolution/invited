@@ -64,6 +64,12 @@ class RequestsEvent extends Model
 
     }
 
+    public static function createdByRequest($event_id,$request_to){
+
+        return  self::where('event_id',$event_id)->where('request_to',$request_to)->first();
+
+    }
+
     public static function rejectRequest($event_id,$request_to){
 
         return  self::where('event_id',$event_id)->where('request_to',$request_to)->update(['confirmed'=>0]);

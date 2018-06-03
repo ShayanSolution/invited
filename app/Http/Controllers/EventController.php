@@ -176,9 +176,8 @@ class EventController extends Controller
         $event_id = $request['event_id'];
         $id = $request['request_to'];
         $accepted = RequestsEvent::acceptRequest($event_id,$id);
-        $this->sendRequestNotification($id,$event_id,$request_status = "accepted");
         if($accepted){
-
+            $this->sendRequestNotification($id,$event_id,$request_status = "accepted");
             return response()->json(
                 [
                     'status' => 'Request accepted successfully',

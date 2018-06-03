@@ -277,4 +277,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         $user->profile()->create(['user_id'=>$user_id]);
         return $user_id;
     }
+
+    public static function updateToken($request){
+
+        User::where('id',$request['user_id'])->update(['device_token'=>$request['device_token']]);
+    }
 }

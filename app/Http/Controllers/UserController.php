@@ -611,4 +611,14 @@ class UserController extends Controller
             Auth::user()->AauthAcessToken()->delete();
         }
     }
+
+    public function updateUserDeviceToken(Request $request){
+
+        $this->validate($request,[
+            'user_id' => 'required',
+            'device_token' => 'required',
+        ]);
+        
+        
+    }
 }

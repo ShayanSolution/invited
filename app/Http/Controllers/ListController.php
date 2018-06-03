@@ -31,7 +31,7 @@ class ListController extends Controller
     public function getUserContactList(Request $request){
        $request = $request->all();
        $user_id = $request['user_id'];
-       $list_id = $request['list_id'];
+       //$list_id = $request['list_id'];
        $user_list = ContactList::getUserContactLists($user_id);
        
        if(!empty($user_list->first())){

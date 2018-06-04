@@ -28,6 +28,27 @@ class ListController extends Controller
         }
     }
 
+    public function UpdateUserContactList(Request $request){
+        $this->validate($request,[
+            'list_id' => 'required',
+            'contact_list' => 'required',
+        ]);
+        $list = ContactList::UpdateList($request);
+        if($list){
+            return [
+                'status' => 'success',
+                'messages' => 'List Updated Successfully',
+            ];
+        }else{
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to update list'
+                ], 422
+            );
+        }
+    }
+
     public function getUserContactList(Request $request){
        $request = $request->all();
        $user_id = $request['user_id'];

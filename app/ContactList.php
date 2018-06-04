@@ -27,7 +27,12 @@ class ContactList extends Model
     public static function CreateList($request){
         $request = $request->all();
         return self::create($request)->id;
-    }    
+    }
+    public static function UpdateList($request){
+        $request = $request->all();
+        return self::where('id',$request['list_id'])->update(['contact_list'=>$request['contact_list'] ]);
+    }
+
     public static function getList($user_id,$id){
      return  self::where('user_id',$user_id)->where('id',$id)->get();
     }

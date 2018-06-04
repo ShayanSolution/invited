@@ -56,4 +56,11 @@ class ContactList extends Model
         }
         return $user_list;
     }
+
+    public static function deleteList($request){
+        $id = $request['list_id'];
+        $event = self::find($id);
+        return $event->delete();
+        
+    }
 }

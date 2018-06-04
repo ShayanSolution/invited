@@ -80,4 +80,25 @@ class ListController extends Controller
        }
 
     }
+
+    public function DeleteUserContactList(Request $request){
+        $this->validate($request,[
+            'list_id' => 'required',
+        ]);
+
+        $list = ContactList::deleteList($request);
+        if($list){
+            return response()->json(
+                [
+                    'message' => 'List Deleted Successfully',
+                ], 200
+            );
+        }else{
+            return response()->json(
+                [
+                    'message' => 'Unable to Delete list',
+                ], 400
+            );
+        }
+    }
 }

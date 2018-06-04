@@ -59,8 +59,9 @@ class ContactList extends Model
 
     public static function deleteList($request){
         $id = $request['list_id'];
-        $event = self::find($id);
-        return $event->delete();
-        
+        $list = self::find($id);
+        if($list){
+            return $list->delete();
+        }
     }
 }

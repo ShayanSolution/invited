@@ -20,6 +20,8 @@ try {
 | application as an "IoC" container and router for this framework.
 |
 */
+class_alias(\LaravelFCM\Facades\FCM::class, 'FCM');
+class_alias(\LaravelFCM\Facades\FCMGroup::class, 'FCMGroup');
 
 $app = new Laravel\Lumen\Application(
     realpath(__DIR__.'/../')
@@ -106,7 +108,7 @@ $app->register(\Illuminate\Mail\MailServiceProvider::class);
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 $app->register(\SwaggerLume\ServiceProvider::class);
 $app->register('Davibennun\LaravelPushNotification\LaravelPushNotificationServiceProvider');
-
+$app->register(LaravelFCM\FCMServiceProvider::class);
 LumenPassport::routes($app);
 
 /*

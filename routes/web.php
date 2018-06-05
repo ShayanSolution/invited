@@ -34,11 +34,7 @@ $router->post('login', 'AccessTokenController@createAccessToken');
 $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($router) {
 
     Route::get('/logout','UserController@logoutApi');
-    //Dashboard Routes
-    $router->get('dashboard-pie-chart-totals',  [
-        'uses'       => 'UserController@getDashboardTotalOfPieCharts',
-        //'middleware' => "scope:admin"
-    ]);
+    
     Route::post('/create-list','ListController@CreateUserContactList');
 
     Route::post('/update-list','ListController@UpdateUserContactList');

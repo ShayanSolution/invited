@@ -64,4 +64,19 @@ class ContactList extends Model
             return $list->delete();
         }
     }
+
+    public static function generateErrorResponse($validator){
+        $response = null;
+        if ($validator->fails()) {
+            $response = $validator->errors()->toArray();
+            $response['error'] = $validator->errors()->toArray();
+            $response['code'] = 500;
+            $response['message'] = 'Error occured';
+        }
+        else{
+            $response['code'] = 200;
+            $response['message'] = 'operation completed successfully';
+        }
+        return $response;
+    }
 }

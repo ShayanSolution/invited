@@ -8,10 +8,15 @@ use App\ContactList;
 class ListController extends Controller
 {
     public function CreateUserContactList(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'contact_list' => 'required',
         ]);
+        $response = ContactList::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+
         $list = ContactList::CreateList($request);
         if($list){
             return [

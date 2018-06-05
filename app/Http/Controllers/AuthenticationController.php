@@ -12,6 +12,7 @@ use App\Location;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 use DB;
+use Illuminate\Support\Facades\Validator;
 
 class AuthenticationController extends Controller
 {
@@ -343,12 +344,16 @@ class AuthenticationController extends Controller
 
 
     public function postRegisterUser(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
             'phone' => 'required|unique:users',
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required|min:6'
         ]);
+        $response = User::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
         $user = User::registerUser($request);
         
         if($user){

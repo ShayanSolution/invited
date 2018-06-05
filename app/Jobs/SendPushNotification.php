@@ -17,13 +17,15 @@ class SendPushNotification extends Job
     protected $user;
     protected $event_id;
     protected $request_to_user;
+    protected $message;
 
-    public function __construct($token,$user,$event_id,$request_to_user)
+    public function __construct($token,$user,$event_id,$request_to_user,$message)
     {
         $this->token = $token;
         $this->user = $user;
         $this->event_id = $event_id;
         $this->request_to_user = $request_to_user;
+        $this->message = $message;
     }
 
     /**
@@ -36,14 +38,15 @@ class SendPushNotification extends Job
         $event = Event::where('id',$this->event_id)->first();
         $user = $this->user;
         $request_to = $this->request_to_user;
-
+        $message = $this->message;
+        
         if(!empty($user->firstName)){
             $user_name = $user->firstName;
         }else{
             $user_name = $user->phone;
         }
 
-        $message = PushNotification::Message($user_name.' would like to invite you on the event '. $event->title.'.'  ,array(
+        $message = PushNotification::Message($user_name.' '.$message.' '. $event->title.'.'  ,array(
             'badge' => 1,
             'sound' => 'example.aiff',
 

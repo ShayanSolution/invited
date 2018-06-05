@@ -58,6 +58,9 @@ class Event extends Model
             'event_address'=>$request['event_address'],
             'event_time'=>$request['event_time'],
             'payment_method'=>$request['payment_method'],
+            'list_id'=>$request['list_id'],
+            'longitude'=>$request['longitude'],
+            'latitude'=>$request['latitude'],
         ]);
         return $id;
     }
@@ -69,5 +72,20 @@ class Event extends Model
         //delete event requests
         RequestsEvent::deleteRequest($id);
         return $id;
+    }
+
+    public static function generateErrorResponse($validator){
+        $response = null;
+        if ($validator->fails()) {
+            $response = $validator->errors()->toArray();
+            $response['error'] = $validator->errors()->toArray();
+            $response['code'] = 500;
+            $response['message'] = 'Error occured';
+        }
+        else{
+            $response['code'] = 200;
+            $response['message'] = 'operation completed successfully';
+        }
+        return $response;
     }
 }

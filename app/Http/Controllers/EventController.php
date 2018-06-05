@@ -24,7 +24,7 @@ class EventController extends Controller
             'event_time' => 'required',
             'list_id' => 'required',
         ]);
-        $response = ContactList::generateErrorResponse($validator);
+        $response = Event::generateErrorResponse($validator);
         if($response['code'] == 500){
             return $response;
         }
@@ -44,6 +44,7 @@ class EventController extends Controller
         //create event
         $event_id = Event::CreateEvent($request);
         //create event request and send notifications to user list.
+        $message = "would like to invite you";
         $this->sendUserNotification($request,$event_id,$list_id);
         
         if($event_id){
@@ -84,7 +85,7 @@ class EventController extends Controller
 
     }
 
-    public function sendUserNotification(Request $request,$event_id,$list_id){
+    public function sendUserNotification(Request $request,$event_id,$list_id,$message){
 
         $request = $request->all();
         $created_by = $request['user_id'];
@@ -104,7 +105,7 @@ class EventController extends Controller
                         if (!empty($device_token)) {
                             //send notification to user list
                             //Log::info("Request Cycle with Queues Begins");
-                            $job = new SendPushNotification($device_token, $created_user, $event_id, $user);
+                            $job = new SendPushNotification($device_token, $created_user, $event_id, $user,$message);
                             dispatch($job);
                             // Log::info('Request Cycle with Queues Ends');
                         }
@@ -287,17 +288,28 @@ class EventController extends Controller
     }
 
     public function updateUserEvent(Request $request){
-
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'event_id' => 'required',
             'title' => 'required',
             'event_address' => 'required',
             'event_time' => 'required',
-            'payment_method' => 'required'
+            'payment_method' => 'required',
+            'list_id' => 'required',
+            'longitude' => 'required',
+            'latitude' => 'required',
         ]);
+        $response = Event::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
 
         $event =Event::updateEvent($request);
+        $event_id = $request['event_id'];
+        $list_id = $request['list_id'];
+
         if($event){
+            $message = 'has updated';
+            $this->sendUserNotification($request,$event_id,$list_id,$message);
             return response()->json(
                 [
                     'success' => 'Event Updated Successfully',

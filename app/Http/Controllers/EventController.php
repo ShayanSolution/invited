@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Validator;
 class EventController extends Controller
 {
     public function CreateEvent(Request $request){
-        
+
        $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'payment_method' => 'required',
@@ -45,10 +45,17 @@ class EventController extends Controller
 
         //create event
         $event_id = Event::CreateEvent($request);
-        //create event request and send notifications to user list.
-        $message = "would like to invite you on";
-        $this->sendUserNotification($request,$event_id,$list_id,$message);
-        
+        //check platform
+        $user_id = $request['user_id'];
+        $user_platform = User::where('id',$user_id)->first();
+        if($user_platform->platform=='ios' || is_null($user_platform->platform)){
+            //create event request and send notifications to user list.
+            $message = "would like to invite you on";
+            $this->sendUserNotification($request,$event_id,$list_id,$message);
+        }else{
+            //send firebase notification on android.
+        }
+
         if($event_id){
             return [
                 'status' => 'success',
@@ -299,6 +306,7 @@ class EventController extends Controller
             'list_id' => 'required',
             'longitude' => 'required',
             'latitude' => 'required',
+            'user_id' => 'required',
         ]);
         $response = Event::generateErrorResponse($validator);
         if($response['code'] == 500){
@@ -310,8 +318,17 @@ class EventController extends Controller
         $list_id = $request['list_id'];
 
         if($event){
+            $user_id = $request['user_id'];
             $message = 'has updated';
-            $this->sendUserNotification($request,$event_id,$list_id,$message);
+            $user_platform = User::where('id',$user_id)->first();
+            if($user_platform->platform=='ios' || is_null($user_platform->platform)){
+                //create event request and send notifications to user list.
+                $message = "would like to invite you on";
+                $this->sendUserNotification($request,$event_id,$list_id,$message);
+            }
+            else{
+                //send firebase notification on android.
+            }
             return response()->json(
                 [
                     'success' => 'Event Updated Successfully',

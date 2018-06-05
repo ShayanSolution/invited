@@ -12,10 +12,7 @@ use Log;
 use App\Jobs\SendPushNotification;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
-use LaravelFCM\Message\OptionsBuilder;
-use LaravelFCM\Message\PayloadDataBuilder;
-use LaravelFCM\Message\PayloadNotificationBuilder;
-use FCM;
+
 
 class EventController extends Controller
 {
@@ -35,11 +32,11 @@ class EventController extends Controller
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();
 
-        $token = "5449d3cf5f05cea026deddf1806282c7f3fcd676868fe35efcb54c74d647a7b1";
+        $token = "a_registration_from_your_database";
 
         $downstreamResponse = FCM::sendTo($token, $option, $notification, $data);
 
-       dd();
+
        $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'payment_method' => 'required',

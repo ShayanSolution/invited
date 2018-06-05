@@ -149,22 +149,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
                     ->first();
     }
 
-    public function getTutorProfile($data){
-        if(isset($data['student_id'])){
-            $student_id = $data['student_id'];
-            $group = $data['is_group'];
-            Profile::updateStudentGroup($student_id,$group);
-        }
-        return Self::select('users.*')
-                ->join('profiles','profiles.user_id','=','users.id')
-                ->where('profiles.programme_id','=',$data['class_id'])
-                ->where('profiles.subject_id','=',$data['subject_id'])
-                ->where('profiles.is_home','=',$data['is_home'])
-                ->where('profiles.is_group','=',$data['is_group'])
-                ->where('profiles.call_student','=',$data['call_student'])
-                ->where('users.role_id','=',2)
-                ->get();
-    }
+
     
     public static function updateProfileImage($tutor_id,$file_name,$role_id){
         User::where('id','=',$tutor_id)->where('role_id','=',$role_id)-> update(['profileImage'=>$file_name]);
@@ -174,60 +159,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         User::where('id','=',$tutor_id)->where('role_id','=',$role_id)-> update($update_array);
     }
     
-    public static function registerTutor($request){
-        //print_r($request); dd();
-        $email = $request['email'];
-        $fullName = explode(" ",$request['name']);
-        if(count($fullName)>1){
-            $firstName = $fullName[0]; $lastName = $fullName[1];
-        }else{
-            $firstName = $fullName[0]; $lastName = '';
-        }
-        $password = $request['passwords']['password'];
-        $phone = $request['phone'];
-        $uid = str_random(32);
-        $user = Self::create([
-            'email' => $email,
-            'firstName' => $firstName,
-            'uid' => $uid,
-            'lastName' => $lastName,
-            'password' => Hash::make($password),
-            'role_id' => Config::get('user-constants.TUTOR_ROLE_ID'),
-            'phone'=>$phone
-        ])->id;
-        
-        return $user;
-    }
 
-    public static function getStudents(){
-        $students = self::select('users.*','profiles.is_deserving')
-                    ->join('profiles','profiles.user_id','=','users.id')
-                    ->where('role_id', Config::get('user-constants.STUDENT_ROLE_ID'))
-                    ->get();
-        $student_detail=[];
-        $index = 0;
-        foreach ($students as $student){
-            $student_detail[$index]['id'] = $student->id;
-            $student_detail[$index]['firstName'] = $student->firstName;
-            $student_detail[$index]['lastName'] = $student->lastName;
-            $student_detail[$index]['username'] = $student->username;
-            $student_detail[$index]['email'] = $student->email;
-            $student_detail[$index]['city'] = $student->city;
-            $student_detail[$index]['country'] = $student->country;
-            if($student->is_deserving == '1'){
-                $student_detail[$index]['is_deserving'] = 'Yes';
-            }else{
-                $student_detail[$index]['is_deserving'] = 'No';
-            }
-            if($student->is_active == '1'){
-                $student_detail[$index]['is_active'] = 'Yes';
-            }else{
-                $student_detail[$index]['is_active'] = 'No';
-            }
-            $index++;
-        }
-        return $student_detail;
-    }
     
     public static function updateUserActiveStatus($id){
         $user = Self::where('id',$id)->first();
@@ -281,5 +213,20 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public static function updateToken($request){
 
        return self::where('id',$request['user_id'])->update(['device_token'=>$request['device_token'],'platform'=>$request['platform']]);
+    }
+
+    public static function generateErrorResponse($validator){
+        $response = null;
+        if ($validator->fails()) {
+            $response = $validator->errors()->toArray();
+            $response['error'] = $validator->errors()->toArray();
+            $response['code'] = 500;
+            $response['message'] = 'Error occured';
+        }
+        else{
+            $response['code'] = 200;
+            $response['message'] = 'operation completed successfully';
+        }
+        return $response;
     }
 }

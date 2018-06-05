@@ -11,13 +11,12 @@ use App\Models\RequestsEvent;
 use Log;
 use App\Jobs\SendPushNotification;
 use Illuminate\Http\Response;
-
+use Illuminate\Support\Facades\Validator;
 
 class EventController extends Controller
 {
     public function CreateEvent(Request $request){
-
-        $this->validate($request,[
+       $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'payment_method' => 'required',
             'event_address' => 'required',
@@ -25,6 +24,10 @@ class EventController extends Controller
             'event_time' => 'required',
             'list_id' => 'required',
         ]);
+        $response = ContactList::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
 
         //list id
         $list_id = $request['list_id'];

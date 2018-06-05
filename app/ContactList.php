@@ -30,7 +30,7 @@ class ContactList extends Model
     }
     public static function UpdateList($request){
         $request = $request->all();
-        return self::where('id',$request['list_id'])->update(['contact_list'=>$request['contact_list'] ]);
+        return self::where('id',$request['list_id'])->update(['contact_list'=>$request['contact_list'],'list_name'=>$request['list_name'] ]);
     }
 
     public static function getList($user_id,$id){

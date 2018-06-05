@@ -32,6 +32,7 @@ class ListController extends Controller
         $this->validate($request,[
             'list_id' => 'required',
             'contact_list' => 'required',
+            'list_name' => 'required',
         ]);
         $list = ContactList::UpdateList($request);
         if($list){

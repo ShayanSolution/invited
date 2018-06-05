@@ -50,6 +50,8 @@ class RequestsEvent extends Model
                $request_count[$index]['address'] = $event->event_address;
                $request_count[$index]['event_time'] = $event->event_time;
                $request_count[$index]['event_title'] = $event->title;
+               $request_count[$index]['longitude'] = $event->longitude;
+               $request_count[$index]['latitude'] = $event->latitude;
                $request_count[$index]['confirmed'] = $request->confirmed;
                $index++;
 

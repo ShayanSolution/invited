@@ -44,7 +44,7 @@ class EventController extends Controller
         //create event
         $event_id = Event::CreateEvent($request);
         //create event request and send notifications to user list.
-        $message = "would like to invite you";
+        $message = "would like to invite you on";
         $this->sendUserNotification($request,$event_id,$list_id,$message);
         
         if($event_id){

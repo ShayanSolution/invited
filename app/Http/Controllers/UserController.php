@@ -617,6 +617,7 @@ class UserController extends Controller
         $this->validate($request,[
             'user_id' => 'required',
             'device_token' => 'required',
+            'platform' => 'required',
         ]);
         
         $token = User::updateToken($request);

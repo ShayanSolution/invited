@@ -280,6 +280,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public static function updateToken($request){
 
-       return self::where('id',$request['user_id'])->update(['device_token'=>$request['device_token']]);
+       return self::where('id',$request['user_id'])->update(['device_token'=>$request['device_token'],'platform'=>$request['platform']]);
     }
 }

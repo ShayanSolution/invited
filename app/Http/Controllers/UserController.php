@@ -624,7 +624,7 @@ class UserController extends Controller
             
             return response()->json(
                 [
-                    'status' => 'Device token accepted successfully',
+                    'status' => 'Device token updated successfully',
                 ], 200
             );
         }else{

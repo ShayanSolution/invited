@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\ContactList;
+use Illuminate\Support\Facades\Validator;
 
 class ListController extends Controller
 {

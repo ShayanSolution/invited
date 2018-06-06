@@ -126,10 +126,14 @@ class EventController extends Controller
     }
 
     public function getUserEvents(Request $request){
-
-        $this->validate($request,[
+      $validator = Validator::make($request->all(), [
             'user_id' => 'required'
         ]);
+        $response = Event::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+
         $request = $request->all();
         $user_id = $request['user_id'];
         $events = Event::getEvents($user_id);
@@ -155,10 +159,14 @@ class EventController extends Controller
     }
 
     public function getEventRequests(Request $request){
-
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'request_to' => 'required'
         ]);
+        $response = Event::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+
         $request = $request->all();
         $request_to  = $request['request_to'];
         $total_count  = RequestsEvent::getEventRequest($request_to);
@@ -181,11 +189,15 @@ class EventController extends Controller
     }
     
     public function acceptRequest(Request $request){
-
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'event_id' => 'required',
             'request_to' => 'required'
         ]);
+        $response = Event::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+
         $event_id = $request['event_id'];
         $id = $request['request_to'];
         $accepted = RequestsEvent::acceptRequest($event_id,$id);
@@ -208,11 +220,15 @@ class EventController extends Controller
     }
 
     public function rejectRequest(Request $request){
-
-        $this->validate($request,[
+       $validator = Validator::make($request->all(), [
             'event_id' => 'required',
             'request_to' => 'required'
         ]);
+        $response = Event::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+
         $event_id = $request['event_id'];
         $id = $request['request_to'];
         $accepted = RequestsEvent::rejectRequest($event_id,$id);
@@ -270,10 +286,13 @@ class EventController extends Controller
     }
 
     public function receivedRequest(Request $request){
-
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'created_by' => 'required',
         ]);
+        $response = Event::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
 
         $id = $request['created_by'];
         $requests = RequestsEvent::receivedRequest($id);

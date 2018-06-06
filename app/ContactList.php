@@ -34,7 +34,7 @@ class ContactList extends Model
     }
 
     public static function getList($id){
-     return  self::where('id',$id)->get();
+     return  self::where('id',$id)->first();
     }
 
     public static function getUserContactLists($user_id){

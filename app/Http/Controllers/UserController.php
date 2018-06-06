@@ -329,7 +329,7 @@ class UserController extends Controller
 
         // API access key from Google API's Console
         define( 'API_ACCESS_KEY', 'AIzaSyAIM2143LQUTw3Vw-9QWvCrT60bm1XDJa4' );
-        $registrationIds = array( '' );
+        $registrationIds = array( 'c1d1bb7bbcf50c976b751707911ee907a24cfb76f8b77fb5bdf2e175fe57962d' );
         // prep the bundle
         $msg = array
         (

@@ -62,9 +62,26 @@ class Event extends Model
             $user_events[$index]['list_id'] = $event->list_id;
             $user_events[$index]['list_name'] = $event->list_name;
             $user_list = ContactList::getList($event->list_id);
-            foreach($user_list as $list){
-                $user_events[$index]['list_count'] = count(json_decode($list->contact_list));
+            $user_events[$index]['list_count'] = count(json_decode($user_list->contact_list));
+            //$user_events[$index]['list_users'] = json_decode($user_list->contact_list);
+            $list_index=0;
+            $arr = [];
+            foreach (json_decode($user_list->contact_list) as $list){
+               $user = User::where('phone',$list->phone)->first();
+               //if user registered through app
+               if($user){
+                   $arr[$list_index]['name'] = $user->firstName." ".$user->lastName;
+                   $arr[$list_index]['phone'] = $user->phone;
+                   $arr[$list_index]['confirmed'] = $user->confirmed;
+
+               }
+               //add user list to array.
+               else{
+                   $arr[$list_index++] = $list;
+               }
+               $list_index++;
             }
+            $user_events[$index]['list_users'] = $arr;
             $index++;
         }
         return $user_events;

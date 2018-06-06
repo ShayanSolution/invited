@@ -2,12 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Invoice;
-use App\Models\Profile;
-use App\Models\Session;
+use App\ContactList;
 use App\Models\User;
-use App\Models\Programme;
-use App\Models\Subject;
 use App\Repositories\Contracts\UserRepository;
 use Illuminate\Http\Request;
 use App\Transformers\UserTransformer;
@@ -15,11 +11,11 @@ use Davibennun\LaravelPushNotification\Facades\PushNotification;
 use Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use LaravelFCM\Message\Topics;
 use LaravelFCM\Message\OptionsBuilder;
 use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
 use LaravelFCM\Facades\FCM;
+
 
 class UserController extends Controller
 {
@@ -327,6 +323,8 @@ class UserController extends Controller
 
     public function sendFirebaseNotifications(){
 
+        $list = ContactList::with('user')->get();
+        dd($list);
         // API access key from Google API's Console
         define( 'API_ACCESS_KEY', 'AIzaSyAIM2143LQUTw3Vw-9QWvCrT60bm1XDJa4' );
         $registrationIds = array( 'c1d1bb7bbcf50c976b751707911ee907a24cfb76f8b77fb5bdf2e175fe57962d' );
@@ -385,17 +383,17 @@ class UserController extends Controller
         $downstreamResponse->numberFailure();
         $downstreamResponse->numberModification();
 
-//return Array - you must remove all this tokens in your database
+        //return Array - you must remove all this tokens in your database
         $downstreamResponse->tokensToDelete();
 
-//return Array (key : oldToken, value : new token - you must change the token in your database )
+        //return Array (key : oldToken, value : new token - you must change the token in your database )
         $downstreamResponse->tokensToModify();
 
-//return Array - you should try to resend the message to the tokens in the array
+        //return Array - you should try to resend the message to the tokens in the array
         $downstreamResponse->tokensToRetry();
 
-// return Array (key:token, value:errror) - in production you should remove from your database the tokens
-      return  $downstreamResponse->tokensWithError();
+        // return Array (key:token, value:errror) - in production you should remove from your database the tokens
+       return  $downstreamResponse->tokensWithError();
 
     }
 }

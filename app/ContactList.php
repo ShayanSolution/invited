@@ -23,6 +23,11 @@ class ContactList extends Model
         'contact_list',
         'list_name'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'user_id');
+    }
     
     public static function CreateList($request){
         $request = $request->all();
@@ -34,7 +39,7 @@ class ContactList extends Model
     }
 
     public static function getList($id){
-     return  self::where('id',$id)->first();
+     return  self::where('id',$id)->get();
     }
 
     public static function getUserContactLists($user_id){

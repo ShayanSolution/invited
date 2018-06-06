@@ -89,9 +89,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasMany('App\Models\Transaction');
     }
 
-    public function student()
+    public function list()
     {
-        return $this->hasMany('App\Models\Sessions', 'student_id');
+        return $this->hasMany('App\ContactList', 'user_id');
     }
 
     public function tutor()

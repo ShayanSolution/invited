@@ -33,7 +33,8 @@ class EventController extends Controller
 
         //list id
         $list_id = $request['list_id'];
-        $user_list = ContactList::getList($request['user_id'],$list_id);
+        //$user_list = ContactList::getList($list_id);
+        $user_list = ContactList::getList($list_id);
         if(empty($user_list->first())){
             return response()->json(
                 [
@@ -75,7 +76,8 @@ class EventController extends Controller
         $request = $request->all();
         $user_id = $request['user_id'];
         $list_id = $request['list_id'];
-        $list = ContactList::getList($user_id,$list_id);
+        //$list = ContactList::getList($user_id,$list_id);
+        $list = ContactList::getList($list_id);
         if($list){
             $users = json_decode($list->contact_list);
             return response()->json(
@@ -100,7 +102,8 @@ class EventController extends Controller
         $created_by = $request['user_id'];
         $created_user = User::where('id',$created_by)->first();
         //get list against user id.
-        $user_list = ContactList::getList($created_by,$list_id);
+        //$user_list = ContactList::getList($created_by,$list_id);
+        $user_list = ContactList::getList($list_id);
 
         if(!empty($user_list->first())) {
             foreach ($user_list as $list) {

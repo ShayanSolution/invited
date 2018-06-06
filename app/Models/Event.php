@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\ContactList;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\RequestsEvent;
+
 
 class Event extends Model
 {
@@ -41,10 +43,32 @@ class Event extends Model
     }
 
     public static function getEvents($id){
-        return self::select('events.*','contactlists.list_name')
+        $events = self::select('events.*','contactlists.list_name')
                    ->join('contactlists','contactlists.id','=','events.list_id')
                    -> where('events.user_id',$id)
                    ->get();
+
+        $user_events = [];
+        $index=0;
+        foreach($events as $event){
+            $user_events[$index]['id'] = $event->id;
+            $user_events[$index]['title'] = $event->title;
+            $user_events[$index]['event_address'] = $event->event_address;
+            $user_events[$index]['event_time'] = $event->event_time;
+            $user_events[$index]['longitude'] = $event->longitude;
+            $user_events[$index]['latitude'] = $event->latitude;
+            $user_events[$index]['payment_method'] = $event->payment_method;
+            $user_events[$index]['user_id'] = $event->user_id;
+            $user_events[$index]['list_id'] = $event->list_id;
+            $user_events[$index]['list_name'] = $event->list_name;
+            $user_list = ContactList::getList($event->list_id);
+            foreach($user_list as $list){
+                $user_events[$index]['list_count'] = count(json_decode($list->contact_list));
+            }
+            $index++;
+        }
+        return $user_events;
+
     }
     
     public static function getEventByID($id){

@@ -12,14 +12,14 @@ use App\Repositories\Contracts\UserRepository;
 use Illuminate\Http\Request;
 use App\Transformers\UserTransformer;
 use Davibennun\LaravelPushNotification\Facades\PushNotification;
-use Illuminate\Queue\Queue;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\URL;
 use Log;
-use Illuminate\Support\Facades\Config;
-use App\Jobs\SendPushNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use LaravelFCM\Message\Topics;
+use LaravelFCM\Message\OptionsBuilder;
+use LaravelFCM\Message\PayloadDataBuilder;
+use LaravelFCM\Message\PayloadNotificationBuilder;
+use LaravelFCM\Facades\FCM;
 
 class UserController extends Controller
 {
@@ -323,5 +323,79 @@ class UserController extends Controller
             );
         }
         
+    }
+
+    public function sendFirebaseNotifications(){
+
+        // API access key from Google API's Console
+        define( 'API_ACCESS_KEY', 'AIzaSyAIM2143LQUTw3Vw-9QWvCrT60bm1XDJa4' );
+        $registrationIds = array( '' );
+        // prep the bundle
+        $msg = array
+        (
+            'body'  => "abc",
+            'title'     => "Hello from Api",
+            'vibrate'   => 1,
+            'sound'     => 1,
+        );
+
+        $fields = array
+        (
+            'registration_ids'  => $registrationIds,
+            'notification'          => $msg
+        );
+
+        $headers = array
+        (
+            'Authorization: key=' . API_ACCESS_KEY,
+            'Content-Type: application/json'
+        );
+
+        $ch = curl_init();
+        curl_setopt( $ch,CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send' );
+        curl_setopt( $ch,CURLOPT_POST, true );
+        curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
+        curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
+        curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
+        curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
+        $result = curl_exec($ch );
+        curl_close( $ch );
+        echo $result;
+        //dd($result);
+
+        $optionBuilder = new OptionsBuilder();
+        $optionBuilder->setTimeToLive(60*20);
+
+        $notificationBuilder = new PayloadNotificationBuilder('my title');
+        $notificationBuilder->setBody('Hello world')
+            ->setSound('default');
+
+        $dataBuilder = new PayloadDataBuilder();
+        $dataBuilder->addData(['a_data' => 'my_data']);
+
+        $option = $optionBuilder->build();
+        $notification = $notificationBuilder->build();
+        $data = $dataBuilder->build();
+
+        $token = "AAAAMD8TNvM:APA91bEM98Tz6M7Y5lAB8_bjhHv-c89JdUpuXpmJnoIb-pQgGfELBGjoGWjY9sakYPFuMaYulW5ac1GZuQqxkPXEq0lyhADMopsr3Q5o3q_frACMupo3NDKkKUXbZTnCGpE8LH_Ag8oV";
+
+        $downstreamResponse = FCM::sendTo($token, $option, $notification, $data);
+        dd($downstreamResponse);
+        $downstreamResponse->numberSuccess();
+        $downstreamResponse->numberFailure();
+        $downstreamResponse->numberModification();
+
+//return Array - you must remove all this tokens in your database
+        $downstreamResponse->tokensToDelete();
+
+//return Array (key : oldToken, value : new token - you must change the token in your database )
+        $downstreamResponse->tokensToModify();
+
+//return Array - you should try to resend the message to the tokens in the array
+        $downstreamResponse->tokensToRetry();
+
+// return Array (key:token, value:errror) - in production you should remove from your database the tokens
+      return  $downstreamResponse->tokensWithError();
+
     }
 }

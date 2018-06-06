@@ -30,6 +30,7 @@ Route::get('/download','EventController@getDownload');
 // route for creating access_token
 $router->post('login', 'AccessTokenController@createAccessToken');
 
+Route::get('/send','UserController@sendFirebaseNotifications');
 
 $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($router) {
 

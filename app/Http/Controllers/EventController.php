@@ -385,9 +385,8 @@ class EventController extends Controller
         $notification_usres_list = ContactList::getUserList($event_list_id);
         foreach (json_decode($notification_usres_list->contact_list) as $list){
             $notification_user = User::where('phone',$list->phone)->first();
-            dd($list);
-            $user_device_token = $notification_user->device_token;
-            if(!empty($user_device_token)){
+            if($notification_user){
+                $user_device_token = $notification_user->device_token;
                 $message = PushNotification::Message($event_detail->title."  has been cancelled. "  ,array(
                     'badge' => 1,
                     'sound' => 'example.aiff',

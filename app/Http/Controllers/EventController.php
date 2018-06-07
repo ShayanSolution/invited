@@ -206,7 +206,8 @@ class EventController extends Controller
         $accepted = RequestsEvent::acceptRequest($event_id,$id);
         if($accepted){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
-            $this->sendRequestNotification($id,$event_id,$request_status = "accepted");
+            $accepted_user = User::where('id',$id)->first();
+            $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "accepted");
             return response()->json(
                 [
                     'status' => 'Request accepted successfully',
@@ -253,16 +254,16 @@ class EventController extends Controller
         }
     }
 
-    public function sendRequestNotification($id,$event_id,$request_status=null){
+    public function sendRequestNotification($id,$event_id,$accepted_user,$request_status=null){
 
         $request_acctepted_user = User::where('id',$id)->first();
 
-        if($request_acctepted_user){
+        if($accepted_user){
 
-            if(!empty($request_acctepted_user->firstName)){
-                $user_name = $request_acctepted_user->firstName;
+            if(!empty($accepted_user->firstName)){
+                $user_name = $accepted_user->firstName;
             }else{
-                $user_name = $request_acctepted_user->phone;
+                $user_name = $accepted_user->phone;
             }
 
             if(!empty($request_acctepted_user->device_token)){

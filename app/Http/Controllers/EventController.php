@@ -12,7 +12,10 @@ use Log;
 use App\Jobs\SendPushNotification;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
-
+use LaravelFCM\Message\OptionsBuilder;
+use LaravelFCM\Message\PayloadDataBuilder;
+use LaravelFCM\Message\PayloadNotificationBuilder;
+use LaravelFCM\Facades\FCM;
 
 class EventController extends Controller
 {
@@ -49,13 +52,8 @@ class EventController extends Controller
         //check platform
         $user_id = $request['user_id'];
         $user_platform = User::where('id',$user_id)->first();
-        if($user_platform->platform=='ios' || is_null($user_platform->platform)){
-            //create event request and send notifications to user list.
-            $message = "would like to invite you on";
-            $this->sendUserNotification($request,$event_id,$list_id,$message);
-        }else{
-            //send firebase notification on android.
-        }
+        $message = "would like to invite you on";
+        $this->sendUserNotification($request,$event_id,$list_id,$message);
 
         if($event_id){
             return [
@@ -115,11 +113,19 @@ class EventController extends Controller
                         $request = RequestsEvent::CreateRequestEvent($created_by, $user, $event_id);
                         $device_token = $user->device_token;
                         if (!empty($device_token)) {
-                            //send notification to user list
-                            //Log::info("Request Cycle with Queues Begins");
-                            $job = new SendPushNotification($device_token, $created_user, $event_id, $user,$message);
-                            dispatch($job);
-                            // Log::info('Request Cycle with Queues Ends');
+                            //check user platform
+                            $platform = $user->platform;
+                            if($platform == 'ios' || is_null($platform)){
+                                //send notification to user list
+                                //Log::info("Request Cycle with Queues Begins");
+                                $job = new SendPushNotification($device_token, $created_user, $event_id, $user,$message);
+                                dispatch($job);
+                                //Log::info('Request Cycle with Queues Ends');
+                            }else{
+                                $this->sendNotificationToAndoidUsers($device_token);
+
+                            }
+
                         }
                     }
 
@@ -427,5 +433,27 @@ class EventController extends Controller
         //PDF file is stored under project/public/download/info.pdf
         $file= base_path(). "/invited api calls.postman_collection.json";
         return response()->download($file);
+    }
+    
+    public function sendNotificationToAndoidUsers($device_token){
+
+        $optionBuilder = new OptionsBuilder();
+        $optionBuilder->setTimeToLive(60*20);
+
+        $notificationBuilder = new PayloadNotificationBuilder('my title');
+        $notificationBuilder->setBody('Hello world')
+            ->setSound('default');
+
+        $dataBuilder = new PayloadDataBuilder();
+        $dataBuilder->addData(['a_data' => 'my_data']);
+
+        $option = $optionBuilder->build();
+        $notification = $notificationBuilder->build();
+        $data = $dataBuilder->build();
+
+        $token = "f-9wrGC6i6g:APA91bG6ZtVrbL_BhVTXOT3WiGATM4rI9SuHYn32jheelqumbGmTGOcYqzB8He9CHjk6uj5N3NE3TOqMtoRgSDQh2TtmmnKai1NBHoPpx3EBYsFKpcht5m_6VWwq5vX4M2YDOpJWWXhQ";
+
+        $downstreamResponse = FCM::sendTo($device_token, $option, $notification, $data);
+        
     }
 }

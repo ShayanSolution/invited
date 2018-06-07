@@ -322,12 +322,9 @@ class UserController extends Controller
     }
 
     public function sendFirebaseNotifications(){
-
-        $list = ContactList::with('user')->get();
-        dd($list);
         // API access key from Google API's Console
         define( 'API_ACCESS_KEY', 'AIzaSyAIM2143LQUTw3Vw-9QWvCrT60bm1XDJa4' );
-        $registrationIds = array( 'c1d1bb7bbcf50c976b751707911ee907a24cfb76f8b77fb5bdf2e175fe57962d' );
+        $registrationIds = array( 'f-9wrGC6i6g:APA91bG6ZtVrbL_BhVTXOT3WiGATM4rI9SuHYn32jheelqumbGmTGOcYqzB8He9CHjk6uj5N3NE3TOqMtoRgSDQh2TtmmnKai1NBHoPpx3EBYsFKpcht5m_6VWwq5vX4M2YDOpJWWXhQ' );
         // prep the bundle
         $msg = array
         (
@@ -375,7 +372,7 @@ class UserController extends Controller
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();
 
-        $token = "AAAAMD8TNvM:APA91bEM98Tz6M7Y5lAB8_bjhHv-c89JdUpuXpmJnoIb-pQgGfELBGjoGWjY9sakYPFuMaYulW5ac1GZuQqxkPXEq0lyhADMopsr3Q5o3q_frACMupo3NDKkKUXbZTnCGpE8LH_Ag8oV";
+        $token = "f-9wrGC6i6g:APA91bG6ZtVrbL_BhVTXOT3WiGATM4rI9SuHYn32jheelqumbGmTGOcYqzB8He9CHjk6uj5N3NE3TOqMtoRgSDQh2TtmmnKai1NBHoPpx3EBYsFKpcht5m_6VWwq5vX4M2YDOpJWWXhQ";
 
         $downstreamResponse = FCM::sendTo($token, $option, $notification, $data);
         dd($downstreamResponse);

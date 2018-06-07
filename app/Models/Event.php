@@ -109,10 +109,15 @@ class Event extends Model
     public static function deleteEvent($request){
         $id = $request['event_id'];
         $event = self::find($id);
-        $event->delete();
-        //delete event requests
-        RequestsEvent::deleteRequest($id);
-        return $id;
+        if($event){
+            $event->delete();
+            //delete event requests
+            RequestsEvent::deleteRequest($id);
+            return true;
+        }else{
+            return false;
+        }
+
     }
 
     public static function generateErrorResponse($validator){

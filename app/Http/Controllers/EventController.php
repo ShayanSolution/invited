@@ -383,7 +383,7 @@ class EventController extends Controller
         $event_detail = Event::getEventByID($request['event_id']);
         $event_list_id = $event_detail->list_id;
         $notification_usres_list = ContactList::getUserList($event_list_id);
-        dd($notification_usres_list);
+        //dd($notification_usres_list);
         $event =Event::deleteEvent($request);
         if($event){
 

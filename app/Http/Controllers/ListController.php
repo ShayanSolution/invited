@@ -103,6 +103,7 @@ class ListController extends Controller
         }else{
             return response()->json(
                 [
+                    'status' => 'error',
                     'message' => 'Unable to Delete list',
                 ], 400
             );

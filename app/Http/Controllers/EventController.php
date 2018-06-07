@@ -343,11 +343,10 @@ class EventController extends Controller
 
         if($event){
             $user_id = $request['user_id'];
-            $message = 'has updated';
+            $message = "updated the event";
             $user_platform = User::where('id',$user_id)->first();
             if($user_platform->platform=='ios' || is_null($user_platform->platform)){
                 //create event request and send notifications to user list.
-                $message = "would like to invite you on";
                 $this->sendUserNotification($request,$event_id,$list_id,$message);
             }
             else{

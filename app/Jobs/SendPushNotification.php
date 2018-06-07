@@ -60,7 +60,8 @@ class SendPushNotification extends Job
 
             'custom' => array('custom_data' => array(
                 'request_to' => $request_to->id,
-                'event_id' => $this->event_id
+                'event_id' => $this->event_id,
+                'status' => 'request'
             ))
         ));
         PushNotification::app('invitedIOS')->to($this->token)->send($message);

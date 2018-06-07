@@ -282,7 +282,8 @@ class EventController extends Controller
 
                     'custom' => array('custom_data' => array(
                         'accepted_user' => $user_name,
-                        'event_id' => $event_id
+                        'event_id' => $event_id,
+                        'status' => 'confirmed'
                     ))
                 ));
                 PushNotification::app('invitedIOS')->to($created_user->device_token)->send($message);

@@ -93,5 +93,10 @@ class RequestsEvent extends Model
         $requests = self::where('event_id',$id);
         $requests->delete();
     }
+    
+    public function getUserEventRequests($event_id,$user_id){
+        
+        return self::where('event_id',$event_id)->where('request_to',$user_id)->first();
+    }
 
 }

@@ -102,7 +102,7 @@ class EventController extends Controller
         //get list against user id.
         //$user_list = ContactList::getList($created_by,$list_id);
         $user_list = ContactList::getList($list_id);
-
+        $eventRequest = new RequestsEvent();
         if(!empty($user_list->first())) {
             foreach ($user_list as $list) {
                 foreach (json_decode($list->contact_list) as $user_detail) {
@@ -112,15 +112,21 @@ class EventController extends Controller
                     if(!empty($user)){
                         $request = RequestsEvent::CreateRequestEvent($created_by, $user, $event_id);
                         $device_token = $user->device_token;
+                        $user_id = $user->id;
                         if (!empty($device_token)) {
                             //check user platform
                             $platform = $user->platform;
                             if($platform == 'ios' || is_null($platform)){
-                                //send notification to user list
-                                //Log::info("Request Cycle with Queues Begins");
-                                $job = new SendPushNotification($device_token, $created_user, $event_id, $user,$message);
-                                dispatch($job);
-                                //Log::info('Request Cycle with Queues Ends');
+                                $event_request = $eventRequest->getUserEventRequests($event_id,$user_id);
+                                //don't send notification to rejected user
+                                if($event_request->confirmed!=0){
+                                    //send notification to user list
+                                    //Log::info("Request Cycle with Queues Begins");
+                                    $job = new SendPushNotification($device_token, $created_user, $event_id, $user,$message);
+                                    dispatch($job);
+                                    //Log::info('Request Cycle with Queues Ends');
+                                }
+
                             }else{
                                 $this->sendNotificationToAndoidUsers($device_token);
 

@@ -52,6 +52,7 @@ class RequestsEvent extends Model
                $request_count[$index]['event_title'] = $event->title;
                $request_count[$index]['longitude'] = $event->longitude;
                $request_count[$index]['latitude'] = $event->latitude;
+               $request_count[$index]['payment_method'] = $event->payment_method;
                $request_count[$index]['confirmed'] = $request->confirmed;
                $index++;
 

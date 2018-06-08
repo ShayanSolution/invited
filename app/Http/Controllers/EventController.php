@@ -116,25 +116,23 @@ class EventController extends Controller
                         if (!empty($device_token)) {
                             //check user platform
                             $platform = $user->platform;
-                            if($platform == 'ios' || is_null($platform)){
-                                $event_request = $eventRequest->getUserEventRequests($event_id,$user_id);
-                                //don't send notification to rejected user
-                                if($event_request->confirmed!=0){
-                                    //send notification to user list
+                            $event_request = $eventRequest->getUserEventRequests($event_id, $user_id);
+                            //don't send notification to rejected user
+                            if ($event_request->confirmed != 0) {
+                                if ($platform == 'ios' || is_null($platform)) {
+                                    //send notification to ios user list
                                     //Log::info("Request Cycle with Queues Begins");
-                                    $job = new SendPushNotification($device_token, $created_user, $event_id, $user,$message);
+                                    $job = new SendPushNotification($device_token, $created_user, $event_id, $user, $message);
                                     dispatch($job);
                                     //Log::info('Request Cycle with Queues Ends');
                                 }
-
-                            }else{
+                                else {
                                 $this->sendNotificationToAndoidUsers($device_token);
 
                             }
-
                         }
+                      }
                     }
-
                 }
             }
         }
@@ -390,7 +388,7 @@ class EventController extends Controller
         $this->validate($request,[
             'event_id' => 'required',
         ]);
-
+        $eventRequest = new RequestsEvent();
         $event_detail = Event::getEventByID($request['event_id']);
         $event_list_id = $event_detail->list_id;
         $notification_usres_list = ContactList::getUserList($event_list_id);
@@ -398,24 +396,34 @@ class EventController extends Controller
             $notification_user = User::where('phone',$list->phone)->first();
             if($notification_user){
                 $user_device_token = $notification_user->device_token;
-                $message = PushNotification::Message($event_detail->title."  has been cancelled. "  ,array(
-                    'badge' => 1,
-                    'sound' => 'example.aiff',
+                $user_id = $notification_user->id;
+                $platform = $notification_user->platform;
+                $event_request = $eventRequest->getUserEventRequests($request['event_id'],$user_id);
+                //don't send notification to request rejected user.
+                if ($event_request->confirmed != 0) {
+                    if ($platform == 'ios' || is_null($platform)) {
+                        $message = PushNotification::Message($event_detail->title . "  has been cancelled. ", array(
+                            'badge' => 1,
+                            'sound' => 'example.aiff',
 
-                    'actionLocKey' => 'Action button title!',
-                    'locKey' => 'localized key',
-                    'locArgs' => array(
-                        'localized args',
-                        'localized args',
-                    ),
-                    'launchImage' => 'image.jpg',
+                            'actionLocKey' => 'Action button title!',
+                            'locKey' => 'localized key',
+                            'locArgs' => array(
+                                'localized args',
+                                'localized args',
+                            ),
+                            'launchImage' => 'image.jpg',
 
-                    'custom' => array('custom_data' => array(
-                        'event_id' => $event_detail->id,
-                        'status' => 'cancelled'
-                    ))
-                ));
-                PushNotification::app('invitedIOS')->to($user_device_token)->send($message);
+                            'custom' => array('custom_data' => array(
+                                'event_id' => $event_detail->id,
+                                'status' => 'cancelled'
+                            ))
+                        ));
+                        PushNotification::app('invitedIOS')->to($user_device_token)->send($message);
+                    } else {
+                        $this->sendNotificationToAndoidUsers($user_device_token);
+                    }
+                }
             }
         }
         $event =Event::deleteEvent($request);

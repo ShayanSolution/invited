@@ -269,8 +269,8 @@ class EventController extends Controller
 
     public function sendRequestNotification($id,$event_id,$accepted_user,$request_status=null){
 
-        $notification_user = User::where('id',$id)->first();
-
+        $created_user = User::where('id',$id)->first();
+        
         if($accepted_user){
 
             if(!empty($accepted_user->firstName)){
@@ -279,32 +279,26 @@ class EventController extends Controller
                 $user_name = $accepted_user->phone;
             }
 
-            if(!empty($notification_user->device_token)){
-                $platform = $notification_user->device_token;
-                if($platform == 'ios' || is_null($platform)){
-                    $message = PushNotification::Message($user_name." $request_status your request "  ,array(
-                        'badge' => 1,
-                        'sound' => 'example.aiff',
+            if(!empty($created_user->device_token)){
+                $message = PushNotification::Message($user_name." $request_status your request "  ,array(
+                    'badge' => 1,
+                    'sound' => 'example.aiff',
 
-                        'actionLocKey' => 'Action button title!',
-                        'locKey' => 'localized key',
-                        'locArgs' => array(
-                            'localized args',
-                            'localized args',
-                        ),
-                        'launchImage' => 'image.jpg',
+                    'actionLocKey' => 'Action button title!',
+                    'locKey' => 'localized key',
+                    'locArgs' => array(
+                        'localized args',
+                        'localized args',
+                    ),
+                    'launchImage' => 'image.jpg',
 
-                        'custom' => array('custom_data' => array(
-                            'accepted_user' => $user_name,
-                            'event_id' => $event_id,
-                            'status' => 'confirmed'
-                        ))
-                    ));
-                    PushNotification::app('invitedIOS')->to($notification_user->device_token)->send($message);
-                }else{
-                    $this->sendNotificationToAndoidUsers($notification_user->device_token);
-                }
-
+                    'custom' => array('custom_data' => array(
+                        'accepted_user' => $user_name,
+                        'event_id' => $event_id,
+                        'status' => 'confirmed'
+                    ))
+                ));
+                PushNotification::app('invitedIOS')->to($created_user->device_token)->send($message);
             }
         }
     }

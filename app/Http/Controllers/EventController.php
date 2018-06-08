@@ -269,8 +269,8 @@ class EventController extends Controller
 
     public function sendRequestNotification($id,$event_id,$accepted_user,$request_status=null){
 
-        $created_user = User::where('id',$id)->first();
-        
+        $notification_user = User::where('id',$id)->first();
+
         if($accepted_user){
 
             if(!empty($accepted_user->firstName)){
@@ -279,7 +279,7 @@ class EventController extends Controller
                 $user_name = $accepted_user->phone;
             }
 
-            if(!empty($created_user->device_token)){
+            if(!empty($notification_user->device_token)){
                 $message = PushNotification::Message($user_name." $request_status your request "  ,array(
                     'badge' => 1,
                     'sound' => 'example.aiff',
@@ -298,7 +298,7 @@ class EventController extends Controller
                         'status' => 'confirmed'
                     ))
                 ));
-                PushNotification::app('invitedIOS')->to($created_user->device_token)->send($message);
+                PushNotification::app('invitedIOS')->to($notification_user->device_token)->send($message);
             }
         }
     }

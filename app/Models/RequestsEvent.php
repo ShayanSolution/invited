@@ -33,16 +33,14 @@ class RequestsEvent extends Model
        $request_event = self::select('event_id')->where('request_to','=',$request_to)->get();
        $request_count = [];
        $index = 0;
-        dd($request_event);
+
        foreach ($request_event as $event)
        {
            $event_requests  = self::select('event_id','created_by',DB::raw('count(event_id) as total'),'confirmed')
                                ->groupBy('event_id')
                                ->where('event_id','=',$event->event_id)
                                ->get();
-
            foreach ($event_requests as $request){
-
                $created_by = User::where('id',$request->created_by)->first();
                $event = Event::getEventByID($request->event_id);
                $request_count[$index]['event_id'] = $request->event_id;
@@ -56,7 +54,6 @@ class RequestsEvent extends Model
                $request_count[$index]['payment_method'] = $event->payment_method;
                $request_count[$index]['confirmed'] = $request->confirmed;
                $index++;
-
            }
        }
         

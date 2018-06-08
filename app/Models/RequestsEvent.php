@@ -35,7 +35,7 @@ class RequestsEvent extends Model
        $index = 0;
 
        foreach ($request_event as $event)
-       {dd($event);
+       {
            $event_requests  = self::select('event_id','created_by',DB::raw('count(event_id) as total'),'confirmed')
                                ->groupBy('event_id')
                                ->where('event_id','=',$event->event_id)
@@ -54,6 +54,7 @@ class RequestsEvent extends Model
                $request_count[$index]['latitude'] = $event->latitude;
                $request_count[$index]['payment_method'] = $event->payment_method;
                $request_count[$index]['confirmed'] = $request->confirmed;
+               $request_count[$index]['request_created_by'] = $request->created_by;
                $index++;
            }
        }

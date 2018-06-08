@@ -29,7 +29,7 @@ class RequestsEvent extends Model
 
     public static function getEventRequest($request_to){
        $total_count =  self::where('request_to',$request_to)->count();
-
+       dd($request_to);
        $request_event = self::select('event_id')->where('request_to','=',$request_to)->get();
        $request_count = [];
         $index = 0;

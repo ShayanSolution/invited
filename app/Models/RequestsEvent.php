@@ -39,7 +39,7 @@ class RequestsEvent extends Model
            $event_requests  = self::select('event_id','created_by',DB::raw('count(event_id) as total'),'confirmed')
                                ->groupBy('event_id')
                                ->where('event_id','=',$event->event_id)
-                               ->where('created_by','=',$event->created_by)
+                               ->where('request_to','=',$request_to)
                                ->get();
            foreach ($event_requests as $request){
                $created_by = User::where('id',$request->created_by)->first();

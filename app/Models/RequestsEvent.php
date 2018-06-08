@@ -30,7 +30,7 @@ class RequestsEvent extends Model
     public static function getEventRequest($request_to){
        $total_count =  self::where('request_to',$request_to)->count();
 
-       $request_event = self::select('event_id')->where('request_to','=',$request_to)->get();
+       $request_event = self::select('event_id','created_by')->where('request_to','=',$request_to)->get();
        $request_count = [];
        $index = 0;
 
@@ -39,6 +39,7 @@ class RequestsEvent extends Model
            $event_requests  = self::select('event_id','created_by',DB::raw('count(event_id) as total'),'confirmed')
                                ->groupBy('event_id')
                                ->where('event_id','=',$event->event_id)
+                               ->where('event_id','=',$event->created_by)
                                ->get();
            foreach ($event_requests as $request){
                $created_by = User::where('id',$request->created_by)->first();

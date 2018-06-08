@@ -270,7 +270,7 @@ class EventController extends Controller
     public function sendRequestNotification($id,$event_id,$accepted_user,$request_status=null){
 
         $created_user = User::where('id',$id)->first();
-
+        dd($created_user);
         if($accepted_user){
 
             if(!empty($accepted_user->firstName)){

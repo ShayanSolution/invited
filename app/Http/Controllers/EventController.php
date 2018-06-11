@@ -451,7 +451,7 @@ class EventController extends Controller
         return response()->download($file);
     }
     
-    public function sendNotificationToAndoidUsers($device_token){
+    public function sendNotificationToAndoidUsers($device_token){dd($device_token);
 
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);

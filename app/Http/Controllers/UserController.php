@@ -321,15 +321,29 @@ class UserController extends Controller
         
     }
 
-    public function sendFirebaseNotifications(){
+    public function sendFirebaseNotifications(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'device_token' => 'required',
+            'message' => 'required',
+        ]);
+        $response = User::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+
+        $request = $request->all();
+        $token = $request['device_token'];
+        $message = $request['message'];
+
         // API access key from Google API's Console
         define( 'API_ACCESS_KEY', 'AIzaSyAIM2143LQUTw3Vw-9QWvCrT60bm1XDJa4' );
-        $registrationIds = array( 'f-9wrGC6i6g:APA91bG6ZtVrbL_BhVTXOT3WiGATM4rI9SuHYn32jheelqumbGmTGOcYqzB8He9CHjk6uj5N3NE3TOqMtoRgSDQh2TtmmnKai1NBHoPpx3EBYsFKpcht5m_6VWwq5vX4M2YDOpJWWXhQ' );
+        $registrationIds = array($token);
         // prep the bundle
         $msg = array
         (
             'body'  => "abc",
-            'title'     => "Hello from Api",
+            'title'     => $message,
             'vibrate'   => 1,
             'sound'     => 1,
         );
@@ -340,30 +354,31 @@ class UserController extends Controller
             'notification'          => $msg
         );
 
-        $headers = array
-        (
-            'Authorization: key=' . API_ACCESS_KEY,
-            'Content-Type: application/json'
-        );
+        // $headers = array
+        // (
+        //   'Authorization: key=' . API_ACCESS_KEY,
+        //  'Content-Type: application/json'
+        // );
 
-        $ch = curl_init();
-        curl_setopt( $ch,CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send' );
-        curl_setopt( $ch,CURLOPT_POST, true );
-        curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
-        curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
-        curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
-        curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
-        $result = curl_exec($ch );
-        curl_close( $ch );
-        echo $result;
+        //$ch = curl_init();
+        //curl_setopt( $ch,CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send' );
+        //curl_setopt( $ch,CURLOPT_POST, true );
+        //curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
+        //curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
+        //curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
+        //curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
+        //$result = curl_exec($ch );
+        //curl_close( $ch );
+        //echo $result;
         //dd($result);
 
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
 
         $notificationBuilder = new PayloadNotificationBuilder('my title');
-        $notificationBuilder->setBody('Hello world')
-            ->setSound('default');
+        $notificationBuilder->setBody($message)->setSound('default');
+        //$notificationBuilder->setTitle('title')->setBody('body')->setSound('sound')->setBadge('badge');
+
 
         $dataBuilder = new PayloadDataBuilder();
         $dataBuilder->addData(['a_data' => 'my_data']);
@@ -372,12 +387,15 @@ class UserController extends Controller
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();
 
-        $token = "f-9wrGC6i6g:APA91bG6ZtVrbL_BhVTXOT3WiGATM4rI9SuHYn32jheelqumbGmTGOcYqzB8He9CHjk6uj5N3NE3TOqMtoRgSDQh2TtmmnKai1NBHoPpx3EBYsFKpcht5m_6VWwq5vX4M2YDOpJWWXhQ";
+        //$token = "f-9wrGC6i6g:APA91bG6ZtVrbL_BhVTXOT3WiGATM4rI9SuHYn32jheelqumbGmTGOcYqzB8He9CHjk6uj5N3NE3TOqMtoRgSDQh2TtmmnKai1NBHoPpx3EBYsFKpcht5m_6VWwq5vX4M2YDOpJWWXhQ";
 
         $downstreamResponse = FCM::sendTo($token, $option, $notification, $data);
-        dd($downstreamResponse);
-        $downstreamResponse->numberSuccess();
-        $downstreamResponse->numberFailure();
+
+        //print_r($downstreamResponse);
+        echo "Success: ". $downstreamResponse->numberSuccess();
+        echo "<br>Failure: ".  $downstreamResponse->numberFailure();
+        echo "<br>Token: ". $token;
+
         $downstreamResponse->numberModification();
 
         //return Array - you must remove all this tokens in your database
@@ -386,11 +404,16 @@ class UserController extends Controller
         //return Array (key : oldToken, value : new token - you must change the token in your database )
         $downstreamResponse->tokensToModify();
 
+        print_r($downstreamResponse->hasMissingToken());
+
+
         //return Array - you should try to resend the message to the tokens in the array
         $downstreamResponse->tokensToRetry();
 
         // return Array (key:token, value:errror) - in production you should remove from your database the tokens
-       return  $downstreamResponse->tokensWithError();
+        echo "<br>Errors :";
+        return  $downstreamResponse->tokensWithError();
 
     }
+
 }

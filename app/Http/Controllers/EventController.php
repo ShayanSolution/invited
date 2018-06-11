@@ -453,7 +453,7 @@ class EventController extends Controller
     }
     
     public function sendNotificationToAndoidUsers($device_token){
-dd($device_token);
+
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
 

@@ -104,8 +104,10 @@ class EventController extends Controller
         $created_user = User::where('id',$created_by)->first();
         //get list against user id.
         //$user_list = ContactList::getList($created_by,$list_id);
+        Log::info("Getting List ID => ".$list_id);
         $user_list = ContactList::getList($list_id);
         $eventRequest = new RequestsEvent();
+        Log::info("User List is here ".var_dump($user_list->toArray(),true));
         if(!empty($user_list->first())) {
             foreach ($user_list as $list) {
                 foreach (json_decode($list->contact_list) as $user_detail) {
@@ -140,6 +142,10 @@ class EventController extends Controller
                     }
                 }
             }
+        }
+        else
+        {
+            Log::info("I am getting empty user list");
         }
     }
 

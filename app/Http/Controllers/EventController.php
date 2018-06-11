@@ -301,7 +301,7 @@ class EventController extends Controller
                     ));
                     PushNotification::app('invitedIOS')->to($notification_user->device_token)->send($message);
                 }else{
-                    $this->sendNotificationToAndoidUsers($accepted_user->device_token);
+                    $this->sendNotificationToAndoidUsers($accepted_user->device_token,$request_status);
                 }
             }
         }
@@ -452,14 +452,16 @@ class EventController extends Controller
         return response()->download($file);
     }
     
-    public function sendNotificationToAndoidUsers($device_token){
+    public function sendNotificationToAndoidUsers($device_token,$request_status){
 
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
+        if($request_status == 'accepted'){
+            $notificationBuilder = new PayloadNotificationBuilder('Accepted');
+            $notificationBuilder->setBody('Your Request Accepted')
+                ->setSound('default');
+        }
 
-        $notificationBuilder = new PayloadNotificationBuilder('my title');
-        $notificationBuilder->setBody('Hello world')
-            ->setSound('default');
 
         $dataBuilder = new PayloadDataBuilder();
         $dataBuilder->addData(['a_data' => 'my_data']);

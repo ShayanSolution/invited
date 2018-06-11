@@ -21,7 +21,7 @@ class EventController extends Controller
 {
     public function CreateEvent(Request $request){
 
-       Log::info("creating new event");
+       Log::info("================= Create Event API =========================");
        $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'payment_method' => 'required',
@@ -351,6 +351,7 @@ class EventController extends Controller
     }
 
     public function updateUserEvent(Request $request){
+        Log::info("================= Update Event API =========================");
         $validator = Validator::make($request->all(), [
             'event_id' => 'required',
             'title' => 'required',

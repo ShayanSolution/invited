@@ -127,7 +127,7 @@ class EventController extends Controller
                                     //Log::info('Request Cycle with Queues Ends');
                                 }
                                 else {
-                                $this->sendNotificationToAndoidUsers($device_token);
+                                $this->sendNotificationToAndoidUsers($device_token,'','');
 
                             }
                         }

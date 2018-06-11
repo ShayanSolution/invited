@@ -460,6 +460,10 @@ class EventController extends Controller
             $notificationBuilder = new PayloadNotificationBuilder('Accepted');
             $notificationBuilder->setBody($user_name.' accepted your request')
                 ->setSound('default');
+        }else{
+            $notificationBuilder = new PayloadNotificationBuilder('Accepted');
+            $notificationBuilder->setBody($user_name.' canceled your request')
+                ->setSound('default');
         }
 
         $dataBuilder = new PayloadDataBuilder();

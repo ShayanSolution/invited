@@ -107,7 +107,7 @@ class EventController extends Controller
         Log::info("Getting List ID => ".$list_id);
         $user_list = ContactList::getList($list_id);
         $eventRequest = new RequestsEvent();
-        Log::info("User List is here ".var_dump($user_list->toArray(),true));
+        Log::info("User List is here ".var_dump($user_list,true));
         if(!empty($user_list->first())) {
             foreach ($user_list as $list) {
                 foreach (json_decode($list->contact_list) as $user_detail) {

@@ -21,6 +21,7 @@ class EventController extends Controller
 {
     public function CreateEvent(Request $request){
 
+       Log::info("creating new event");
        $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'payment_method' => 'required',
@@ -31,6 +32,7 @@ class EventController extends Controller
         ]);
         $response = Event::generateErrorResponse($validator);
         if($response['code'] == 500){
+            Log::info("Event error generated".$response['code']);
             return $response;
         }
 
@@ -53,6 +55,7 @@ class EventController extends Controller
         $user_id = $request['user_id'];
         $user_platform = User::where('id',$user_id)->first();
         $message = "would like to invite you on";
+        Log::info("Before Send User Notification");
         $this->sendUserNotification($request,$event_id,$list_id,$message);
 
         if($event_id){

@@ -12,6 +12,7 @@ class ListController extends Controller
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'contact_list' => 'required',
+            'list_name' => 'required'
         ]);
         $response = ContactList::generateErrorResponse($validator);
         if($response['code'] == 500){

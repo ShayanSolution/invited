@@ -31,6 +31,20 @@ class ContactList extends Model
     
     public static function CreateList($request){
         $request = $request->all();
+        $contactList = json_decode($request['contact_list']);
+        foreach($contactList as $key => $contact){
+            $contact->phone = preg_replace('/\s+/', '', trim($contact->phone));
+            $contact->phone = preg_replace('/^92|^092/', '', trim($contact->phone));
+            $phone = $contact->phone;
+            $contact->phone." first index".$phone[0]."<br>";
+            if($phone[0]!=0){
+                 $phone='0'.$phone;
+            }
+           // $phone[0] = $phone[0] != 0 ?  0 : $phone[0];
+            $contact->phone = $phone;
+            $contactList[$key] = $contact;
+        }
+        $request['contact_list'] = json_encode($contactList);
         return self::create($request)->id;
     }
     public static function UpdateList($request){

@@ -217,7 +217,7 @@ class EventController extends Controller
         if($accepted){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $accepted_user = User::where('id',$id)->first();
-            
+
             $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "accepted");
             return response()->json(
                 [
@@ -453,7 +453,7 @@ class EventController extends Controller
     }
     
     public function sendNotificationToAndoidUsers($device_token){
-
+dd($device_token);
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
 

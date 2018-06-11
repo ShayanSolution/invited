@@ -351,6 +351,7 @@ class EventController extends Controller
 
     public function updateUserEvent(Request $request){
         Log::info("================= Update Event API =========================");
+        Log::info("Request Received =>".print_r($request->all(),true));
         $validator = Validator::make($request->all(), [
             'event_id' => 'required',
             'title' => 'required',
@@ -365,6 +366,7 @@ class EventController extends Controller
         $response = Event::generateErrorResponse($validator);
         if($response['code'] == 500){
             Log::info("Error code ".$response['code']);
+            Log::info("Error Message".print_r($response,true));
             return $response;
         }
 

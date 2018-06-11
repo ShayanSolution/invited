@@ -217,6 +217,7 @@ class EventController extends Controller
         if($accepted){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $accepted_user = User::where('id',$id)->first();
+            dd($accepted_user);
             $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "accepted");
             return response()->json(
                 [
@@ -268,7 +269,7 @@ class EventController extends Controller
     public function sendRequestNotification($id,$event_id,$accepted_user,$request_status=null){
 
         $notification_user = User::where('id',$id)->first();
-        dd($notification_user);
+
         if($accepted_user){
 
             if(!empty($accepted_user->firstName)){

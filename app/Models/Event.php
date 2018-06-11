@@ -5,6 +5,7 @@ namespace App\Models;
 use App\ContactList;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\RequestsEvent;
+use Log;
 
 
 class Event extends Model
@@ -123,10 +124,13 @@ class Event extends Model
     public static function generateErrorResponse($validator){
         $response = null;
         if ($validator->fails()) {
+
             $response = $validator->errors()->toArray();
             $response['error'] = $validator->errors()->toArray();
             $response['code'] = 500;
             $response['message'] = 'Error occured';
+            Log::error("Code =>".$response['code']);
+            Log::error("message =>".print_r($response['error'],true));
         }
         else{
             $response['code'] = 200;

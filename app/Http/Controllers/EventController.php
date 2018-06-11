@@ -185,6 +185,9 @@ class EventController extends Controller
     }
 
     public function getEventRequests(Request $request){
+
+        Log::info("================= Get Event Request API =========================");
+        Log::info("Request received =>".print_r($request->all(),true));
         $validator = Validator::make($request->all(), [
             'request_to' => 'required'
         ]);
@@ -199,6 +202,7 @@ class EventController extends Controller
 
         if($total_count){
 
+            Log::info("Response received =>".print_r($total_count['event_request'],true));
             return response()->json(
                 [
                     'event_requests' => $total_count['event_request'],

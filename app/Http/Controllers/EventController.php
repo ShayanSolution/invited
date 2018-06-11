@@ -268,7 +268,7 @@ class EventController extends Controller
     public function sendRequestNotification($id,$event_id,$accepted_user,$request_status=null){
 
         $notification_user = User::where('id',$id)->first();
-
+        dd($notification_user);
         if($accepted_user){
 
             if(!empty($accepted_user->firstName)){
@@ -451,7 +451,7 @@ class EventController extends Controller
         return response()->download($file);
     }
     
-    public function sendNotificationToAndoidUsers($device_token){dd($device_token);
+    public function sendNotificationToAndoidUsers($device_token){
 
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);

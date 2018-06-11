@@ -124,10 +124,12 @@ class EventController extends Controller
                                     //Log::info("Request Cycle with Queues Begins");
                                     $job = new SendPushNotification($device_token, $created_user, $event_id, $user, $message);
                                     dispatch($job);
-                                    //Log::info('Request Cycle with Queues Ends');
+                                    Log::info('Request Cycle with Queues Ends');
                                 }
                                 else {
-                                $this->sendNotificationToAndoidUsers($device_token,'','');
+
+                                    Log::info("Before Sending Push notification to {$user->email} device token =>".$device_token);
+                                    $this->sendNotificationToAndoidUsers($device_token,'','');
 
                             }
                         }
@@ -453,7 +455,7 @@ class EventController extends Controller
     }
     
     public function sendNotificationToAndoidUsers($device_token,$request_status,$user_name){
-
+        Log::info("Request status received => ".$request_status);
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
         if($request_status == 'accepted'){
@@ -477,9 +479,11 @@ class EventController extends Controller
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();
 
-        $token = "f-9wrGC6i6g:APA91bG6ZtVrbL_BhVTXOT3WiGATM4rI9SuHYn32jheelqumbGmTGOcYqzB8He9CHjk6uj5N3NE3TOqMtoRgSDQh2TtmmnKai1NBHoPpx3EBYsFKpcht5m_6VWwq5vX4M2YDOpJWWXhQ";
+        //$token = "f-9wrGC6i6g:APA91bG6ZtVrbL_BhVTXOT3WiGATM4rI9SuHYn32jheelqumbGmTGOcYqzB8He9CHjk6uj5N3NE3TOqMtoRgSDQh2TtmmnKai1NBHoPpx3EBYsFKpcht5m_6VWwq5vX4M2YDOpJWWXhQ";
 
+        Log::info("Sending push notification to $device_token");
         $downstreamResponse = FCM::sendTo($device_token, $option, $notification, $data);
+        Log::info("Getting response  => ".var_dump($downstreamResponse,true));
         
     }
 }

@@ -230,7 +230,6 @@ class EventController extends Controller
         if($accepted){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $accepted_user = User::where('id',$id)->first();
-
             $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "accepted");
             return response()->json(
                 [
@@ -365,9 +364,11 @@ class EventController extends Controller
         ]);
         $response = Event::generateErrorResponse($validator);
         if($response['code'] == 500){
+            Log::info("Error code ".$response['code']);
             return $response;
         }
 
+        Log::info("Request received => ".print_r($request->all(),true));
         $event =Event::updateEvent($request);
         $event_id = $request['event_id'];
         $list_id = $request['list_id'];
@@ -375,20 +376,14 @@ class EventController extends Controller
         if($event){
             $user_id = $request['user_id'];
             $message = "updated the event";
-            $user_platform = User::where('id',$user_id)->first();
-            if($user_platform->platform=='ios' || is_null($user_platform->platform)){
-                //create event request and send notifications to user list.
-                $this->sendUserNotification($request,$event_id,$list_id,$message);
-            }
-            else{
-                //send firebase notification on android.
-            }
+            $this->sendUserNotification($request,$event_id,$list_id,$message);
             return response()->json(
                 [
                     'success' => 'Event Updated Successfully',
                 ], 200
             );
         }else{
+            Log::info("Unable to update event");
             return response()->json(
                 [
                     'error' => 'Unable to update event',

@@ -210,14 +210,14 @@ class EventController extends Controller
         if($response['code'] == 500){
             return $response;
         }
-
+        dd($request->all());
         $event_id = $request['event_id'];
         $id = $request['request_to'];
         $accepted = RequestsEvent::acceptRequest($event_id,$id);
         if($accepted){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $accepted_user = User::where('id',$id)->first();
-            dd($accepted_user);
+
             $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "accepted");
             return response()->json(
                 [

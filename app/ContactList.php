@@ -28,27 +28,32 @@ class ContactList extends Model
     {
         return $this->belongsTo('App\Models\User', 'user_id');
     }
-    
-    public static function CreateList($request){
-        $request = $request->all();
-        $contactList = json_decode($request['contact_list']);
+
+    private static function cleanPhoneNumber($jsonContactList){
+        $contactList = json_decode($jsonContactList);
         foreach($contactList as $key => $contact){
+            Log::info("cleaning phone number =>".$contact->phone);
             $contact->phone = preg_replace('/\s+/', '', trim($contact->phone));
             $contact->phone = preg_replace('/^92|^092/', '', trim($contact->phone));
             $phone = $contact->phone;
-            $contact->phone." first index".$phone[0]."<br>";
             if($phone[0]!=0){
-                 $phone='0'.$phone;
+                $phone='0'.$phone;
             }
-           // $phone[0] = $phone[0] != 0 ?  0 : $phone[0];
             $contact->phone = $phone;
+            Log::info("After cleaning phone number =>".$contact->phone);
             $contactList[$key] = $contact;
         }
-        $request['contact_list'] = json_encode($contactList);
+        return json_encode($contactList);
+    }
+    
+    public static function CreateList($request){
+        $request = $request->all();
+        $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
         return self::create($request)->id;
     }
     public static function UpdateList($request){
         $request = $request->all();
+        $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
         return self::where('id',$request['list_id'])->update(['contact_list'=>$request['contact_list'],'list_name'=>$request['list_name'] ]);
     }
 

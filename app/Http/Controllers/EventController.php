@@ -108,33 +108,22 @@ class EventController extends Controller
         $user_list = ContactList::getList($list_id);
         $eventRequest = new RequestsEvent();
         Log::info("User List is here ".var_dump($user_list,true));
-        Log::info("1");
         if(!empty($user_list->first())) {
-            Log::info("2");
             foreach ($user_list as $list) {
-                Log::info("3");
                 foreach (json_decode($list->contact_list) as $user_detail) {
-                    Log::info("4");
                     $phone = $user_detail->phone;
                     $user = User::where('phone', $phone)->first();
                     //create event request
-                    Log::info("5");
                     if(!empty($user)){
-                        Log::info("6");
                         $request = RequestsEvent::CreateRequestEvent($created_by, $user, $event_id);
                         $device_token = $user->device_token;
                         $user_id = $user->id;
-                        Log::info("7");
                         if (!empty($device_token)) {
-                            Log::info("8");
                             //check user platform
                             $platform = $user->platform;
                             $event_request = $eventRequest->getUserEventRequests($event_id, $user_id);
-                            Log::info("9");
                             //don't send notification to rejected user
-                            Log::info("10");
                             if ($event_request->confirmed != 0) {
-                                Log::info("11");
                                 if ($platform == 'ios' || is_null($platform)) {
                                     //send notification to ios user list
                                     //Log::info("Request Cycle with Queues Begins");
@@ -143,13 +132,16 @@ class EventController extends Controller
                                     Log::info('Request Cycle with Queues Ends');
                                 }
                                 else {
-                                    Log::info("12");
                                     Log::info("Before Sending Push notification to {$user->email} device token =>".$device_token);
                                     $this->sendNotificationToAndoidUsers($device_token,'','');
 
                             }
                         }
                       }
+                    }
+                    else
+                    {
+                        Log::info("No push notification sending to phone number $phone as phone number not found in database");
                     }
                 }
             }

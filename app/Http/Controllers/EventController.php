@@ -338,7 +338,7 @@ class EventController extends Controller
         $requests = RequestsEvent::receivedRequest($id);
 
         if($requests){
-            Log::info("Received Requests =>".var_dump($requests,true));
+            Log::info("Received Requests =>".$requests);
             return response()->json(
                 [
                     'Received Requests' => $requests,

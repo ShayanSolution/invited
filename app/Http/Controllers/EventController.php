@@ -229,6 +229,8 @@ class EventController extends Controller
         $event_id = $request['event_id'];
         $id = $request['request_to'];
         $accepted = RequestsEvent::acceptRequest($event_id,$id);
+        $accepted_events = RequestsEvent::acceptedEventRequest($event_id);
+        dd(count($accepted_events));
         if($accepted){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $accepted_user = User::where('id',$id)->first();

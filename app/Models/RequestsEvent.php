@@ -68,6 +68,12 @@ class RequestsEvent extends Model
 
     }
 
+    public static function acceptedEventRequest($event_id){
+
+        return  self::where('event_id',$event_id)->get();
+
+    }
+
     public static function createdByRequest($event_id,$request_to){
 
         return  self::where('event_id',$event_id)->where('request_to',$request_to)->first();

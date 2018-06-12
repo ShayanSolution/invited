@@ -225,16 +225,11 @@ class EventController extends Controller
         if($response['code'] == 500){
             return $response;
         }
-
         $event_id = $request['event_id'];
-        $id = $request['request_to'];
-        $accepted = RequestsEvent::acceptRequest($event_id,$id);
-
         //accepted event requests
         $accepted_requests = RequestsEvent::acceptedEventRequest($event_id);
         $accepted_requests_count = count($accepted_requests);
         $event_detail = Event::getEventByID($event_id);
-
         Log::info("================= Accept Request API =========================");
         Log::info("Event maxi invited ".$event_detail->max_invited);
         Log::info("Request Confirmed ".$accepted_requests_count);
@@ -246,6 +241,9 @@ class EventController extends Controller
                 ], 422
             );
         }
+
+        $id = $request['request_to'];
+        $accepted = RequestsEvent::acceptRequest($event_id,$id);
 
         if($accepted){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);

@@ -29,13 +29,13 @@ class EventController extends Controller
             'title' => 'required',
             'event_time' => 'required',
             'list_id' => 'required',
+            'max_invited' => 'required',
         ]);
         $response = Event::generateErrorResponse($validator);
         if($response['code'] == 500){
             Log::info("Event error generated".$response['code']);
             return $response;
         }
-
         //list id
         $list_id = $request['list_id'];
         //$user_list = ContactList::getList($list_id);
@@ -48,7 +48,6 @@ class EventController extends Controller
                 ], 422
             );
         }
-
         //create event
         $event_id = Event::CreateEvent($request);
         //check platform
@@ -57,7 +56,6 @@ class EventController extends Controller
         $message = "would like to invite you on";
         Log::info("Before Send User Notification");
         $this->sendUserNotification($request,$event_id,$list_id,$message);
-
         if($event_id){
             return [
                 'status' => 'success',

@@ -30,7 +30,8 @@ class Event extends Model
         'event_time',
         'title',
         'event_address',
-        'list_id'
+        'list_id',
+        'max_invited',
     ];
 
     public function user()

@@ -70,7 +70,7 @@ class RequestsEvent extends Model
 
     public static function acceptedEventRequest($event_id){
 
-        return  self::where('event_id',$event_id)->get();
+        return  self::where('event_id',$event_id)->where('confirmed',1)->get();
 
     }
 

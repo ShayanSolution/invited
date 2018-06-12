@@ -229,10 +229,20 @@ class EventController extends Controller
         $event_id = $request['event_id'];
         $id = $request['request_to'];
         $accepted = RequestsEvent::acceptRequest($event_id,$id);
+
         //accepted event requests
-        $accepted_events = RequestsEvent::acceptedEventRequest($event_id);
-        $vent_detail = Event::getEventByID($event_id);
-        dd($vent_detail->max_invited);
+        $accepted_requests = RequestsEvent::acceptedEventRequest($event_id);
+        $accepted_requests_count = count($accepted_requests);
+        $event_detail = Event::getEventByID($event_id);
+        if($event_detail->max_invited == $accepted_requests_count){
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to accept'
+                ], 422
+            );
+        }
+
         if($accepted){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $accepted_user = User::where('id',$id)->first();

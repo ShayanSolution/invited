@@ -232,7 +232,7 @@ class EventController extends Controller
         //accepted event requests
         $accepted_events = RequestsEvent::acceptedEventRequest($event_id);
         $vent_detail = Event::getEventByID($event_id);
-        dd($vent_detail);
+        dd($vent_detail->max_invited);
         if($accepted){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $accepted_user = User::where('id',$id)->first();

@@ -238,7 +238,7 @@ class EventController extends Controller
             return response()->json(
                 [
                     'status' => 'error',
-                    'message' => 'Unable to accept'
+                    'message' => 'Event has been closed'
                 ], 422
             );
         }

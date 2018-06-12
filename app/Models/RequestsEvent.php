@@ -30,7 +30,7 @@ class RequestsEvent extends Model
     public static function getEventRequest($request_to){
        $total_count =  self::where('request_to',$request_to)->count();
 
-       $request_event = self::select('event_id','created_by')->where('request_to','=',$request_to)->get();
+       $request_event = self::select('event_id','created_by')->where('request_to','=',$request_to)->orderBy('created_at','desc')->get();
        $request_count = [];
        $index = 0;
 

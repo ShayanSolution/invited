@@ -236,7 +236,7 @@ class EventController extends Controller
         if($event_detail->max_invited == $accepted_requests_count){
             return response()->json(
                 [
-                    'status' => 'error',
+                    'status' => 'closed',
                     'message' => 'Event has been closed'
                 ], 422
             );

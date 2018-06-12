@@ -86,6 +86,7 @@ class RequestsEvent extends Model
                 ->join('users','users.id','=','requests.request_to')
                 ->join('events','events.id','=','requests.event_id')
                 ->where('created_by',$created_by)
+                ->where('created_at','desc')
                 ->get();
     }
 

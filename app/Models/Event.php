@@ -105,6 +105,7 @@ class Event extends Model
             'list_id'=>$request['list_id'],
             'longitude'=>$request['longitude'],
             'latitude'=>$request['latitude'],
+            'max_invited'=>$request['max_invited'],
         ]);
         return $id;
     }

@@ -366,6 +366,7 @@ class EventController extends Controller
             'longitude' => 'required',
             'latitude' => 'required',
             'user_id' => 'required',
+            'max_invited' => 'required',
         ]);
         $response = Event::generateErrorResponse($validator);
         if($response['code'] == 500){

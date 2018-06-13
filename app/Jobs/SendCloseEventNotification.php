@@ -4,6 +4,10 @@ namespace App\Jobs;
 use Davibennun\LaravelPushNotification\Facades\PushNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
+use Log;
+use LaravelFCM\Message\OptionsBuilder;
+use LaravelFCM\Message\PayloadNotificationBuilder;
+use LaravelFCM\Facades\FCM;
 
 class SendCloseEventNotification extends Job
 {

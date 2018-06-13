@@ -265,7 +265,7 @@ class EventController extends Controller
                         Log::info("Request Cycle with Queues Begins");
                         $job = new SendCloseEventNotification($platform,$device_token, $event_detail->title);
                         dispatch($job);
-                        Log::info('Request Cycle with Queues Ends');
+                        Log::info('Request Cycle with Queues Ends now');
                         /**
                         if($platform == 'ios' || is_null($platform)) {
                             $message = PushNotification::Message(" Too late. $event_detail->title has been closed.", array(

@@ -263,7 +263,7 @@ class EventController extends Controller
                         //send notification to ios user list
                         Log::info("device_token: ".$device_token);
                         Log::info("Request Cycle with Queues Begins");
-                        $job = new SendCloseEventNotification($platform,$device_token, $event_detail->title);
+                        $job = new SendCloseEventNotification($device_token, $event_detail->title,$platform);
                         dispatch($job);
                         Log::info('Request Cycle with Queues Ends now');
                         /**

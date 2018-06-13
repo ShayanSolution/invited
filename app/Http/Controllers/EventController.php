@@ -256,9 +256,9 @@ class EventController extends Controller
                     $user_id = $users[$j];
                     //select user
                     $user = User::where('id',$user_id)->first();
-                    $device_token = $user->device_token;
-                    $platform = $user->platform;
-                    if(!empty($device_token)){
+                    if($user){
+                        $device_token = $user->device_token;
+                        $platform = $user->platform;
                         Log::info("device_token: ".$device_token);
                         if($platform == 'ios' || is_null($platform)) {
                             $message = PushNotification::Message(" $event_detail->title has been closed ", array(

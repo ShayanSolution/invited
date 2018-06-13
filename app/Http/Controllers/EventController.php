@@ -10,6 +10,7 @@ use Davibennun\LaravelPushNotification\Facades\PushNotification;
 use App\Models\RequestsEvent;
 use Log;
 use App\Jobs\SendPushNotification;
+use App\Jobs\SendCloseEventNotification;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use LaravelFCM\Message\OptionsBuilder;
@@ -259,6 +260,14 @@ class EventController extends Controller
                     if($user){
                         $device_token = $user->device_token;
                         $platform = $user->platform;
+
+                        //send notification to ios user list
+                        Log::info("Request Cycle with Queues Begins");
+                        $job = new SendCloseEventNotification($device_token, $event_detail->title);
+                        dispatch($job);
+                        Log::info('Request Cycle with Queues Ends');
+                        
+                        
                         Log::info("device_token: ".$device_token);
                         if($platform == 'ios' || is_null($platform)) {
                             $message = PushNotification::Message(" $event_detail->title has been closed ", array(

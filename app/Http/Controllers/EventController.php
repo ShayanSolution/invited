@@ -252,6 +252,7 @@ class EventController extends Controller
             return response()->json(
                 [
                     'status' => 'Request accepted successfully',
+                    'users' => print_r($accepted['notification_users']),
                 ], 200
             );
         }else{

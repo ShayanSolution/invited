@@ -112,6 +112,7 @@ class RequestsEvent extends Model
                 ->join('users','users.id','=','requests.request_to')
                 ->join('events','events.id','=','requests.event_id')
                 ->where('created_by',$created_by)
+                ->where('requests.confirmed',1)
                 ->orderBy('requests.created_at','desc')
                 ->get();
     }

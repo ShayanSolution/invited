@@ -63,15 +63,31 @@ class RequestsEvent extends Model
     }
 
     public static function acceptRequest($event_id,$request_to){
-
-      return  self::where('event_id',$event_id)->where('request_to',$request_to)->update(['confirmed'=>1]);
-
+        $update = self::where('event_id',$event_id)->where('request_to',$request_to)->update(['confirmed'=>1]);
+        $accepted_requests = RequestsEvent::acceptedEventRequest($event_id);
+        $accepted_requests_count = count($accepted_requests);
+        $event_detail = Event::getEventByID($event_id);
+        Log::info("================= Accept Request API After Acceptance =========================");
+        if($event_detail->max_invited == $accepted_requests_count){
+            Log::info("Event maxi invited ".$event_detail->max_invited);
+            Log::info("Request Confirmed ".$accepted_requests_count);
+            $not_accepted_event_request =   self::where('event_id',$event_id)->where('confirmed','!=',1)->get();
+            foreach ( $not_accepted_event_request as $request) {
+                Log::info("Request id to update ".$request->id);
+                self::where('id',$request->id)->update(['confirmed'=>3]);
+            }
+        }
+        return $update;
     }
 
     public static function acceptedEventRequest($event_id){
 
         return  self::where('event_id',$event_id)->where('confirmed',1)->get();
 
+    }
+
+    public static function notAcceptedEventRequest($event_id){
+        return  self::where('event_id',$event_id)->where('confirmed',1)->get();
     }
 
     public static function createdByRequest($event_id,$request_to){

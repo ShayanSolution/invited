@@ -230,7 +230,7 @@ class EventController extends Controller
         $accepted_requests = RequestsEvent::acceptedEventRequest($event_id);
         $accepted_requests_count = count($accepted_requests);
         $event_detail = Event::getEventByID($event_id);
-        Log::info("================= Accept Request API =========================");
+        Log::info("================= Accept Request API Before Acceptance =========================");
         Log::info("Event maxi invited ".$event_detail->max_invited);
         Log::info("Request Confirmed ".$accepted_requests_count);
         if($event_detail->max_invited == $accepted_requests_count){

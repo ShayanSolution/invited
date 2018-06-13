@@ -54,7 +54,7 @@ class SendCloseEventNotification extends Job
         }
         else{
 
-            Log::info(" Send notification to android users ");
+           // Log::info(" Send notification to android users ");
             $optionBuilder = new OptionsBuilder();
             $optionBuilder->setTimeToLive(60*20);
             $notificationBuilder = new PayloadNotificationBuilder('Event Closed');
@@ -67,7 +67,7 @@ class SendCloseEventNotification extends Job
             $notification = $notificationBuilder->build();
             $data = $dataBuilder->build();
 
-            Log::info("Sending push notification to $this->token");
+           // Log::info("Sending push notification to $this->token");
             $downstreamResponse = FCM::sendTo($this->token, $option, $notification, $data);
         }
     }

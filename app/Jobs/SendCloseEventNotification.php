@@ -36,40 +36,41 @@ class SendCloseEventNotification extends Job
      */
     public function handle()
     {
-        if($this->platform == 'ios' || is_null($this->platform)) {
-            $message = PushNotification::Message($this->event_title . "  has been closed ", array(
-                'badge' => 1,
-                'sound' => 'example.aiff',
+        $message = PushNotification::Message($this->event_title . "  has been closed ", array(
+            'badge' => 1,
+            'sound' => 'example.aiff',
 
-                'actionLocKey' => 'Action button title!',
-                'locKey' => 'localized key',
-                'locArgs' => array(
-                    'localized args',
-                    'localized args',
-                ),
-                'launchImage' => 'image.jpg',
+            'actionLocKey' => 'Action button title!',
+            'locKey' => 'localized key',
+            'locArgs' => array(
+                'localized args',
+                'localized args',
+            ),
+            'launchImage' => 'image.jpg',
 
 
-            ));
-            PushNotification::app('invitedIOS')->to($this->token)->send($message);
-        }
-        else{
-
-           // Log::info(" Send notification to android users ");
-            $optionBuilder = new OptionsBuilder();
-            $optionBuilder->setTimeToLive(60*20);
-            $notificationBuilder = new PayloadNotificationBuilder('Event Closed');
-            $notificationBuilder->setBody($this->event_title.' has been closed')->setSound('default');
-
-            $dataBuilder = new PayloadDataBuilder();
-            $dataBuilder->addData(['a_data' => 'my_data']);
-
-            $option = $optionBuilder->build();
-            $notification = $notificationBuilder->build();
-            $data = $dataBuilder->build();
-
-           // Log::info("Sending push notification to $this->token");
-            $downstreamResponse = FCM::sendTo($this->token, $option, $notification, $data);
-        }
+        ));
+        PushNotification::app('invitedIOS')->to($this->token)->send($message);
+//        if($this->platform == 'ios' || is_null($this->platform)) {
+//
+//        }
+//        else{
+//
+//           // Log::info(" Send notification to android users ");
+//            $optionBuilder = new OptionsBuilder();
+//            $optionBuilder->setTimeToLive(60*20);
+//            $notificationBuilder = new PayloadNotificationBuilder('Event Closed');
+//            $notificationBuilder->setBody($this->event_title.' has been closed')->setSound('default');
+//
+//            $dataBuilder = new PayloadDataBuilder();
+//            $dataBuilder->addData(['a_data' => 'my_data']);
+//
+//            $option = $optionBuilder->build();
+//            $notification = $notificationBuilder->build();
+//            $data = $dataBuilder->build();
+//
+//           // Log::info("Sending push notification to $this->token");
+//            $downstreamResponse = FCM::sendTo($this->token, $option, $notification, $data);
+//        }
     }
 }

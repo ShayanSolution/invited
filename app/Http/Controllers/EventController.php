@@ -297,6 +297,7 @@ class EventController extends Controller
     }
 
     public function sendRequestNotification($id,$event_id,$accepted_user,$request_status=null){
+        Log::info("================= Send Notification to event createer =========================");
 
         $notification_user = User::where('id',$id)->first();
 
@@ -309,6 +310,7 @@ class EventController extends Controller
             }
 
             if(!empty($notification_user->device_token)){
+                Log::info("Device token: ".$notification_user->device_token);
                 $platform = $notification_user->platform;
                 if($platform == 'ios' || is_null($platform)) {
                     $message = PushNotification::Message($user_name . " $request_status your request ", array(

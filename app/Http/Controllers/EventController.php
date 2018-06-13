@@ -453,9 +453,6 @@ class EventController extends Controller
                 $user_device_token = $notification_user->device_token;
                 $user_id = $notification_user->id;
                 $platform = $notification_user->platform;
-                echo $request['event_id'];
-                echo $user_id;
-                dd();
                 $event_request = $eventRequest->getUserEventRequests($request['event_id'],$user_id);
                 //don't send notification to request rejected user.
                 if ($event_request->confirmed != 0) {

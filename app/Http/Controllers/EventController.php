@@ -266,42 +266,6 @@ class EventController extends Controller
                         $job = new SendCloseEventNotification($device_token, $event_detail->title,$platform);
                         dispatch($job);
                         Log::info('Request Cycle with Queues Ends now');
-                        /**
-                        if($platform == 'ios' || is_null($platform)) {
-                            $message = PushNotification::Message(" Too late. $event_detail->title has been closed.", array(
-                                'badge' => 1,
-                                'sound' => 'example.aiff',
-
-                                'actionLocKey' => 'Action button title!',
-                                'locKey' => 'localized key',
-                                'locArgs' => array(
-                                    'localized args',
-                                    'localized args',
-                                ),
-                                'launchImage' => 'image.jpg',
-
-
-                            ));
-                            PushNotification::app('invitedIOS')->to($device_token)->send($message);
-                        }
-                        else{
-
-                            Log::info(" Send notification to android users ");
-                            $optionBuilder = new OptionsBuilder();
-                            $optionBuilder->setTimeToLive(60*20);
-                            $notificationBuilder = new PayloadNotificationBuilder('Event Closed');
-                            $notificationBuilder->setBody($event_detail->title.' has been closed')->setSound('default');
-
-                            $dataBuilder = new PayloadDataBuilder();
-                            $dataBuilder->addData(['a_data' => 'my_data']);
-
-                            $option = $optionBuilder->build();
-                            $notification = $notificationBuilder->build();
-                            $data = $dataBuilder->build();
-
-                            Log::info("Sending push notification to $device_token");
-                            $downstreamResponse = FCM::sendTo($device_token, $option, $notification, $data);
-                        }**/
                     }
                 }
             }

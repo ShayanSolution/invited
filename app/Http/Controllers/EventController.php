@@ -252,11 +252,35 @@ class EventController extends Controller
             //if event has been closed, send notification remaining users for closed events
             if(!empty($accepted['notification_users'])){
                 $users = $accepted['notification_users'];
-//                for($j=0;$j<count($users);$j++){
-//                    $user_id = $users[$j];
-//                    //select user
-//                    //User::where()
-//                }
+                for($j=0;$j<count($users);$j++){
+                    $user_id = $users[$j];
+                    //select user
+                    $user = User::where('id',$user_id)->first();
+                    $device_token = $user->device_token;
+                    $platform = $user->platform;
+                    if(!empty($device_token)){
+                        Log::info("device_token: ".$device_token);
+                        if($platform == 'ios' || is_null($platform)) {
+                            $message = PushNotification::Message(" $event_detail->title has been closed ", array(
+                                'badge' => 1,
+                                'sound' => 'example.aiff',
+
+                                'actionLocKey' => 'Action button title!',
+                                'locKey' => 'localized key',
+                                'locArgs' => array(
+                                    'localized args',
+                                    'localized args',
+                                ),
+                                'launchImage' => 'image.jpg',
+
+
+                            ));
+                            PushNotification::app('invitedIOS')->to($device_token)->send($message);
+                        }else{
+                            //$this->sendNotificationToAndoidUsers($accepted_user->device_token,$request_status,$user_name);
+                        }
+                    }
+                }
             }
             return response()->json(
                 [

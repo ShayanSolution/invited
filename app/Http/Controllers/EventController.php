@@ -123,7 +123,7 @@ class EventController extends Controller
                             if ($event_request->confirmed != 0) {
                                 if ($platform == 'ios' || is_null($platform)) {
                                     //send notification to ios user list
-                                    //Log::info("Request Cycle with Queues Begins");
+                                    Log::info("Request Cycle with Queues Begins");
                                     $job = new SendPushNotification($device_token, $created_user, $event_id, $user, $message);
                                     dispatch($job);
                                     Log::info('Request Cycle with Queues Ends');
@@ -277,7 +277,22 @@ class EventController extends Controller
                             ));
                             PushNotification::app('invitedIOS')->to($device_token)->send($message);
                         }else{
-                            //$this->sendNotificationToAndoidUsers($accepted_user->device_token,$request_status,$user_name);
+
+                            Log::info(" Send notification to android users ");
+                            $optionBuilder = new OptionsBuilder();
+                            $optionBuilder->setTimeToLive(60*20);
+                            $notificationBuilder = new PayloadNotificationBuilder('Event Closed');
+                            $notificationBuilder->setBody($event_detail->title.' has been closed')->setSound('default');
+
+                            $dataBuilder = new PayloadDataBuilder();
+                            $dataBuilder->addData(['a_data' => 'my_data']);
+
+                            $option = $optionBuilder->build();
+                            $notification = $notificationBuilder->build();
+                            $data = $dataBuilder->build();
+
+                            Log::info("Sending push notification to $device_token");
+                            $downstreamResponse = FCM::sendTo($device_token, $option, $notification, $data);
                         }
                     }
                 }

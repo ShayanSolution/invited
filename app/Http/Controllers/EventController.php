@@ -261,12 +261,12 @@ class EventController extends Controller
                         $device_token = $user->device_token;
                         $platform = $user->platform;
                         //send notification to ios user list
-//                        Log::info("device_token: ".$device_token);
-//                        Log::info("Request Cycle with Queues Begins");
-//                        $job = new SendCloseEventNotification($platform,$device_token, $event_detail->title);
-//                        dispatch($job);
-//                        Log::info('Request Cycle with Queues Ends');
-
+                        Log::info("device_token: ".$device_token);
+                        Log::info("Request Cycle with Queues Begins");
+                        $job = new SendCloseEventNotification($platform,$device_token, $event_detail->title);
+                        dispatch($job);
+                        Log::info('Request Cycle with Queues Ends');
+                        /**
                         if($platform == 'ios' || is_null($platform)) {
                             $message = PushNotification::Message(" Too late. $event_detail->title has been closed.", array(
                                 'badge' => 1,
@@ -283,7 +283,8 @@ class EventController extends Controller
 
                             ));
                             PushNotification::app('invitedIOS')->to($device_token)->send($message);
-                        }else{
+                        }
+                        else{
 
                             Log::info(" Send notification to android users ");
                             $optionBuilder = new OptionsBuilder();
@@ -300,7 +301,7 @@ class EventController extends Controller
 
                             Log::info("Sending push notification to $device_token");
                             $downstreamResponse = FCM::sendTo($device_token, $option, $notification, $data);
-                        }
+                        }**/
                     }
                 }
             }

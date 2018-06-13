@@ -248,8 +248,7 @@ class EventController extends Controller
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $accepted_user = User::where('id',$id)->first();
             $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "accepted");
-            Log::info("Notification users for close events ");
-            dd($accepted['notification_users']);
+            Log::info("Notification users ids for closed events: ".print_r($accepted['notification_users'],true));
             return response()->json(
                 [
                     'status' => 'Request accepted successfully',

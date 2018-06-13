@@ -79,7 +79,7 @@ class RequestsEvent extends Model
                 self::where('id',$request->id)->update(['confirmed'=>3]);
                 $notification_users[] = $request->id;
             }
-            Log::info("Notification users ids for closed events: ".$notification_users);
+            
         }
         return array('update'=>$update,'notification_users'=>$notification_users);
     }

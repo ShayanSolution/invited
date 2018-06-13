@@ -50,7 +50,9 @@ class SendCloseEventNotification extends Job
                     'localized args',
                 ),
                 'launchImage' => 'image.jpg',
-
+                'custom' => array('custom_data' => array(
+                    'status' => 'closed'
+                ))
 
             ));
             PushNotification::app('invitedIOS')->to($this->token)->send($message);

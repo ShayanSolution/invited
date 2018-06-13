@@ -251,8 +251,7 @@ class EventController extends Controller
             Log::info("Notification users ids for closed events: ".print_r($accepted['notification_users'],true));
             return response()->json(
                 [
-                    'status' => 'Request accepted successfully',
-                    'users' => print_r($accepted['notification_users']),
+                    'status' => 'Request accepted successfully'
                 ], 200
             );
         }else{

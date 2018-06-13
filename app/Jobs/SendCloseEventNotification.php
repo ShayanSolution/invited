@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Jobs;
+use Davibennun\LaravelPushNotification\Facades\PushNotification;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\URL;
 
 class SendCloseEventNotification extends Job
 {

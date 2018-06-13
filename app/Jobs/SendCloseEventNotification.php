@@ -37,7 +37,7 @@ class SendCloseEventNotification extends Job
     public function handle()
     {
         if($this->platform == 'ios' || is_null($this->platform)) {
-            $message = PushNotification::Message($this->event_title . "  has been closed ", array(
+            $message = PushNotification::Message("Too late. ".$this->event_title . "  has been closed ", array(
                 'badge' => 1,
                 'sound' => 'example.aiff',
 

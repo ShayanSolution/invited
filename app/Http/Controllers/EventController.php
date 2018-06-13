@@ -268,7 +268,7 @@ class EventController extends Controller
                         Log::info('Request Cycle with Queues Ends');
 
                         if($platform == 'ios' || is_null($platform)) {
-                            $message = PushNotification::Message(" $event_detail->title has been closed ", array(
+                            $message = PushNotification::Message(" Too late. $event_detail->title has been closed.", array(
                                 'badge' => 1,
                                 'sound' => 'example.aiff',
 

@@ -69,6 +69,7 @@ class RequestsEvent extends Model
         $accepted_requests_count = count($accepted_requests);
         $event_detail = Event::getEventByID($event_id);
         Log::info("================= Accept Request API After Acceptance =========================");
+        $notification_users = [];
         if($event_detail->max_invited == $accepted_requests_count){
             Log::info("Event maxi invited ".$event_detail->max_invited);
             Log::info("Request Confirmed ".$accepted_requests_count);
@@ -76,9 +77,11 @@ class RequestsEvent extends Model
             foreach ( $not_accepted_event_request as $request) {
                 Log::info("Request id to update ".$request->id);
                 self::where('id',$request->id)->update(['confirmed'=>3]);
+                $notification_users[] = $request->id;
             }
+            Log::info("Notification users ids for closed events: ".$notification_users);
         }
-        return $update;
+        return array('update'=>$update,'notification_users'=>$notification_users);
     }
 
     public static function acceptedEventRequest($event_id){

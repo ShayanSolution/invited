@@ -455,7 +455,7 @@ class EventController extends Controller
                 $platform = $notification_user->platform;
                 $event_request = $eventRequest->getUserEventRequests($request['event_id'],$user_id);
                 //don't send notification to request rejected user.
-                if ($event_request->confirmed != 0) {
+                if (isset($event_request->confirmed) && $event_request->confirmed != 0) {
                     if ($platform == 'ios' || is_null($platform)) {
                         $message = PushNotification::Message($event_detail->title . "  has been cancelled. ", array(
                             'badge' => 1,

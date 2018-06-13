@@ -8,6 +8,7 @@ use Log;
 use LaravelFCM\Message\OptionsBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
 use LaravelFCM\Facades\FCM;
+use LaravelFCM\Message\PayloadDataBuilder;
 
 class SendCloseEventNotification extends Job
 {

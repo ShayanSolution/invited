@@ -36,7 +36,9 @@ class SendCloseEventNotification extends Job
      */
     public function handle()
     {
+        Log::info(" I am in queue ");
         if($this->platform == 'ios' || is_null($this->platform)) {
+            Log::info(" I am in queue ios platform");
             $message = PushNotification::Message("Too late. ".$this->event_title . "  has been closed ", array(
                 'badge' => 1,
                 'sound' => 'example.aiff',
@@ -54,7 +56,7 @@ class SendCloseEventNotification extends Job
             PushNotification::app('invitedIOS')->to($this->token)->send($message);
         }
         else{
-
+            Log::info(" I am in queue ios android");
            // Log::info(" Send notification to android users ");
             $optionBuilder = new OptionsBuilder();
             $optionBuilder->setTimeToLive(60*20);

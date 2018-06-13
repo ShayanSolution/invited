@@ -77,7 +77,7 @@ class RequestsEvent extends Model
             foreach ( $not_accepted_event_request as $request) {
                 Log::info("Request id to update ".$request->id);
                 self::where('id',$request->id)->update(['confirmed'=>3]);
-                $notification_users[] = $request->id;
+                $notification_users[] = $request->request_to;
             }
             
         }

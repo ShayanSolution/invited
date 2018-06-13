@@ -260,29 +260,29 @@ class EventController extends Controller
                     if($user){
                         $device_token = $user->device_token;
                         $platform = $user->platform;
-                        
+                        //send notification to ios user list
                         Log::info("device_token: ".$device_token);
+                        Log::info("Request Cycle with Queues Begins");
+                        $job = new SendCloseEventNotification($platform,$device_token, $event_detail->title);
+                        dispatch($job);
+                        Log::info('Request Cycle with Queues Ends');
+                        /*
                         if($platform == 'ios' || is_null($platform)) {
-                            //send notification to ios user list
-                            Log::info("Request Cycle with Queues Begins");
-                            $job = new SendCloseEventNotification($device_token, $event_detail->title);
-                            dispatch($job);
-                            Log::info('Request Cycle with Queues Ends');
-//                            $message = PushNotification::Message(" $event_detail->title has been closed ", array(
-//                                'badge' => 1,
-//                                'sound' => 'example.aiff',
-//
-//                                'actionLocKey' => 'Action button title!',
-//                                'locKey' => 'localized key',
-//                                'locArgs' => array(
-//                                    'localized args',
-//                                    'localized args',
-//                                ),
-//                                'launchImage' => 'image.jpg',
-//
-//
-//                            ));
-//                            PushNotification::app('invitedIOS')->to($device_token)->send($message);
+                            $message = PushNotification::Message(" $event_detail->title has been closed ", array(
+                                'badge' => 1,
+                                'sound' => 'example.aiff',
+
+                                'actionLocKey' => 'Action button title!',
+                                'locKey' => 'localized key',
+                                'locArgs' => array(
+                                    'localized args',
+                                    'localized args',
+                                ),
+                                'launchImage' => 'image.jpg',
+
+
+                            ));
+                            PushNotification::app('invitedIOS')->to($device_token)->send($message);
                         }else{
 
                             Log::info(" Send notification to android users ");
@@ -300,7 +300,7 @@ class EventController extends Controller
 
                             Log::info("Sending push notification to $device_token");
                             $downstreamResponse = FCM::sendTo($device_token, $option, $notification, $data);
-                        }
+                        }*/
                     }
                 }
             }

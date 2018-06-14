@@ -198,12 +198,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
     
     public static function registerUser($request){
+        $email = explode("@",$request->email);
+        $first_name = $email[0];
         $user = User::create([
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
             'uid' => md5(microtime()),
-            'device_token' => $request->device_token
+            'device_token' => $request->device_token,
+            'firstName' => $first_name
         ]);
         $user_id = $user['id'];
         $user->profile()->create(['user_id'=>$user_id]);

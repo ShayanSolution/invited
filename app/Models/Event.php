@@ -66,7 +66,7 @@ class Event extends Model
             $user_events[$index]['list_name'] = $event->list_name;
             $user_list = ContactList::getUserList($event->list_id);
             $user_events[$index]['list_count'] = count(json_decode($user_list->contact_list));
-            //$user_events[$index]['list_users'] = json_decode($user_list->contact_list);
+            $user_events[$index]['max_invited'] = $event->max_invited;
             $list_index=0;
             $arr = [];
             foreach (json_decode($user_list->contact_list) as $list){

@@ -131,7 +131,14 @@ class EventController extends Controller
                                 }
                                 else {
                                     Log::info("Before Sending Push notification to {$user->email} device token =>".$device_token);
-                                    $this->sendNotificationToAndoidUsers($device_token,'','');
+                                    if(!empty($created_user->firstName)){
+                                        $user_name = $created_user->firstName;
+                                    }else{
+                                        $user_name = $created_user->phone;
+                                    }
+                                    $event = Event::where('id',$event_id)->first();
+                                    $message_title = $user_name.' '.$message.' '. $event->title.'.';
+                                    $this->sendNotificationToAndoidUsers($device_token,$request_status='Updated',$message_title);
 
                             }
                         }
@@ -477,7 +484,7 @@ class EventController extends Controller
                         ));
                         PushNotification::app('invitedIOS')->to($user_device_token)->send($message);
                     } else {
-                        $this->sendNotificationToAndoidUsers($user_device_token);
+                        $this->sendNotificationToAndoidUsers($user_device_token,$request_status = "deleted",$event_detail->title . "  has been cancelled. ");
                     }
                 }
             }
@@ -516,15 +523,27 @@ class EventController extends Controller
         if($request_status == 'accepted'){
             $notificationBuilder = new PayloadNotificationBuilder('Accepted');
             $notificationBuilder->setBody($user_name.' accepted your request')->setSound('default');
-            $dataBuilder->addData(['accepted' => $user_name.' accepted your request']);
-        }elseif($request_status == 'rejected'){
+            $dataBuilder->addData(['code' => '3']);
+        }
+        elseif($request_status == 'rejected'){
             $notificationBuilder = new PayloadNotificationBuilder('Canceled');
             $notificationBuilder->setBody($user_name.' canceled your request')->setSound('default');
-            $dataBuilder->addData(['rejected' => $user_name.' rejected your request']);
-        }else{
+            $dataBuilder->addData(['code' => '4']);
+        }
+        elseif($request_status == 'deleted'){
+            $notificationBuilder = new PayloadNotificationBuilder('Deleted');
+            $notificationBuilder->setBody($user_name)->setSound('default');
+            $dataBuilder->addData(['code' => '5']);
+        }
+        elseif($request_status == 'Updated'){
+            $notificationBuilder = new PayloadNotificationBuilder('Updated');
+            $notificationBuilder->setBody($user_name)->setSound('default');
+            $dataBuilder->addData(['code' => '2']);
+        }
+        else{
             $notificationBuilder = new PayloadNotificationBuilder('Event Created');
             $notificationBuilder->setBody(' Event Created Successfully ')->setSound('default');
-            $dataBuilder->addData(['created' => 'Event created successfullt!.']);
+            $dataBuilder->addData(['Code' => '1']);
         }
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();

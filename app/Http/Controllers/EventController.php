@@ -531,6 +531,7 @@ class EventController extends Controller
             $notificationBuilder = new PayloadNotificationBuilder('Accepted');
             $notificationBuilder->setBody($user_name.' accepted your request')->setSound('default');
             $dataBuilder->addData(['code' => '3']);
+            Log::info("Event Accepted:");
         }
         elseif($request_status == 'rejected'){
             $notificationBuilder = new PayloadNotificationBuilder('Canceled');

@@ -526,29 +526,32 @@ class EventController extends Controller
         Log::info("Request status received => ".$request_status);
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
-
-        $dataBuilder = new PayloadDataBuilder();
         if($request_status == 'accepted'){
+            $dataBuilder = new PayloadDataBuilder();
             $notificationBuilder = new PayloadNotificationBuilder('Accepted');
             $notificationBuilder->setBody($user_name.' accepted your request')->setSound('default');
             $dataBuilder->addData(['code' => '3']);
         }
         elseif($request_status == 'rejected'){
+            $dataBuilder = new PayloadDataBuilder();
             $notificationBuilder = new PayloadNotificationBuilder('Canceled');
             $notificationBuilder->setBody($user_name.' canceled your request')->setSound('default');
             $dataBuilder->addData(['code' => '4']);
         }
         elseif($request_status == 'deleted'){
+            $dataBuilder = new PayloadDataBuilder();
             $notificationBuilder = new PayloadNotificationBuilder('Deleted');
             $notificationBuilder->setBody($user_name)->setSound('default');
             $dataBuilder->addData(['code' => '5']);
         }
         elseif($request_status == 'Updated'){
+            $dataBuilder = new PayloadDataBuilder();
             $notificationBuilder = new PayloadNotificationBuilder('Updated');
             $notificationBuilder->setBody($user_name)->setSound('default');
             $dataBuilder->addData(['code' => '2']);
         }
         else{
+            $dataBuilder = new PayloadDataBuilder();
             $notificationBuilder = new PayloadNotificationBuilder('Event Created');
             $notificationBuilder->setBody(' Event Created Successfully ')->setSound('default');
             $dataBuilder->addData(['Code' => '1']);

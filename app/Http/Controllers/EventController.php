@@ -352,8 +352,9 @@ class EventController extends Controller
                         ))
                     ));
                     PushNotification::app('invitedIOS')->to($notification_user->device_token)->send($message);
-                }else{
-                    $this->sendNotificationToAndoidUsers($accepted_user->device_token,$request_status,$user_name);
+                }
+                else{
+                    $this->sendNotificationToAndoidUsers($notification_user->device_token,$request_status,$user_name);
                 }
             }
         }

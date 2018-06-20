@@ -556,6 +556,10 @@ class EventController extends Controller
             $notificationBuilder->setBody(' Event Created Successfully ')->setSound('default');
             $dataBuilder->addData(['Code' => '1']);
         }
+        Log::info("Testing data build:");
+        $dataBuilder = new PayloadDataBuilder();
+        $dataBuilder->addData(['a_data' => 'my_data']);
+
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();

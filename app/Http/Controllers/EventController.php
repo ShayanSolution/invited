@@ -511,29 +511,24 @@ class EventController extends Controller
         Log::info("Request status received => ".$request_status);
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
-        if($request_status == 'accepted'){
-            $notificationBuilder = new PayloadNotificationBuilder('Accepted');
-            $notificationBuilder->setBody($user_name.' accepted your request')
-                ->setSound('default');
-        }elseif($request_status == 'rejected'){
-            $notificationBuilder = new PayloadNotificationBuilder('Canceled');
-            $notificationBuilder->setBody($user_name.' canceled your request')
-                ->setSound('default');
-        }else{
-            $notificationBuilder = new PayloadNotificationBuilder('Event Created');
-            $notificationBuilder->setBody(' Event Created Successfully ')
-                ->setSound('default');
-        }
 
         $dataBuilder = new PayloadDataBuilder();
-        $dataBuilder->addData(['a_data' => 'my_data']);
-
+        if($request_status == 'accepted'){
+            $notificationBuilder = new PayloadNotificationBuilder('Accepted');
+            $notificationBuilder->setBody($user_name.' accepted your request')->setSound('default');
+            $dataBuilder->addData(['accepted' => $user_name.' accepted your request']);
+        }elseif($request_status == 'rejected'){
+            $notificationBuilder = new PayloadNotificationBuilder('Canceled');
+            $notificationBuilder->setBody($user_name.' canceled your request')->setSound('default');
+            $dataBuilder->addData(['rejected' => $user_name.' rejected your request']);
+        }else{
+            $notificationBuilder = new PayloadNotificationBuilder('Event Created');
+            $notificationBuilder->setBody(' Event Created Successfully ')->setSound('default');
+            $dataBuilder->addData(['created' => 'Event created successfullt!.']);
+        }
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();
-
-        //$token = "f-9wrGC6i6g:APA91bG6ZtVrbL_BhVTXOT3WiGATM4rI9SuHYn32jheelqumbGmTGOcYqzB8He9CHjk6uj5N3NE3TOqMtoRgSDQh2TtmmnKai1NBHoPpx3EBYsFKpcht5m_6VWwq5vX4M2YDOpJWWXhQ";
-
         Log::info("Sending push notification to $device_token");
         $downstreamResponse = FCM::sendTo($device_token, $option, $notification, $data);
 

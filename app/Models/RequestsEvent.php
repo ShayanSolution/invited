@@ -73,7 +73,8 @@ class RequestsEvent extends Model
         if($event_detail->max_invited == $accepted_requests_count){
             Log::info("Event maxi invited ".$event_detail->max_invited);
             Log::info("Request Confirmed ".$accepted_requests_count);
-            $not_accepted_event_request =   self::where('event_id',$event_id)->where('confirmed','!=',1)->get();
+            //send notification only to pending request users
+            $not_accepted_event_request =   self::where('event_id',$event_id)->where('confirmed','!=',1)->where('confirmed','!=',0)->get();
             foreach ( $not_accepted_event_request as $request) {
                 Log::info("Request id to update ".$request->id);
                 self::where('id',$request->id)->update(['confirmed'=>3]);

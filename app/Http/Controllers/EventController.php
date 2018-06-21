@@ -136,9 +136,14 @@ class EventController extends Controller
                                     }else{
                                         $user_name = $created_user->phone;
                                     }
+                                    if($message == 'updated the event'){
+                                        $request_status = 'Updated';
+                                    }else{
+                                        $request_status = 'created';
+                                    }
                                     $event = Event::where('id',$event_id)->first();
                                     $message_title = $user_name.' '.$message.' '. $event->title.'.';
-                                    $this->sendNotificationToAndoidUsers($device_token,$request_status='created',$message_title);
+                                    $this->sendNotificationToAndoidUsers($device_token,$request_status,$message_title);
 
                             }
                         }
@@ -555,7 +560,7 @@ class EventController extends Controller
             $dataBuilder->addData(['code' => '1']);
             Log::info("Event Created:");
         }
-       
+
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();

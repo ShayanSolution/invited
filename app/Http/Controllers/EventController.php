@@ -552,11 +552,10 @@ class EventController extends Controller
             //Log::info("Creating Event:");
             $notificationBuilder = new PayloadNotificationBuilder('Event Created');
             $notificationBuilder->setBody(' Event Created Successfully ')->setSound('default');
-            $dataBuilder->addData(['code' => '999']);
+            $dataBuilder->addData(['code' => '1']);
             Log::info("Event Created:");
         }
-        $dataBuilder->addData(['a_data' => 'my_data']);
-
+       
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();

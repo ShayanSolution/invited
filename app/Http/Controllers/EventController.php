@@ -549,7 +549,7 @@ class EventController extends Controller
             $dataBuilder->addData(['code' => '2']);
         }
         else{
-            Log::info("Creating Event:");
+            //Log::info("Creating Event:");
             $notificationBuilder = new PayloadNotificationBuilder('Event Created');
             $notificationBuilder->setBody(' Event Created Successfully ')->setSound('default');
             $dataBuilder->addData(['code' => '999']);

@@ -138,7 +138,7 @@ class EventController extends Controller
                                     }
                                     $event = Event::where('id',$event_id)->first();
                                     $message_title = $user_name.' '.$message.' '. $event->title.'.';
-                                    $this->sendNotificationToAndoidUsers($device_token,$request_status='Updated',$message_title);
+                                    $this->sendNotificationToAndoidUsers($device_token,$request_status='created',$message_title);
 
                             }
                         }

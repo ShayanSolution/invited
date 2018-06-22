@@ -144,11 +144,10 @@ class EventController extends Controller
                                     $event = Event::where('id',$event_id)->first();
                                     $message_title = $user_name.' '.$message.' '. $event->title.'.';
                                     //send data message payload
-                                    $this->sendCreateEventDataMessage($device_token);
                                     $this->sendNotificationToAndoidUsers($device_token,$request_status,$message_title);
 
                             }
-                        }
+                         }
                       }
                     }
                     else
@@ -547,39 +546,43 @@ class EventController extends Controller
         $optionBuilder->setTimeToLive(60*20);
         $dataBuilder = new PayloadDataBuilder();
         if($request_status == 'accepted'){
-            $notificationBuilder = new PayloadNotificationBuilder('Accepted');
-            $notificationBuilder->setBody($user_name.' accepted your request')->setSound('default');
-            $dataBuilder->addData(['code' => '3']);
+            //$notificationBuilder = new PayloadNotificationBuilder('Accepted');
+            //$notificationBuilder->setBody($user_name.' accepted your request')->setSound('default');
+            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => $user_name.' accepted your request']);
             Log::info("Event Accepted:");
         }
         elseif($request_status == 'rejected'){
-            $notificationBuilder = new PayloadNotificationBuilder('Canceled');
-            $notificationBuilder->setBody($user_name.' canceled your request')->setSound('default');
-            $dataBuilder->addData(['code' => '4']);
+            //$notificationBuilder = new PayloadNotificationBuilder('Canceled');
+            //$notificationBuilder->setBody($user_name.' canceled your request')->setSound('default');
+            $dataBuilder->addData(['code' => '4','Title' => 'Canceled', 'Body' => $user_name.' canceled your request']);
+            Log::info("Event Rjected:");
         }
         elseif($request_status == 'deleted'){
-            $notificationBuilder = new PayloadNotificationBuilder('Deleted');
-            $notificationBuilder->setBody($user_name)->setSound('default');
-            $dataBuilder->addData(['code' => '5']);
+            //$notificationBuilder = new PayloadNotificationBuilder('Deleted');
+            //$notificationBuilder->setBody($user_name)->setSound('default');
+            $dataBuilder->addData(['code' => '5','Title' => 'Deleted','Body' =>$user_name]);
+            Log::info("Event Deleted:");
         }
         elseif($request_status == 'Updated'){
-            $notificationBuilder = new PayloadNotificationBuilder('Updated');
-            $notificationBuilder->setBody($user_name)->setSound('default');
-            $dataBuilder->addData(['code' => '2']);
+            //$notificationBuilder = new PayloadNotificationBuilder('Updated');
+            //$notificationBuilder->setBody($user_name)->setSound('default');
+            $dataBuilder->addData(['code' => '2','Title'=>'Updated','Body'=>$user_name]);
+            Log::info("Event Updated:");
         }
         else{
-            //Log::info("Creating Event:");
-            $notificationBuilder = new PayloadNotificationBuilder('Event Created');
-            $notificationBuilder->setBody(' Event Created Successfully ')->setSound('default');
-            $dataBuilder->addData(['code' => '1']);
+            //$notificationBuilder = new PayloadNotificationBuilder('Event Created');
+            //$notificationBuilder->setBody(' Event Created Successfully ')->setSound('default');
+            $dataBuilder->addData(['code' => '1','Title'=>'Event Created','Body'=>'Event Created Successfully']);
             Log::info("Event Created:");
         }
 
         $option = $optionBuilder->build();
-        $notification = $notificationBuilder->build();
+        //$notification = $notificationBuilder->build();
         $data = $dataBuilder->build();
         Log::info("Sending push notification to $device_token");
-        $downstreamResponse = FCM::sendTo($device_token, $option, $notification, $data);
+        //$downstreamResponse = FCM::sendTo($device_token, $option, $notification, $data);
+        //send only data message payload
+        $downstreamResponse = FCM::sendTo($device_token, $option, null, $data);
 
     }
 }

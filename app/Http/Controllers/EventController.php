@@ -144,15 +144,15 @@ class EventController extends Controller
                                     $event = Event::where('id',$event_id)->first();
                                     $message_title = $user_name.' '.$message.' '. $event->title.'.';
 
-//                                    Log::info('Send data message in background');
-//                                    $optionBuiler = new OptionsBuilder();
-//                                    $optionBuiler->setTimeToLive(60*20);
-//                                    $dataBuilder = new PayloadDataBuilder();
-//                                    $dataBuilder->addData(['a_data' => 'my_test_data']);
-//                                    $data = $dataBuilder->build();
-//                                    $option = $optionBuiler->build();
-//                                    FCM::sendTo($device_token, $option, null, $data);
-//                                    Log::info('Now sending data message and notification in forground');
+                                    Log::info('Send data message in background');
+                                    $optionBuiler = new OptionsBuilder();
+                                    $optionBuiler->setTimeToLive(60*20);
+                                    $dataBuilder = new PayloadDataBuilder();
+                                    $dataBuilder->addData(['a_data' => 'my_test_data']);
+                                    $data = $dataBuilder->build();
+                                    $option = $optionBuiler->build();
+                                    FCM::sendTo($device_token, $option, null, $data);
+                                    Log::info('Now sending data message and notification in forground');
 
                                     $this->sendNotificationToAndoidUsers($device_token,$request_status,$message_title);
 

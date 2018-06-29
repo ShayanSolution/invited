@@ -37,12 +37,7 @@ class SmsController extends Controller
             $code = $this->generateRandomCode();
             $phone_code = new PhoneCode();
             $phone_number = $phone_code->getPhoneNumber($phone);
-            if($phone_number){
-                //update phone code
-                $phone_code->updatePhoneCode($phone,$code);
-            }else{
-                $phone_code->createPhoneCode($phone,$code);
-            }
+
             $to_number = $this->sanitizePhoneNumber($phone);
             // Use the client to do fun stuff like send text messages!
             $response=  $client->messages->create(
@@ -56,6 +51,12 @@ class SmsController extends Controller
                 )
             );
 
+            if($phone_number){
+                //update phone code
+                $phone_code->updatePhoneCode($phone,$code);
+            }else{
+                $phone_code->createPhoneCode($phone,$code);
+            }
 
             return [
                 'status' => 'success',
@@ -85,8 +86,30 @@ class SmsController extends Controller
         return rand(pow(10, $digits-1), pow(10, $digits)-1);
     }
     
-    public function verifyPhoneCode(){
-        
-        
+    public function verifyPhoneCode(Request $request){
+        $validator = Validator::make($request->all(), [
+            'phone' => 'required',
+            'code' => 'required',
+        ]);
+        $response = User::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+
+        $phone_code = new PhoneCode();
+        $phone_verified = $phone_code->verifyPhoneCode($request);
+        if($phone_verified){
+            return [
+                'status' => 'success',
+                'code' => $phone_verified
+            ];
+        }else{
+
+            return response()->json(
+                [
+                    'Error' => 'Phone Number Not Verified',
+                ]
+            );
+        }
     }
 }

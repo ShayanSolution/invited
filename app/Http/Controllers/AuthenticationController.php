@@ -364,7 +364,6 @@ class AuthenticationController extends Controller
         $phone_code = new PhoneCode();
         $code = $this->generateRandomCode();
         $phone = $request->phone;
-
         try
         {
             $to_number = $this->sanitizePhoneNumber($phone);

@@ -18,29 +18,7 @@ use Twilio\Exceptions\TwilioException;
 
 class AuthenticationController extends Controller
 {
-    /**
-     * @SWG\Get(
-     *     path="/get-phone-code",
-     *     summary="Get a phone verification pin code",
-     *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         description="Phone number to generate code",
-     *         in="query",
-     *         name="phone",
-     *         required=true,
-     *         type="integer",
-     *         format="int64",
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="successful operation",
-     *     ),
-     *     @SWG\Response(
-     *         response="422",
-     *         description="Invalid phone value",
-     *     )
-     * )
-     */
+    
     public function getPhoneVerificationCode(Request $request){
         $this->validate($request,[
             'phone' => 'required|digits_between:11,20'
@@ -73,41 +51,7 @@ class AuthenticationController extends Controller
         return rand(pow(10, $digits-1), pow(10, $digits)-1);
     }
 
-    /**
-     * @SWG\Post(
-     *     path="/verify-phone-code",
-     *     summary="Save phone verification code",
-     *     description="",
-     *     consumes={"application/json"},
-     *     produces={"application/json"},
-     *      @SWG\Parameter(
-     *         description="Phone number to generate code",
-     *         in="query",
-     *         name="phone",
-     *         required=true,
-     *         type="integer",
-     *         format="int64",
-     *     ),
-     *
-     *     @SWG\Parameter(
-     *         description="Code number",
-     *         in="query",
-     *         name="code",
-     *         required=true,
-     *         type="integer",
-     *         format="int64",
-     *     ),
-     *
-     *    @SWG\Response(
-     *         response=200,
-     *         description="Phone code has been verified",
-     *     ),
-     *     @SWG\Response(
-     *         response=422,
-     *         description="Invalid or expired phone code",
-     *     ),
-     * )
-     */
+
     public function postPhoneVerificationCode(Request $request){
         $this->validate($request,[
             'phone' => 'required_without:|digits_between:11,20',
@@ -352,43 +296,11 @@ class AuthenticationController extends Controller
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required|min:6'
         ]);
-
         $response = User::generateErrorResponse($validator);
         if($response['code'] == 500){
             return $response;
         }
-
-        $accountSid = 'AC8bf700a1081c05d96be08ce0aeacccf3';
-        $authToken  = 'a174861ea684bc1546523c6324d638d7';
-        $client = new Client($accountSid, $authToken);
-        $phone_code = new PhoneCode();
-        $code = $this->generateRandomCode();
-        $phone = $request->phone;
-        try
-        {
-            $to_number = $this->sanitizePhoneNumber($phone);
-            // Use the client to do fun stuff like send text messages!
-            $response=  $client->messages->create(
-            // the number you'd like to send the message to
-                $to_number,
-                array(
-                    // A Twilio phone number you purchased at twilio.com/console
-                    'from' => '+16162198881',
-                    // the body of the text message you'd like to send
-                    'body' => "Sent from your twilio trial account. Phone: $phone code: $code"
-                )
-            );
-           $phone_code->createPhoneCode($phone,$code);
-           $user = User::registerUser($request);
-        }
-        catch (TwilioException $e)
-        {
-            return response()->json(
-                [
-                    'Error' => $e->getMessage(),
-                ]
-            );
-        }
+        $user = User::registerUser($request);
         if($user){
             return response()->json(
                 [
@@ -405,14 +317,6 @@ class AuthenticationController extends Controller
                 ], 422
             );
         }
-    }
-
-    public function sanitizePhoneNumber($phone){
-        $first_chr = $phone[0];
-        if($first_chr == 0){
-            $phone = substr($phone,1);
-        }
-        return "+92".$phone;
     }
 
 }

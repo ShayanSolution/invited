@@ -14,4 +14,12 @@ class PhoneCode extends Model
     public function createPhoneCode($phone,$code){
        return  self::create(['phone'=>$phone,'code'=>$code])->id;
     }
+
+    public function getPhoneNumber($phone){
+        return  self::where('phone','=',$phone)->first();
+    }
+
+    public function updatePhoneCode($phone,$code){
+        return self::where('phone',$phone)->update(['code'=>$code]);
+    }
 }

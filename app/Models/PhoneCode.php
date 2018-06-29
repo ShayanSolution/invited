@@ -10,4 +10,8 @@ class PhoneCode extends Model
         'phone',
         'code'
     ];
+
+    public function createPhoneCode($phone,$code){
+       return  self::create(['phone'=>$phone,'code'=>$code])->id;
+    }
 }

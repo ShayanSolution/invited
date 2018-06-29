@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 use DB;
 use Illuminate\Support\Facades\Validator;
+use Twilio\Rest\Client;
+use Twilio\Exceptions\TwilioException;
 
 class AuthenticationController extends Controller
 {
@@ -350,12 +352,44 @@ class AuthenticationController extends Controller
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required|min:6'
         ]);
+
         $response = User::generateErrorResponse($validator);
         if($response['code'] == 500){
             return $response;
         }
-        $user = User::registerUser($request);
-        
+
+        $accountSid = 'AC8bf700a1081c05d96be08ce0aeacccf3';
+        $authToken  = 'a174861ea684bc1546523c6324d638d7';
+        $client = new Client($accountSid, $authToken);
+        $phone_code = new PhoneCode();
+        $code = $this->generateRandomCode();
+        $phone = $request->phone;
+
+        try
+        {
+            $to_number = $this->sanitizePhoneNumber($phone);
+            // Use the client to do fun stuff like send text messages!
+            $response=  $client->messages->create(
+            // the number you'd like to send the message to
+                $to_number,
+                array(
+                    // A Twilio phone number you purchased at twilio.com/console
+                    'from' => '+16162198881',
+                    // the body of the text message you'd like to send
+                    'body' => "Sent from your twilio trial account. Phone: $phone code: $code"
+                )
+            );
+           $phone_code->createPhoneCode($phone,$code);
+           $user = User::registerUser($request);
+        }
+        catch (TwilioException $e)
+        {
+            return response()->json(
+                [
+                    'Error' => $e->getMessage(),
+                ]
+            );
+        }
         if($user){
             return response()->json(
                 [
@@ -372,6 +406,14 @@ class AuthenticationController extends Controller
                 ], 422
             );
         }
+    }
+
+    public function sanitizePhoneNumber($phone){
+        $first_chr = $phone[0];
+        if($first_chr == 0){
+            $phone = substr($phone,1);
+        }
+        return "+92".$phone;
     }
 
 }

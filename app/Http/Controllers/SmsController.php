@@ -107,7 +107,7 @@ class SmsController extends Controller
 
             return response()->json(
                 [
-                    'Error' => 'Phone Number Not Verified',
+                    'Error' => 'Unable to verify phone number',
                 ]
             );
         }

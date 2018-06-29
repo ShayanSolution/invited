@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use DB;
 use Illuminate\Support\Facades\Validator;
 use Twilio\Rest\Client;
-use Twilio\Exceptions\TwilioException;
+
 
 class AuthenticationController extends Controller
 {

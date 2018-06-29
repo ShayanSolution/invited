@@ -10,6 +10,7 @@ use Davibennun\LaravelPushNotification\Facades\PushNotification;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\PhoneCode;
+use Twilio\Exceptions\TwilioException;
 
 class SmsController extends Controller
 {
@@ -82,5 +83,10 @@ class SmsController extends Controller
 
     public function generateRandomCode($digits = 4){
         return rand(pow(10, $digits-1), pow(10, $digits)-1);
+    }
+    
+    public function verifyPhoneCode(){
+        
+        
     }
 }

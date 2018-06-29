@@ -26,6 +26,7 @@ $router->post('register-user', 'AuthenticationController@postRegisterUser');
 Route::post('/user-notification','UserController@sendUserNotification');
 Route::get('/download','EventController@getDownload');
 Route::post('/sms','SmsController@sendSms');
+Route::post('/sms/verification','SmsController@verifyPhoneCode');
 // route for creating access_token
 $router->post('login', 'AccessTokenController@createAccessToken');
 

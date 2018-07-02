@@ -62,6 +62,8 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     Route::post('/update-device-token','UserController@updateUserDeviceToken');
 
+    Route::post('/get-user','UserController@getUser');
+
 });
 
 

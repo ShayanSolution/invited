@@ -354,24 +354,6 @@ class UserController extends Controller
             'notification'          => $msg
         );
 
-        // $headers = array
-        // (
-        //   'Authorization: key=' . API_ACCESS_KEY,
-        //  'Content-Type: application/json'
-        // );
-
-        //$ch = curl_init();
-        //curl_setopt( $ch,CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send' );
-        //curl_setopt( $ch,CURLOPT_POST, true );
-        //curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
-        //curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
-        //curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
-        //curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
-        //$result = curl_exec($ch );
-        //curl_close( $ch );
-        //echo $result;
-        //dd($result);
-
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
 
@@ -413,6 +395,28 @@ class UserController extends Controller
         // return Array (key:token, value:errror) - in production you should remove from your database the tokens
         echo "<br>Errors :";
         return  $downstreamResponse->tokensWithError();
+
+    }
+
+    public function getUser(){
+
+        $user = Auth::user();
+
+        if($user){
+            return response()->json(
+                [
+                    'user' => $user,
+                ], 200
+            );
+        }else{
+
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to find user'
+                ], 422
+            );
+        }
 
     }
 

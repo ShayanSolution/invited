@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Repositories\Contracts\UserRepository;
+use Illuminate\Support\Facades\Auth;
 
 class AccessTokenController extends Controller
 {
@@ -45,7 +46,6 @@ class AccessTokenController extends Controller
         }
 
         $tokenRequest = $request->create('/oauth/token', 'post', $inputs);
-
         // forward the request to the oauth token request endpoint
         return app()->dispatch($tokenRequest);
     }

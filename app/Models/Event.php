@@ -58,7 +58,7 @@ class Event extends Model
             $user_events[$index]['title'] = $event->title;
             $user_events[$index]['event_address'] = $event->event_address;
             $user_events[$index]['event_time'] = $event->event_time;
-            $user_events[$index]['event_created_time'] = $event->created_at->date;
+            $user_events[$index]['event_created_time'] = strtotime('Y-m-d H:i:s', date($event->created_at));
             $user_events[$index]['longitude'] = $event->longitude;
             $user_events[$index]['latitude'] = $event->latitude;
             $user_events[$index]['payment_method'] = $event->payment_method;

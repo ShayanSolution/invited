@@ -401,7 +401,8 @@ class EventController extends Controller
 
         if($requests){
             foreach($requests as $request){
-                $request->event_contact_list = json_decode($request->contact_list);
+                $request->contact_list = json_decode($request->contact_list);
+                $request->contact_list_count = count($request->contact_list);
             }
             Log::info("Received Requests =>".print_r($requests,true));
             return response()->json(

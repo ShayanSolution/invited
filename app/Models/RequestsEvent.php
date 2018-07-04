@@ -113,10 +113,15 @@ class RequestsEvent extends Model
 
     public static function receivedRequest($created_by){
 
-        return self::select('requests.*','users.firstName','users.lastName','users.phone','events.title','events.event_time')
+        return self::select('requests.*','users.firstName','users.lastName','users.phone','events.title','events.event_time', 'events.event_address')
                 ->join('users','users.id','=','requests.request_to')
                 ->join('events','events.id','=','requests.event_id')
-                ->where('created_by',$created_by)
+//                ->join('contactlists','contactlists.id','=','events.list_id')
+                ->where(function ($query) use ($created_by) {
+                    $query ->where('created_by',$created_by);
+                    $query ->orWhere('request_to',$created_by);
+                })
+//                ->where('created_by',$created_by)
                 ->where('requests.confirmed',1)
                 ->orderBy('requests.created_at','desc')
                 ->get();

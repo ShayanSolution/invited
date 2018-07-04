@@ -37,10 +37,13 @@ class RequestsEvent extends Model
 
        foreach ($request_event as $event)
        {
-           $event_requests  = self::select('event_id','created_by',DB::raw('count(event_id) as total'),'confirmed')
+           $event_requests  = self::select('requests.event_id','requests.created_by',DB::raw('count(requests.event_id) as total'),'confirmed', 'contactlists.list_name', 'contactlists.contact_list')
+                               ->join('events','events.id','=','requests.event_id')
+                               ->join('contactlists','contactlists.id','=','events.list_id')
                                ->groupBy('event_id')
                                ->where('event_id','=',$event->event_id)
                                ->where('request_to','=',$request_to)
+                                ->orderBy('requests.created_at','desc')
                                ->get();
            foreach ($event_requests as $request){
                $created_by = User::where('id',$request->created_by)->first();
@@ -53,6 +56,7 @@ class RequestsEvent extends Model
                    $request_count[$index]['mobile'] = $created_by->mobile;
                    $request_count[$index]['address'] = $event->event_address;
                    $request_count[$index]['event_time'] = $event->event_time;
+                   $request_count[$index]['created_at'] = $event->created_at;
                    $request_count[$index]['event_title'] = $event->title;
                    $request_count[$index]['longitude'] = $event->longitude;
                    $request_count[$index]['latitude'] = $event->latitude;

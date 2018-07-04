@@ -113,10 +113,10 @@ class RequestsEvent extends Model
 
     public static function receivedRequest($created_by){
 
-        return self::select('requests.*','users.firstName','users.lastName','users.phone','events.title','events.event_time', 'events.event_address', DB::raw('(CASE WHEN requests.request_to = ' . $created_by . ' THEN 1 ELSE 0 END) AS event_accepted'))
+        return self::select('requests.*','users.firstName','users.lastName','users.phone','events.title','events.event_time', 'events.event_address', 'contactlists.list_name', DB::raw('(CASE WHEN requests.request_to = ' . $created_by . ' THEN 1 ELSE 0 END) AS event_accepted'))
                 ->join('users','users.id','=','requests.request_to')
                 ->join('events','events.id','=','requests.event_id')
-//                ->join('contactlists','contactlists.id','=','events.list_id')
+                ->join('contactlists','contactlists.id','=','events.list_id')
                 ->where(function ($query) use ($created_by) {
                     $query ->where('created_by',$created_by);
                     $query ->orWhere('request_to',$created_by);

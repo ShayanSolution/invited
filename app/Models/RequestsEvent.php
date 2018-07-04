@@ -48,6 +48,7 @@ class RequestsEvent extends Model
            foreach ($event_requests as $request){
                $created_by = User::where('id',$request->created_by)->first();
                if($created_by){
+                   $contact_list = json_decode($request->contact_list);
                    $event = Event::getEventByID($request->event_id);
                    $request_count[$index]['event_id'] = $request->event_id;
                    $request_count[$index]['total'] = $request->total;
@@ -64,7 +65,8 @@ class RequestsEvent extends Model
                    $request_count[$index]['confirmed'] = $request->confirmed;
                    $request_count[$index]['request_created_by'] = $request->created_by;
                    $request_count[$index]['list_name'] = $request->list_name;
-                   $request_count[$index]['contact_list'] = $request->contact_list;
+                   $request_count[$index]['contact_list'] = $contact_list;
+                   $request_count[$index]['total_invited'] = count($contact_list);
                    $index++;
                }
            }

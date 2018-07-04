@@ -125,6 +125,7 @@ class RequestsEvent extends Model
                 ->where('requests.confirmed',1)
                 ->orderBy('requests.created_at','desc')
                 ->get();
+        
     }
 
     public static function deleteRequest($id){

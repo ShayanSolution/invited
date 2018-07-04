@@ -400,6 +400,9 @@ class EventController extends Controller
         $requests = RequestsEvent::receivedRequest($id);
 
         if($requests){
+            foreach($requests as $request){
+                $request->event_contact_list = json_decode($request->contact_list);
+            }
             Log::info("Received Requests =>".print_r($requests,true));
             return response()->json(
                 [

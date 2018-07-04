@@ -58,6 +58,7 @@ class RequestsEvent extends Model
                    $request_count[$index]['address'] = $event->event_address;
                    $request_count[$index]['event_time'] = $event->event_time;
                    $request_count[$index]['created_at'] = date('Y-m-d H:i:s', strtotime($event->created_at));
+                   $request_count[$index]['updated_at'] = date('Y-m-d H:i:s', strtotime($event->updated_at));
                    $request_count[$index]['event_title'] = $event->title;
                    $request_count[$index]['longitude'] = $event->longitude;
                    $request_count[$index]['latitude'] = $event->latitude;

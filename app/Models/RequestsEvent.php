@@ -113,7 +113,7 @@ class RequestsEvent extends Model
 
     public static function receivedRequest($created_by){
 
-        return self::select('requests.*','users.firstName','users.lastName','users.phone','events.title','events.event_time', 'events.event_address')
+        return self::select('requests.*','users.firstName','users.lastName','users.phone','events.title','events.event_time', 'events.event_address', DB::raw('(CASE WHEN requests.requests = ' . $created_by . ' THEN 1 ELSE 0 END) AS event_accepted'))
                 ->join('users','users.id','=','requests.request_to')
                 ->join('events','events.id','=','requests.event_id')
 //                ->join('contactlists','contactlists.id','=','events.list_id')
@@ -125,7 +125,7 @@ class RequestsEvent extends Model
                 ->where('requests.confirmed',1)
                 ->orderBy('requests.created_at','desc')
                 ->get();
-        
+
     }
 
     public static function deleteRequest($id){

@@ -48,7 +48,7 @@ class Event extends Model
         $events = self::select('events.*','contactlists.list_name')
                    ->join('contactlists','contactlists.id','=','events.list_id')
                    ->where('events.user_id',$id)
-                   ->orderBy('events.created_at','desc')
+                   ->orderBy('events.updated_at','desc')
                    ->get();
 
         $user_events = [];

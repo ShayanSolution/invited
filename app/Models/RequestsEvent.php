@@ -43,7 +43,7 @@ class RequestsEvent extends Model
                                ->groupBy('event_id')
                                ->where('event_id','=',$event->event_id)
                                ->where('request_to','=',$request_to)
-                                ->orderBy('requests.created_at','desc')
+                                ->orderBy('requests.updated_at','desc')
                                ->get();
            foreach ($event_requests as $request){
                $created_by = User::where('id',$request->created_by)->first();
@@ -132,7 +132,7 @@ class RequestsEvent extends Model
                 })
 //                ->where('created_by',$created_by)
                 ->where('requests.confirmed',1)
-                ->orderBy('requests.created_at','desc')
+                ->orderBy('requests.updated_at','desc')
                 ->get();
 
     }

@@ -447,6 +447,7 @@ class EventController extends Controller
             return response()->json(
                 [
                     'Contact List' => $contact_list,
+                    'count' => count($contact_list)
                 ], 200
             );
         }else{

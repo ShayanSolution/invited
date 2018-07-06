@@ -60,7 +60,7 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     Route::get('/received-request','EventController@receivedRequest');
 
-    Route::get('/accepted-request-users','EventController@receivedRequest');
+    Route::get('/accepted-request-users','EventController@acceptedRequestUsers');
 
     Route::post('/update-device-token','UserController@updateUserDeviceToken');
 

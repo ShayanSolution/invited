@@ -123,9 +123,9 @@ class RequestsEvent extends Model
     public static function receivedRequest($created_by){
 
         return self::select('requests.*','users.firstName','users.lastName','users.phone',
-            'events.title','events.event_time', 'events.event_address', 'events.latitude', 'events.latitude', 'events.payment_method',
+            'events.title','events.event_time', 'events.event_address', 'events.latitude AS event_latitude', 'events.longitude AS event_longitude', 'events.payment_method',
             'contactlists.list_name', 'contactlists.contact_list', DB::raw('(CASE WHEN requests.request_to = ' . $created_by . ' THEN 1 ELSE 0 END) AS event_accepted'))
-                ->join('users','users.id','=','requests.request_to')
+                ->join('users','users.id','=','requests.created_by')
                 ->join('events','events.id','=','requests.event_id')
                 ->join('contactlists','contactlists.id','=','events.list_id')
                 ->where(function ($query) use ($created_by) {

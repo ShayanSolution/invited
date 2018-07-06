@@ -437,12 +437,16 @@ class EventController extends Controller
         $created_by = $request['created_by'];
         $event_id = $request['event_id'];
         $requests = RequestsEvent::acceptedRequestUsers($event_id, $created_by);
+        $contact_list = [];
+        foreach($requests as $request){
+            $contact_list[] = $request->phone;
+        }
 
         if($requests){
             Log::info("Received Requests =>".print_r($requests,true));
             return response()->json(
                 [
-                    'Received Requests' => $requests,
+                    'Contact List' => $contact_list,
                 ], 200
             );
         }else{

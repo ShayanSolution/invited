@@ -143,7 +143,7 @@ class RequestsEvent extends Model
 
     public static function acceptedRequestUsers($event_id, $created_by){
 
-        return self::select('requests.*','users.firstName','users.lastName','users.phone')
+        return self::select('users.phone')
             ->join('users','users.id','=','requests.request_to')
             ->where('created_by',$created_by)
             ->where('event_id',$event_id)

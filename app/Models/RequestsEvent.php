@@ -133,6 +133,7 @@ class RequestsEvent extends Model
 //                ->where('created_by',$created_by)
                 ->where('requests.confirmed',1)
                 ->orderBy('requests.updated_at','desc')
+                ->groupBy('requests.event_id')
                 ->get();
 
     }

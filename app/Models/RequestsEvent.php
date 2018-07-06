@@ -141,6 +141,19 @@ class RequestsEvent extends Model
     }
 
 
+    public static function acceptedRequestUsers($event_id, $created_by){
+
+        return self::select('requests.*','users.firstName','users.lastName','users.phone')
+            ->join('users','users.id','=','requests.request_to')
+            ->where('created_by',$created_by)
+            ->where('event_id',$event_id)
+            ->where('requests.confirmed',1)
+            ->orderBy('requests.updated_at','desc')
+            ->get();
+
+    }
+
+
 
     public static function deleteRequest($id){
         $requests = self::where('event_id',$id);

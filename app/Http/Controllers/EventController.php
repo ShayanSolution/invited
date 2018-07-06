@@ -414,12 +414,49 @@ class EventController extends Controller
             return response()->json(
                 [
                     'status' => 'error',
-                    'message' => 'Unable to reject request'
+                    'message' => 'Unable to find request'
                 ], 422
             );
         }
 
     }
+
+
+    public function acceptedRequestUsers(Request $request){
+        Log::info("================= Received Reques API =========================");
+        $validator = Validator::make($request->all(), [
+            'event_id' => 'required',
+            'created_by' => 'required',
+        ]);
+        $response = Event::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            Log::info("Received Requests Error =>".print_r($response,true));
+            return $response;
+        }
+
+        $created_by = $request['created_by'];
+        $event_id = $request['event_id'];
+        $requests = RequestsEvent::acceptedRequestUsers($event_id, $created_by);
+
+        if($requests){
+            Log::info("Received Requests =>".print_r($requests,true));
+            return response()->json(
+                [
+                    'Received Requests' => $requests,
+                ], 200
+            );
+        }else{
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to find request'
+                ], 422
+            );
+        }
+
+    }
+    
+    
 
     public function updateUserEvent(Request $request){
         Log::info("================= Update Event API =========================");

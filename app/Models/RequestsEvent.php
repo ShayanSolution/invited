@@ -149,7 +149,7 @@ class RequestsEvent extends Model
             ->where('event_id',$event_id)
             ->where('requests.confirmed',1)
             ->orderBy('requests.updated_at','desc')
-            ->get();
+            ->toArray();
 
     }
 

@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Models\Event;
 use Log;
+
 
 class RequestsEvent extends Model
 {
@@ -20,6 +22,8 @@ class RequestsEvent extends Model
      * @var array
      */
     protected $fillable = ['created_by','request_to','confirmed','event_id'];
+
+    
     
     public static function CreateRequestEvent($created_by,$user,$event_id){
         $request = RequestsEvent::where('request_to',$user->id)->where('event_id',$event_id)->first();
@@ -99,6 +103,7 @@ class RequestsEvent extends Model
     }
 
     public static function acceptedEventRequest($event_id){
+        
 
         return  self::where('event_id',$event_id)->where('confirmed',1)->get();
 
@@ -140,6 +145,20 @@ class RequestsEvent extends Model
 
     }
 
+    public static function eventAcceptedByMe($request_to){
+        
+        
+        $eventIds = self::where(['request_to'=>$request_to, 'confirmed'=>1])->groupBy('event_id')->pluck('event_id')->toArray();
+        $events = Event::whereIn('id', $eventIds)->with('owner', 'acceptedRequests.invitee')->latest('updated_at')->get();
+        return $events;
+    }
+
+    public static function eventSentByMe($created_by){
+        $eventIds = self::where(['created_by'=>$created_by, 'confirmed'=>1])->groupBy('event_id')->pluck('event_id')->toArray();
+        $events = Event::whereIn('id', $eventIds)->with('owner', 'acceptedRequests.invitee')->latest('updated_at')->get();
+        return $events;
+    }
+
 
     public static function acceptedRequestUsers($event_id, $created_by){
 
@@ -163,6 +182,22 @@ class RequestsEvent extends Model
     public function getUserEventRequests($event_id,$user_id){
         
         return self::where('event_id',$event_id)->where('request_to',$user_id)->first();
+    }
+
+
+    public function owner()
+    {
+        return $this->belongsTo('App\Models\User', 'created_by', 'id')->select('id', 'firstName', 'lastName', 'username', 'email', 'phone');
+    }
+
+    public function invitee()
+    {
+        return $this->belongsTo('App\Models\User', 'request_to', 'id')->select('id', 'firstName', 'lastName', 'username', 'email', 'phone');
+    }
+
+    public function event()
+    {
+        return $this->belongsTo('App\Models\Event', 'event_id', 'id');
     }
 
 }

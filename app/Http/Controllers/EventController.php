@@ -396,19 +396,24 @@ class EventController extends Controller
             return $response;
         }
 
-        $id = $request['created_by'];
+        $id = $request['created_by']; //TODO: Use Auth
         $requests = RequestsEvent::receivedRequest($id);
+        
+        $acceptedByMe = RequestsEvent::eventAcceptedByMe($id);
+        $sentByMe = RequestsEvent::eventSentByMe($id);
 
+        $receivedRequest = $acceptedByMe->merge($sentByMe)->sortByDesc('updated_at');
         if($requests){
-            foreach($requests as $request){
-                $request->contact_list = json_decode($request->contact_list);
-                $request->total_invited = count($request->contact_list);
-            }
+//            foreach($requests as $request){
+//                $request->contact_list = json_decode($request->contact_list);
+//                $request->total_invited = count($request->contact_list);
+//            }
             Log::info("Received Requests =>".print_r($requests,true));
+
             return response()->json(
-                [
-                    'Received Requests' => $requests,
-                ], 200
+
+                    $receivedRequest->values()
+                , 200
             );
         }else{
             return response()->json(

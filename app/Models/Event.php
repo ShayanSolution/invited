@@ -6,6 +6,7 @@ use App\ContactList;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\RequestsEvent;
 use Log;
+use Auth;
 
 
 class Event extends Model
@@ -33,6 +34,45 @@ class Event extends Model
         'list_id',
         'max_invited',
     ];
+
+    protected $appends = array('who_will_pay', 'event_type');
+
+    public function getWhoWillPayAttribute()
+    {
+        if(Auth::user()->id == $this->user_id){
+            //You->1
+            //Invitee-> 2
+            //shared ->3
+            if($this->payment_method = 1){
+                return 'You';
+            }elseif($this->payment_method = 2){
+                return 'Invitee';
+            }else{
+                return 'Shared';
+            }
+        }else{
+            //Inviter->1
+            //You->2
+            //shared->3
+            if($this->payment_method = 1){
+                return 'Inviter';
+            }elseif($this->payment_method = 2){
+                return 'You';
+            }else{
+                return 'Shared';
+            }
+        }
+    }
+
+    public function getEventTypeAttribute()
+    {
+        if(Auth::user()->id == $this->user_id){
+            return 'Sent by me.';
+        }else{
+            return 'Accepted by me.';
+        }
+
+    }
 
     public function user()
     {
@@ -142,5 +182,20 @@ class Event extends Model
             $response['message'] = 'operation completed successfully';
         }
         return $response;
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo('App\Models\User', 'user_id', 'id')->select('id', 'firstName', 'lastName', 'username', 'email', 'phone');
+    }
+
+    public function requests()
+    {
+        return $this->hasMany('App\Models\RequestsEvent', 'event_id');
+    }
+
+    public function acceptedRequests()
+    {
+        return $this->hasMany('App\Models\RequestsEvent', 'event_id')->where('confirmed', 1);
     }
 }

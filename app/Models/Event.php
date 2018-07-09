@@ -71,7 +71,6 @@ class Event extends Model
         }else{
             return 'Accepted by me.';
         }
-
     }
 
     public function user()

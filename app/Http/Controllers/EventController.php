@@ -412,9 +412,9 @@ class EventController extends Controller
             Log::info("Received Requests =>".print_r($receivedRequest,true));
 
             return response()->json(
-
-                    $receivedRequest->values()
-                , 200
+                [
+                    'received_requests'=>$receivedRequest->values()
+                ], 200
             );
         }else{
             return response()->json(

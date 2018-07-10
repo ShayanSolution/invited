@@ -17,6 +17,7 @@ use LaravelFCM\Message\OptionsBuilder;
 use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
 use LaravelFCM\Facades\FCM;
+use Auth;
 
 class EventController extends Controller
 {
@@ -396,19 +397,19 @@ class EventController extends Controller
             return $response;
         }
 
-        $id = $request['created_by']; //TODO: Use Auth
-        $requests = RequestsEvent::receivedRequest($id);
+        $id = Auth::user()->id; //TODO: Use Auth
+//        $requests = RequestsEvent::receivedRequest($id);
         
         $acceptedByMe = RequestsEvent::eventAcceptedByMe($id);
         $sentByMe = RequestsEvent::eventSentByMe($id);
 
         $receivedRequest = $acceptedByMe->merge($sentByMe)->sortByDesc('updated_at');
-        if($requests){
+        if(count($receivedRequest) > 0){
 //            foreach($requests as $request){
 //                $request->contact_list = json_decode($request->contact_list);
 //                $request->total_invited = count($request->contact_list);
 //            }
-            Log::info("Received Requests =>".print_r($requests,true));
+            Log::info("Received Requests =>".print_r($receivedRequest,true));
 
             return response()->json(
 

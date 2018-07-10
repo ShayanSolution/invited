@@ -388,9 +388,9 @@ class EventController extends Controller
 
     public function receivedRequest(Request $request){
         Log::info("================= Received Reques API =========================");
-        $validator = Validator::make($request->all(), [
-            'created_by' => 'required',
-        ]);
+//        $validator = Validator::make($request->all(), [
+//            'created_by' => 'required',
+//        ]);
         $response = Event::generateErrorResponse($validator);
         if($response['code'] == 500){
             Log::info("Received Requests Error =>".print_r($response,true));

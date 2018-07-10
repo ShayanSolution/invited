@@ -66,6 +66,23 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password',
     ];
 
+    protected $casts = [
+        'firstName'=>'string',
+        'lastName'=> 'string',
+        'cnic_no'=> 'string',
+        'middleName'=> 'string',
+        'username'=> 'string',
+        'dob'=> 'dob',
+        'address'=> 'string',
+        'zipCode'=> 'string',
+        'phone'=> 'string',
+        'mobile'=> 'string',
+        'city'=> 'string',
+        'state'=> 'string',
+        'country'=> 'string',
+        'platform'=> 'string',
+    ];
+
     /**
      * @return bool
      */
@@ -232,5 +249,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             $response['message'] = 'operation completed successfully';
         }
         return $response;
+    }
+
+    protected function castAttribute($key, $value)
+    {
+        if ($this->getCastType($key) == 'array' && is_null($value)) {
+            return [];
+        }
+        if (is_null($value)) {
+            return '';
+        }
+
+        return parent::castAttribute($key, $value);
     }
 }

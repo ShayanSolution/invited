@@ -23,6 +23,9 @@ class RequestsEvent extends Model
      */
     protected $fillable = ['created_by','request_to','confirmed','event_id'];
 
+    protected $casts = [
+        'deleted_at'=>'timestamp',
+    ];
     
     
     public static function CreateRequestEvent($created_by,$user,$event_id){
@@ -198,6 +201,19 @@ class RequestsEvent extends Model
     public function event()
     {
         return $this->belongsTo('App\Models\Event', 'event_id', 'id');
+    }
+
+    protected function castAttribute($key, $value)
+    {
+
+        if ($this->getCastType($key) == 'array' && is_null($value)) {
+            return [];
+        }
+        if (is_null($value)) {
+            return '';
+        }
+
+        return parent::castAttribute($key, $value);
     }
 
 }

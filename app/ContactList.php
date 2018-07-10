@@ -25,6 +25,11 @@ class ContactList extends Model
         'list_name'
     ];
 
+    protected $casts = [
+        'contact_list'=>'string',
+        'list_name'=> 'string',
+    ];
+
     public function user()
     {
         return $this->belongsTo('App\Models\User', 'user_id');
@@ -107,5 +112,18 @@ class ContactList extends Model
             $response['message'] = 'operation completed successfully';
         }
         return $response;
+    }
+
+    protected function castAttribute($key, $value)
+    {
+
+        if ($this->getCastType($key) == 'array' && is_null($value)) {
+            return [];
+        }
+        if (is_null($value)) {
+            return '';
+        }
+
+        return parent::castAttribute($key, $value);
     }
 }

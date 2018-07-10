@@ -35,7 +35,12 @@ class Event extends Model
         'max_invited',
     ];
 
-    protected $appends = array('who_will_pay', 'event_type');
+    protected $appends = ['who_will_pay', 'event_type'];
+    protected $casts = [
+        'title'=>'string',
+        'event_address'=> 'string',
+        'max_invited'=> 'integer',
+    ];
 
     public function getWhoWillPayAttribute()
     {
@@ -201,5 +206,19 @@ class Event extends Model
     public function contactList()
     {
         return $this->belongsTo('App\ContactList', 'list_id', 'id');
+    }
+
+
+    protected function castAttribute($key, $value)
+    {
+
+        if ($this->getCastType($key) == 'array' && is_null($value)) {
+            return [];
+        }
+        if (is_null($value)) {
+            return '';
+        }
+
+        return parent::castAttribute($key, $value);
     }
 }

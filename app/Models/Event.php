@@ -195,7 +195,7 @@ class Event extends Model
 
     public function acceptedRequests()
     {
-        return $this->hasMany('App\Models\RequestsEvent', 'event_id')->where('confirmed', 1);
+        return $this->hasMany('App\Models\RequestsEvent', 'event_id')->where('confirmed', 1)->latest('updated_at');
     }
 
     public function contactList()

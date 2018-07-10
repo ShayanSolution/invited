@@ -43,9 +43,9 @@ class Event extends Model
             //You->1
             //Invitee-> 2
             //shared ->3
-            if($this->payment_method = 1){
+            if($this->payment_method == 1){
                 return 'You';
-            }elseif($this->payment_method = 2){
+            }elseif($this->payment_method == 2){
                 return 'Invitee';
             }else{
                 return 'Shared';
@@ -54,9 +54,9 @@ class Event extends Model
             //Inviter->1
             //You->2
             //shared->3
-            if($this->payment_method = 1){
+            if($this->payment_method == 1){
                 return 'Inviter';
-            }elseif($this->payment_method = 2){
+            }elseif($this->payment_method == 2){
                 return 'You';
             }else{
                 return 'Shared';

@@ -391,11 +391,11 @@ class EventController extends Controller
 //        $validator = Validator::make($request->all(), [
 //            'created_by' => 'required',
 //        ]);
-        $response = Event::generateErrorResponse($validator);
-        if($response['code'] == 500){
-            Log::info("Received Requests Error =>".print_r($response,true));
-            return $response;
-        }
+//        $response = Event::generateErrorResponse($validator);
+//        if($response['code'] == 500){
+//            Log::info("Received Requests Error =>".print_r($response,true));
+//            return $response;
+//        }
 
         $id = Auth::user()->id;
 //        $requests = RequestsEvent::receivedRequest($id);

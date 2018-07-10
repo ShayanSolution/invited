@@ -397,7 +397,7 @@ class EventController extends Controller
             return $response;
         }
 
-        $id = Auth::user()->id; //TODO: Use Auth
+        $id = Auth::user()->id;
 //        $requests = RequestsEvent::receivedRequest($id);
         
         $acceptedByMe = RequestsEvent::eventAcceptedByMe($id);

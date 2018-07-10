@@ -197,4 +197,9 @@ class Event extends Model
     {
         return $this->hasMany('App\Models\RequestsEvent', 'event_id')->where('confirmed', 1);
     }
+
+    public function contactList()
+    {
+        return $this->belongsTo('App\ContactList', 'list_id', 'id');
+    }
 }

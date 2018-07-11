@@ -644,7 +644,7 @@ class EventController extends Controller
 
         $requests  = RequestsEvent::all();
         foreach($requests as $request){
-            $user = User::where('id', $request->created_by)->first();
+            $user = User::where('id', $request->request_to)->first();
             if(!$user){
                 RequestsEvent::where('id', $request->id)->delete();
             }

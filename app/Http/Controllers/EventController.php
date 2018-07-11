@@ -637,4 +637,35 @@ class EventController extends Controller
         $downstreamResponse = FCM::sendTo($device_token, $option, null, $data);
 
     }
+
+
+
+    public function getAllRequests(Request $request){
+
+        $requests  = RequestsEvent::all();
+        foreach($requests as $request){
+            $event = Event::where('id', $request->event_id)->first();
+            if(!$event){
+                RequestsEvent::where('id', $request->id)->delete();
+            }
+        }
+
+        if($requests){
+
+            return response()->json(
+                [
+                    'event_requests' => $requests,
+                ], 200
+            );
+        }else{
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable find total count'
+                ], 422
+            );
+        }
+    }
+    
+    
 }

@@ -37,8 +37,8 @@ class SmsController extends Controller
             ];
         }
 
-        $accountSid = 'AC8bf700a1081c05d96be08ce0aeacccf3';
-        $authToken  = 'a174861ea684bc1546523c6324d638d7';
+        $accountSid = Config::get('twilio.accountId');
+        $authToken  = Config::get('twilio.authKey');
 
         $client = new Client($accountSid, $authToken);
 

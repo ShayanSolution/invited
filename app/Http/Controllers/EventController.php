@@ -642,19 +642,19 @@ class EventController extends Controller
 
     public function getAllRequests(Request $request){
 
-        $requests  = RequestsEvent::all();
-        foreach($requests as $request){
-            $user = User::where('id', $request->request_to)->first();
+        $events  = Event::all();
+        foreach($events as $event){
+            $user = User::where('id', $event->user_id)->first();
             if(!$user){
-                RequestsEvent::where('id', $request->id)->delete();
+                Event::where('id', $event->id)->delete();
             }
         }
 
-        if($requests){
+        if($events){
 
             return response()->json(
                 [
-                    'event_requests' => $requests,
+                    'event_requests' => $events,
                 ], 200
             );
         }else{

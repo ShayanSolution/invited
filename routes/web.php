@@ -66,12 +66,12 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     Route::post('/get-user','UserController@getUser');
 
-
+    //For test
+    Route::get('/get-all-request','EventController@getAllRequests');
 
 });
 
-//For test
-Route::get('/get-all-request','EventController@getAllRequests');
+
 
 
 

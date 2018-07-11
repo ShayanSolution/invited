@@ -12,12 +12,17 @@ class PhoneCode extends Model
     ];
     protected $table = 'phone_codes';
 
+    public function scopeVerified($q){
+        return $q->where('verified',1);
+    }
+
     public function createPhoneCode($phone,$code){
        return  self::create(['phone'=>$phone,'code'=>$code])->id;
     }
 
     public static function getPhoneNumber($phone){
-        return  self::where('phone','=',$phone)->first();
+        $phoneWithoutCode = substr($phone,-10);
+        return  self::where('phone','like','%'.$phoneWithoutCode)->verified()->first();
     }
 
     public function updatePhoneCode($phone,$code){

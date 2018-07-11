@@ -13,6 +13,7 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Profile;
+use App\Helpers\General;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract
 {
@@ -220,7 +221,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         $first_name = $email[0];
         $user = User::create([
             'email' => $request['email'],
-            'phone' => $request['phone'],
+            'phone' => General::sanitizePhoneNumber($request['phone']),
             'password' => Hash::make($request['password']),
             'uid' => md5(microtime()),
             //'device_token' => $request->device_token,
@@ -264,6 +265,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     public static function findByPhoneNumber($phone){
-        return self::where('phone', $phone)->first();
+        $phoneWithoutCode = substr($phone,-10);
+        return self::where('phone','like' ,'%'.$phoneWithoutCode)->first();
     }
 }

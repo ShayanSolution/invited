@@ -61,6 +61,8 @@ $app->configure('services');
 $app->configure('user-constants');
 // load database configurations
 $app->configure('database');
+
+$app->configure('twilio');
 // load push notification configurations
 $app->configure('push-notification');
 

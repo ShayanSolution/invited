@@ -12,11 +12,13 @@ use Twilio\Exceptions\TwilioException;
 //Models
 use App\Models\User;
 use App\Models\PhoneCode;
-
+use Log;
+use App\Helpers\General;
 class SmsController extends Controller
 {
     public function sendSms(Request $request)
     {
+        
         $validator = Validator::make($request->all(), [
             'phone' => 'required',
         ]);
@@ -27,53 +29,70 @@ class SmsController extends Controller
 
         $request = $request->all();
         $phone = $request['phone'];
-        
+
+        Log::info("Got request for phone number =>".$phone);
         $user = new User;
-        $phone_exist = $user->findByPhoneNumber($phone);
-        if($phone_exist){
+        $phoneExist = $user->findByPhoneNumber($phone);
+
+        
+        if($phoneExist){
             return [
                 'status' => 'error',
                 'message' => 'Phone number already exist.'
             ];
         }
 
-        $accountSid = Config::get('twilio.accountId');
-        $authToken  = Config::get('twilio.authKey');
+        $accountSid = config('twilio.accountId');
+        $authToken  = config('twilio.authKey');
 
         $client = new Client($accountSid, $authToken);
 
         try
         {
-            $code = $this->generateRandomCode();
-            $phone_code = new PhoneCode();
-            $phone_number = $phone_code->getPhoneNumber($phone);
 
-            if($phone_number->verified == 1){
+            //$phone_code = new PhoneCode();
+            $phoneCode = PhoneCode::getPhoneNumber($phone);
+
+            if($phoneCode){
                 return [
                     'status' => 'error',
                     'message' => 'Phone number already verified.'
                 ];
             }
+            else
+            {
+                $code = $this->generateRandomCode();
 
-            $to_number = $this->sanitizePhoneNumber($phone);
-            // Use the client to do fun stuff like send text messages!
-            $response=  $client->messages->create(
-            // the number you'd like to send the message to
-                $to_number,
-                array(
-                    // A Twilio phone number you purchased at twilio.com/console
-                    'from' => '+16162198881',
-                    // the body of the text message you'd like to send
-                    'body' => "Sent from your twilio trial account. Phone: $phone code: $code"
-                )
-            );
+                $to_number = General::sanitizePhoneNumber($phone);
+                // Use the client to do fun stuff like send text messages!
+                $response=  $client->messages->create(
+                // the number you'd like to send the message to
+                    $to_number,
+                    array(
+                        // A Twilio phone number you purchased at twilio.com/console
+                        'from' => '+16162198881',
+                        // the body of the text message you'd like to send
+                        'body' => "Sent from your twilio trial account. Phone: $phone code: $code"
+                    )
+                );
+                //check $response is ok then do db operation
 
-            if($phone_number && $phone_number->verified == 0){
-                //update phone code
-                $phone_code->updatePhoneCode($phone,$code);
-            }else{
-                $phone_code->createPhoneCode($phone,$code);
+                //phone number is not verified
+                if($phoneCode && $phoneCode->verified == 0){
+                    //update phone code
+                    $phoneCode->code = $code;
+                    $phoneCode->save();
+                }else{
+                    $phoneCode = new PhoneCode();
+                    $phoneCode->phone = $to_number;
+                    $phoneCode->code = $code;
+                    $phoneCode->save();
+                }
             }
+
+
+
+
 
             return [
                 'status' => 'success',

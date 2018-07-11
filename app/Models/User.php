@@ -215,7 +215,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
     
     public static function registerUser($request){
-        $request = $request->all();
+        
         $email = explode("@",$request['email']);
         $first_name = $email[0];
         $user = User::create([
@@ -261,5 +261,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         }
 
         return parent::castAttribute($key, $value);
+    }
+
+    public static function findByPhoneNumber($phone){
+        return self::where('phone', $phone)->first();
     }
 }

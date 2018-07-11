@@ -16,7 +16,7 @@ class PhoneCode extends Model
        return  self::create(['phone'=>$phone,'code'=>$code])->id;
     }
 
-    public function getPhoneNumber($phone){
+    public static function getPhoneNumber($phone){
         return  self::where('phone','=',$phone)->first();
     }
 
@@ -25,7 +25,7 @@ class PhoneCode extends Model
     }
     
     public function verifyPhoneCode($request){
-       $request = $request->all();
+
        $phone = $request['phone'];
        $code = $request['code'];
        $phone_code =  self::where('phone','=',$phone)->where('code','=',$code)->first();

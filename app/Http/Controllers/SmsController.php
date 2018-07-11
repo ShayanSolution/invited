@@ -8,9 +8,10 @@ use Twilio\Rest\Client;
 use Twilio\Jwt\ClientToken;
 use Davibennun\LaravelPushNotification\Facades\PushNotification;
 use Illuminate\Support\Facades\Validator;
+use Twilio\Exceptions\TwilioException;
+//Models
 use App\Models\User;
 use App\Models\PhoneCode;
-use Twilio\Exceptions\TwilioException;
 
 class SmsController extends Controller
 {
@@ -26,6 +27,15 @@ class SmsController extends Controller
 
         $request = $request->all();
         $phone = $request['phone'];
+        
+        $user = new User;
+        $phone_exist = $user->findByPhoneNumber($phone);
+        if($phone_exist){
+            return [
+                'status' => 'error',
+                'message' => 'Phone number already exist.'
+            ];
+        }
 
         $accountSid = 'AC8bf700a1081c05d96be08ce0aeacccf3';
         $authToken  = 'a174861ea684bc1546523c6324d638d7';
@@ -37,6 +47,13 @@ class SmsController extends Controller
             $code = $this->generateRandomCode();
             $phone_code = new PhoneCode();
             $phone_number = $phone_code->getPhoneNumber($phone);
+
+            if($phone_number->verified == 1){
+                return [
+                    'status' => 'error',
+                    'message' => 'Phone number already verified.'
+                ];
+            }
 
             $to_number = $this->sanitizePhoneNumber($phone);
             // Use the client to do fun stuff like send text messages!
@@ -51,7 +68,7 @@ class SmsController extends Controller
                 )
             );
 
-            if($phone_number){
+            if($phone_number && $phone_number->verified == 0){
                 //update phone code
                 $phone_code->updatePhoneCode($phone,$code);
             }else{
@@ -96,7 +113,11 @@ class SmsController extends Controller
             return $response;
         }
 
+        $request = $request->all();
+        
         $phone_code = new PhoneCode();
+        
+        
         $phone_verified = $phone_code->verifyPhoneCode($request);
         if($phone_verified){
             return [

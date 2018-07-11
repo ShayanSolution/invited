@@ -300,20 +300,34 @@ class AuthenticationController extends Controller
         if($response['code'] == 500){
             return $response;
         }
-        $user = User::registerUser($request);
-        if($user){
-            return response()->json(
-                [
-                    'status' => 'success',
-                    'message' => 'User registered successfully',
-                    'user_id' => $user
-                ]
-            );
+
+        $request = $request->all();
+
+        $phone = PhoneCode::getPhoneNumber($request['phone']);
+
+        if($phone && $phone->verified == 1){
+            $user = User::registerUser($request);
+            if($user){
+                return response()->json(
+                    [
+                        'status' => 'success',
+                        'message' => 'User registered successfully',
+                        'user_id' => $user
+                    ]
+                );
+            }else{
+                return response()->json(
+                    [
+                        'status' => 'error',
+                        'message' => 'Unable to register user',
+                    ], 422
+                );
+            }
         }else{
             return response()->json(
                 [
                     'status' => 'error',
-                    'message' => 'Unable to register user',
+                    'message' => 'Phone number is not verified.',
                 ], 422
             );
         }

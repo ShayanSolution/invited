@@ -75,21 +75,17 @@ Route::group(['prefix' => 'v2'], function () {
         return 'version 2';
     });
 
-    // Generate random string
-    Route::get('appKey', function () {
-        return str_random('32');
-    });
     Route::post('register-user', 'VersionTwo\AuthenticationController@postRegisterUser');
     Route::post('/user-notification','UserController@sendUserNotification');
     Route::get('/download','EventController@getDownload');
     Route::post('/sms','VersionTwo\SmsController@sendSms');
     Route::post('/phone/verification','VersionTwo\SmsController@verifyPhoneCode');
 // route for creating access_token
-    Route::post('login', 'AccessTokenController@createAccessToken');
+    Route::post('login', 'VersionTwo\AccessTokenController@createAccessToken');
 
     Route::get('/send','UserController@sendFirebaseNotifications');
 
-//    Route::group(['middleware' => ['auth:api', 'throttle:60']], function () {
+    Route::group(['middleware' => ['auth:api', 'throttle:60']], function () {
 //
 //        Route::get('/logout','UserController@logoutApi');
 //
@@ -119,11 +115,11 @@ Route::group(['prefix' => 'v2'], function () {
 //
 //        Route::get('/accepted-request-users','EventController@acceptedRequestUsers');
 //
-//        Route::post('/update-device-token','UserController@updateUserDeviceToken');
+        Route::post('/update-device-token','VersionTwo\UserController@updateUserDeviceToken');
 //
-//        Route::get('/get-user','UserController@getUser');
+        Route::get('/get-user','VersionTwo\UserController@getUser');
 //
-//    });
+    });
 
 });
 

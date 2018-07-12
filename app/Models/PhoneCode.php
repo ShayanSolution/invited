@@ -22,7 +22,7 @@ class PhoneCode extends Model
 
     public static function getPhoneNumber($phone){
         $phoneWithoutCode = substr($phone,-10);
-        return  self::where('phone','like','%'.$phoneWithoutCode)->verified()->first();
+        return  self::where('phone','like','%'.$phoneWithoutCode)->first();
     }
 
     public function updatePhoneCode($phone,$code){

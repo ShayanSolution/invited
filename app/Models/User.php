@@ -82,6 +82,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'state'=> 'string',
         'country'=> 'string',
         'platform'=> 'string',
+        'profileImage' => 'string',
+        'deleted_at'=> 'timestamp'
     ];
 
     /**

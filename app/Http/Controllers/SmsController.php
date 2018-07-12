@@ -54,7 +54,7 @@ class SmsController extends Controller
             //$phone_code = new PhoneCode();
             $phoneCode = PhoneCode::getPhoneNumber($phone);
 
-            if($phoneCode){
+            if($phoneCode && $phoneCode->verified == 1){
                 return [
                     'status' => 'error',
                     'message' => 'Phone number already verified.'

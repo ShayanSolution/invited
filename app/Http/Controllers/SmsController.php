@@ -29,7 +29,7 @@ class SmsController extends Controller
 
         $request = $request->all();
         $phone = $request['phone'];
-        
+
 
         Log::info("Got request for phone number =>".$phone);
         $user = new User;
@@ -85,7 +85,7 @@ class SmsController extends Controller
                     $phoneCode->save();
                 }else{
                     $phoneCode = new PhoneCode();
-                    $phoneCode->phone = $to_number;
+                    $phoneCode->phone = $phone;
                     $phoneCode->code = $code;
                     $phoneCode->save();
                 }
@@ -136,8 +136,7 @@ class SmsController extends Controller
         $request = $request->all();
         
         $phone_code = new PhoneCode();
-        
-        
+
         $phone_verified = $phone_code->verifyPhoneCode($request);
         if($phone_verified){
             return [

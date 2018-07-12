@@ -18,4 +18,8 @@ class General
             return '+92'.$number;
         }
     }
+
+    public static function generateRandomCode($digits = 4){
+        return rand(pow(10, $digits-1), pow(10, $digits)-1);
+    }
 }

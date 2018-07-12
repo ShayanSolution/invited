@@ -288,6 +288,25 @@ class AuthenticationController extends Controller
         );
     }
 
+    public function registerValidation(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:users',
+            'phone' => 'required|unique:users',
+            'password' => 'required|min:6|confirmed',
+            'password_confirmation' => 'required|min:6'
+        ]);
+        $response = User::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }else{
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'message' => 'Validations passed.',
+                ]
+            );
+        }
+    }
 
     public function postRegisterUser(Request $request){
         $validator = Validator::make($request->all(), [

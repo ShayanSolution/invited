@@ -11,7 +11,7 @@ class General
     public static function sanitizePhoneNumber($number){
 
 
-        if (preg_match('/^[+,0]?(92)/', $number)){
+        if (preg_match('/^[+]([0-9])/', $number)){
             return $number;
         }else{
             $number = ltrim($number, '0');

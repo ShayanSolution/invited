@@ -29,8 +29,7 @@ class SmsController extends Controller
 
         $request = $request->all();
         $phone = $request['phone'];
-//        $to_number = General::sanitizePhoneNumber($phone);
-//        dd($to_number);
+        
 
         Log::info("Got request for phone number =>".$phone);
         $user = new User;

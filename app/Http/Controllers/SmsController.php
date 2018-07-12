@@ -85,7 +85,7 @@ class SmsController extends Controller
                     $phoneCode->save();
                 }else{
                     $phoneCode = new PhoneCode();
-                    $phoneCode->phone = $phone;
+                    $phoneCode->phone = $to_number;
                     $phoneCode->code = $code;
                     $phoneCode->save();
                 }

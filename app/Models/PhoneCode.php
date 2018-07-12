@@ -32,8 +32,9 @@ class PhoneCode extends Model
     public function verifyPhoneCode($request){
 
        $phone = $request['phone'];
+        $phoneWithoutCode = substr($phone,-10);
        $code = $request['code'];
-       $phone_code =  self::where('phone','=',$phone)->where('code','=',$code)->first();
+       $phone_code =  self::where('phone','like','%'.$phoneWithoutCode)->where('code','=',$code)->first();
 
        if($phone_code) {
            $new_code = $this->generateRandomCode();

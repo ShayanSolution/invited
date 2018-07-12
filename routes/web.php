@@ -78,7 +78,7 @@ Route::group(['prefix' => 'v2'], function () {
     Route::get('appKey', function () {
         return str_random('32');
     });
-    Route::post('register-user', 'AuthenticationController@postRegisterUser');
+    Route::post('register-user', 'VersionTwo\AuthenticationController@postRegisterUser');
     Route::post('/user-notification','UserController@sendUserNotification');
     Route::get('/download','EventController@getDownload');
     Route::post('/sms','SmsController@sendSms');

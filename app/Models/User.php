@@ -221,7 +221,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         $first_name = $email[0];
         $user = User::create([
             'email' => $request['email'],
-            'phone' => General::sanitizePhoneNumber($request['phone']),
+            'phone' => $request['phone'],
             'password' => Hash::make($request['password']),
             'uid' => md5(microtime()),
             //'device_token' => $request->device_token,

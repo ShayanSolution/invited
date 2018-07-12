@@ -324,7 +324,7 @@ class AuthenticationController extends Controller
 
         $phone = PhoneCode::getPhoneNumber($request['phone']);
 
-//        if($phone && $phone->verified == 1){
+        if($phone && $phone->verified == 1){
             $user = User::registerUser($request);
             if($user){
                 return response()->json(
@@ -342,14 +342,14 @@ class AuthenticationController extends Controller
                     ], 422
                 );
             }
-//        }else{
-//            return response()->json(
-//                [
-//                    'status' => 'error',
-//                    'message' => 'Phone number is not verified.',
-//                ], 422
-//            );
-//        }
+        }else{
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Phone number is not verified.',
+                ], 422
+            );
+        }
     }
 
 }

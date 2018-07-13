@@ -88,6 +88,13 @@ class Event extends Model
         return self::create($request)->id;
     }
 
+    public function scopeGetEventDetails($query)
+    {
+        return $query->with('owner', 'acceptedRequests.invitee', 'contactList')
+            ->withCount(['requests', 'acceptedRequests'])
+            ->latest('updated_at');
+    }
+
     public static function getEvents($id){
         $events = self::select('events.*','contactlists.list_name')
                    ->join('contactlists','contactlists.id','=','events.list_id')

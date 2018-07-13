@@ -76,8 +76,7 @@ Route::group(['prefix' => 'v2'], function () {
     });
 
     Route::post('register-user', 'VersionTwo\AuthenticationController@postRegisterUser');
-    Route::post('/user-notification','UserController@sendUserNotification');
-    Route::get('/download','EventController@getDownload');
+
     Route::post('/sms','VersionTwo\SmsController@sendSms');
     Route::post('/phone/verification','VersionTwo\SmsController@verifyPhoneCode');
 // route for creating access_token
@@ -86,39 +85,14 @@ Route::group(['prefix' => 'v2'], function () {
     Route::get('/send','UserController@sendFirebaseNotifications');
 
     Route::group(['middleware' => ['auth:api', 'throttle:60']], function () {
-//
-//        Route::get('/logout','UserController@logoutApi');
-//
-//        Route::post('/create-list','ListController@CreateUserContactList');
-//
-//        Route::post('/update-list','ListController@UpdateUserContactList');
-//
-//        Route::get('/delete-list','ListController@DeleteUserContactList');
-//
-//        Route::get('/get-event','EventController@getUserEvents');
-//
-//        Route::post('/create-event','EventController@CreateEvent');
-//
-//        Route::get('/get-contact-list','ListController@getUserContactList');
-//
-//        Route::post('/update-event','EventController@updateUserEvent');
-//
-//        Route::get('/delete-event','EventController@deleteEvent');
-//
-//        Route::get('/get-request','EventController@getEventRequests');
-//
-//        Route::get('/accept-request','EventController@acceptRequest');
-//
-//        Route::get('/reject-request','EventController@rejectRequest');
-//
-//        Route::get('/received-request','EventController@receivedRequest');
-//
-//        Route::get('/accepted-request-users','EventController@acceptedRequestUsers');
-//
+        Route::get('/get-event','VersionTwo\EventController@getUserEvents');
+        
+        Route::get('/get-request','VersionTwo\EventController@getEventRequests');
+        
         Route::post('/update-device-token','VersionTwo\UserController@updateUserDeviceToken');
-//
+
         Route::get('/get-user','VersionTwo\UserController@getUser');
-//
+
     });
 
 });

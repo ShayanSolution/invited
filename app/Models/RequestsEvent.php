@@ -27,6 +27,10 @@ class RequestsEvent extends Model
         'deleted_at'=>'timestamp',
     ];
     
+    public function scopeGetEventIds($query){
+        return $query->pluck('event_id')->toArray();
+    }
+    
     
     public static function CreateRequestEvent($created_by,$user,$event_id){
         $request = RequestsEvent::where('request_to',$user->id)->where('event_id',$event_id)->first();

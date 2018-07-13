@@ -298,11 +298,13 @@ class AuthenticationController extends Controller
         $response = User::generateErrorResponse($validator);
         if($response['code'] == 500){
             return $response;
-        }else{
+        }
+        else{
             return response()->json(
                 [
                     'status' => 'success',
                     'message' => 'Validations passed.',
+                    'code' => 200
                 ]
             );
         }

@@ -31,7 +31,7 @@ class JsonResponse
                     $data['status'] = 'error';
                 }
             }
-            elseif($data['status'] == 'success'){
+            if($data['status'] == 'success'){
                 $data['message'] = 'Operation completed successfully.';
             }else{
                 $data['message'] = 'Error in operation.';

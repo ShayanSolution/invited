@@ -79,7 +79,7 @@ class SmsController extends Controller
                         // A Twilio phone number you purchased at twilio.com/console
                         'from' => '+16162198881',
                         // the body of the text message you'd like to send
-                        'body' => "Phone: $phone code: $code"
+                        'body' => "Your Invited phone verification code is $code"
                     )
                 );
                 //check $response is ok then do db operation

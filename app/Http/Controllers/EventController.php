@@ -196,7 +196,7 @@ class EventController extends Controller
         $total_events = count($events);
         if($events){
 
-            return JsonResponse::generateResponse(
+            return response()->json(
                 [
                     'status' => 'success',
                     'total_events'=>$total_events,
@@ -205,7 +205,7 @@ class EventController extends Controller
                 ], 200
             );
         }else{
-            return JsonResponse::generateResponse(
+            return response()->json(
                 [
                     'status' => 'error',
                     'message' => 'Unable find event list'
@@ -233,14 +233,14 @@ class EventController extends Controller
         if($total_count){
 
             Log::info("Response received =>".print_r($total_count['event_request'],true));
-            return JsonResponse::generateResponse(
+            return response()->json(
                 [
                     'status' => 'success',
                     'event_requests' => $total_count['event_request'],
                 ], 200
             );
         }else{
-            return JsonResponse::generateResponse(
+            return response()->json(
                 [
                     'status' => 'error',
                     'message' => 'Unable find total count'
@@ -417,14 +417,14 @@ class EventController extends Controller
 //            }
             Log::info("Received Requests =>".print_r($receivedRequest,true));
 
-            return JsonResponse::generateResponse(
+            return response()->json(
                 [
                     'status' => 'success',
                     'received_requests'=>$receivedRequest->values()
                 ], 200
             );
         }else{
-            return JsonResponse::generateResponse(
+            return response()->json(
                 [
                     'status' => 'error',
                     'message' => 'Unable to find request'

@@ -80,7 +80,6 @@ class ListController extends Controller
            $users = json_decode($list->contact_list);
            return JsonResponse::generateResponse(
                [
-                   'status' => 'success',
                    'user_contact_list' => $user_contact_list,
                ], 200
            );

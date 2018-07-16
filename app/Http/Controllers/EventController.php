@@ -18,6 +18,7 @@ use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
 use LaravelFCM\Facades\FCM;
 use Auth;
+use App\Helpers\JsonResponse;
 
 class EventController extends Controller
 {
@@ -43,11 +44,11 @@ class EventController extends Controller
         //$user_list = ContactList::getList($list_id);
         $user_list = ContactList::getList($list_id);
         if(empty($user_list->first())){
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
                     'message' => 'Unable to create event'
-                ], 422
+                ], 500
             );
         }
         //create event
@@ -59,16 +60,18 @@ class EventController extends Controller
         Log::info("Before Send User Notification");
         $this->sendUserNotification($request,$event_id,$list_id,$message);
         if($event_id){
-            return [
-                'status' => 'success',
-                'message' => 'Event Created Successfully',
-            ];
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'success',
+                    'message' => 'Event Created Successfully',
+                ],200
+            );
         }else{
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
                     'message' => 'Unable to create event'
-                ], 422
+                ], 500
             );
         }
     }
@@ -81,17 +84,18 @@ class EventController extends Controller
         $list = ContactList::getList($list_id);
         if($list){
             $users = json_decode($list->contact_list);
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
+                    'status' => 'success',
                     'user_contact_list' => $users,
                 ], 200
             );
         }else{
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
                     'message' => 'Unable find contact list'
-                ], 422
+                ], 500
             );
         }
 
@@ -192,19 +196,20 @@ class EventController extends Controller
         $total_events = count($events);
         if($events){
 
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
+                    'status' => 'success',
                     'total_events'=>$total_events,
                     'totl_invited'=>count($user_list),
                     'user_events' => $events
                 ], 200
             );
         }else{
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
                     'message' => 'Unable find event list'
-                ], 422
+                ], 500
             );
         }
     }
@@ -228,17 +233,18 @@ class EventController extends Controller
         if($total_count){
 
             Log::info("Response received =>".print_r($total_count['event_request'],true));
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
+                    'status' => 'success',
                     'event_requests' => $total_count['event_request'],
                 ], 200
             );
         }else{
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
                     'message' => 'Unable find total count'
-                ], 422
+                ], 500
             );
         }
     }
@@ -261,11 +267,11 @@ class EventController extends Controller
         Log::info("Event maxi invited ".$event_detail->max_invited);
         Log::info("Request Confirmed ".$accepted_requests_count);
         if($event_detail->max_invited == $accepted_requests_count){
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'closed',
                     'message' => 'Event has been closed'
-                ], 422
+                ], 200
             );
         }
 
@@ -295,17 +301,17 @@ class EventController extends Controller
                     }
                 }
             }
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'Request accepted successfully'
                 ], 200
             );
         }else{
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
                     'message' => 'Unable to accept'
-                ], 422
+                ], 500
             );
         }
     }
@@ -327,13 +333,13 @@ class EventController extends Controller
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $rejected_user = User::where('id',$id)->first();
             $this->sendRequestNotification($created_by->created_by,$event_id,$rejected_user,$request_status = "rejected");
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'Request rejected successfully',
                 ], 200
             );
         }else{
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
                     'message' => 'Unable to reject request'
@@ -411,17 +417,18 @@ class EventController extends Controller
 //            }
             Log::info("Received Requests =>".print_r($receivedRequest,true));
 
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
+                    'status' => 'success',
                     'received_requests'=>$receivedRequest->values()
                 ], 200
             );
         }else{
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
                     'message' => 'Unable to find request'
-                ], 422
+                ], 500
             );
         }
 
@@ -450,18 +457,19 @@ class EventController extends Controller
 
         if($requests){
             Log::info("Received Requests =>".print_r($requests,true));
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
+                    'status' => 'success',
                     'Contact List' => $contact_list,
                     'count' => count($contact_list)
                 ], 200
             );
         }else{
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
                     'message' => 'Unable to find request'
-                ], 422
+                ], 500
             );
         }
 
@@ -500,17 +508,19 @@ class EventController extends Controller
             $user_id = $request['user_id'];
             $message = "updated the event";
             $this->sendUserNotification($request,$event_id,$list_id,$message);
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
+                    'status' => 'success',
                     'success' => 'Event Updated Successfully',
                 ], 200
             );
         }else{
             Log::info("Unable to update event");
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
+                    'status' => 'error',
                     'error' => 'Unable to update event',
-                ], 200
+                ], 500
             );
         }
 
@@ -561,25 +571,26 @@ class EventController extends Controller
             }
             $event =Event::deleteEvent($request);
             if($event){
-                return response()->json(
+                return JsonResponse::generateResponse(
                     [
+                        'status' => 'success',
                         'message' => 'Event Deleted Successfully',
                     ], 200
                 );
             }else{
-                return response()->json(
+                return JsonResponse::generateResponse(
                     [
                         'status' => 'error',
                         'message' => 'Unable to Delete event',
-                    ], 400
+                    ], 500
                 );
             }
         }else{
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
                     'message' => 'Unable to Delete event',
-                ], 400
+                ], 500
             );
         }
 

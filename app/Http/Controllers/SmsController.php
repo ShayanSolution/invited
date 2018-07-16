@@ -14,6 +14,8 @@ use App\Models\User;
 use App\Models\PhoneCode;
 use Log;
 use App\Helpers\General;
+use App\Helpers\JsonResponse;
+
 class SmsController extends Controller
 {
     public function sendSms(Request $request)
@@ -37,10 +39,12 @@ class SmsController extends Controller
 
         
         if($phoneExist){
-            return [
-                'status' => 'error',
-                'message' => 'Phone number already exist.'
-            ];
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'error',
+                    'message' => 'Phone number already exist.'
+                ],500
+            );
         }
 
         $accountSid = config('twilio.accountId');
@@ -55,10 +59,12 @@ class SmsController extends Controller
             $phoneCode = PhoneCode::getPhoneNumber($phone);
 
             if($phoneCode && $phoneCode->verified == 1){
-                return [
-                    'status' => 'error',
-                    'message' => 'Phone number already verified.'
-                ];
+                return JsonResponse::generateResponse(
+                    [
+                        'status' => 'error',
+                        'message' => 'Phone number already verified.'
+                    ],500
+                );
             }
             else
             {
@@ -73,7 +79,7 @@ class SmsController extends Controller
                         // A Twilio phone number you purchased at twilio.com/console
                         'from' => '+16162198881',
                         // the body of the text message you'd like to send
-                        'body' => "Sent from your twilio trial account. Phone: $phone code: $code"
+                        'body' => "Phone: $phone code: $code"
                     )
                 );
                 //check $response is ok then do db operation
@@ -91,22 +97,21 @@ class SmsController extends Controller
                 }
             }
 
-
-
-
-
-            return [
-                'status' => 'success',
-                'message' => 'Phone code created successfully'
-            ];
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'success',
+                    'message' => 'Phone code created successfully'
+                ],200
+            );
 
         }
         catch (TwilioException $e)
         {
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
+                    'status' => 'error',
                     'Error' => $e->getMessage(),
-                ]
+                ],500
             );
         }
     }
@@ -139,16 +144,18 @@ class SmsController extends Controller
 
         $phone_verified = $phone_code->verifyPhoneCode($request);
         if($phone_verified){
-            return [
-                'status' => 'success',
-                'code' => $phone_verified
-            ];
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'success',
+                ],200
+            );
         }else{
 
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
+                    'status' => 'error',
                     'Error' => 'Unable to verify phone number',
-                ]
+                ],500
             );
         }
     }

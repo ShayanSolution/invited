@@ -15,6 +15,7 @@ use LaravelFCM\Message\OptionsBuilder;
 use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
 use LaravelFCM\Facades\FCM;
+use App\Helpers\JsonResponse;
 
 
 class UserController extends Controller

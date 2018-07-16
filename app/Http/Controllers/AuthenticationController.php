@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\JsonResponse;
 use App\Models\PhoneCode;
 use App\Models\User;
 use Carbon\Carbon;
@@ -300,12 +301,11 @@ class AuthenticationController extends Controller
             return $response;
         }
         else{
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'success',
                     'message' => 'Validations passed.',
-                    'code' => 200
-                ]
+                ],200
             );
         }
     }
@@ -329,27 +329,27 @@ class AuthenticationController extends Controller
         if($phone && $phone->verified == 1){
             $user = User::registerUser($request);
             if($user){
-                return response()->json(
+                return JsonResponse::generateResponse(
                     [
                         'status' => 'success',
                         'message' => 'User registered successfully',
                         'user_id' => $user
-                    ]
+                    ],200
                 );
             }else{
-                return response()->json(
+                return JsonResponse::generateResponse(
                     [
                         'status' => 'error',
                         'message' => 'Unable to register user',
-                    ], 422
+                    ], 500
                 );
             }
         }else{
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
                     'message' => 'Phone number is not verified.',
-                ], 422
+                ], 500
             );
         }
     }

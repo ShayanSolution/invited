@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\ContactList;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\JsonResponse;
 
 class ListController extends Controller
 {
@@ -21,16 +22,18 @@ class ListController extends Controller
 
         $list = ContactList::CreateList($request);
         if($list){
-            return [
-                'status' => 'success',
-                'messages' => 'List Created Successfully',
-            ];
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'success',
+                    'messages' => 'List Created Successfully',
+                ],200
+            );
         }else{
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
                     'message' => 'Unable to create list'
-                ], 422
+                ], 500
             );
         }
     }
@@ -43,16 +46,18 @@ class ListController extends Controller
         ]);
         $list = ContactList::UpdateList($request);
         if($list){
-            return [
-                'status' => 'success',
-                'messages' => 'List Updated Successfully',
-            ];
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'success',
+                    'messages' => 'List Updated Successfully',
+                ],200
+            );
         }else{
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
                     'message' => 'Unable to update list'
-                ], 422
+                ], 500
             );
         }
     }
@@ -73,17 +78,18 @@ class ListController extends Controller
                $index++;
            }
            $users = json_decode($list->contact_list);
-           return response()->json(
+           return JsonResponse::generateResponse(
                [
+                   'status' => 'success',
                    'user_contact_list' => $user_contact_list,
                ], 200
            );
        }else{
-           return response()->json(
+           return JsonResponse::generateResponse(
                [
                    'status' => 'error',
                    'message' => 'Unable to find list'
-               ], 422
+               ], 500
            );
        }
 
@@ -96,17 +102,18 @@ class ListController extends Controller
 
         $list = ContactList::deleteList($request);
         if($list){
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
+                    'status' => 'success',
                     'message' => 'List Deleted Successfully',
                 ], 200
             );
         }else{
-            return response()->json(
+            return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
                     'message' => 'Unable to Delete list',
-                ], 400
+                ], 500
             );
         }
     }

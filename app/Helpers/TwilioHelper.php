@@ -36,8 +36,8 @@ class TwilioHelper
                     'body' => "Wellcome to Invited app. Your verification code is $code"
                 )
             );
-
             if($response->sid){
+                
                 return $response->sid;
             }else{
                 return FALSE;

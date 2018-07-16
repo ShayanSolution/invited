@@ -22,6 +22,9 @@ class JsonResponse
 
 
     public static function generateResponse($data, $code = 200){
+        return response()->json($data);
+
+        //TODO set after ios developer will work
         if(!isset($data['message'])){
             if($data['status'] != 'success' || $data['status'] != 'error'){
                 $data['message'] = $data['status'];

@@ -72,7 +72,7 @@ class SmsController extends Controller
             $toNumber = General::sanitizePhoneNumber($phone);
             // Use the client to do fun stuff like send text messages!
             $response=  TwilioHelper::sendCodeSms($toNumber, $code);
-
+            
             if ($response) {
                 //phone number is not verified
                 if ($phoneCode && $phoneCode->verified == 0) {

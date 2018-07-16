@@ -278,7 +278,7 @@ class EventController extends Controller
         if($accepted['update']){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $accepted_user = User::where('id',$id)->first();
-            $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "accepted");
+            $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "confirmed");
             Log::info("Notification users ids for closed events: ".print_r($accepted['notification_users'],true));
             //if event has been closed, send notification remaining users for closed events
             if(!empty($accepted['notification_users'])){
@@ -378,7 +378,7 @@ class EventController extends Controller
                         'custom' => array('custom_data' => array(
                             'accepted_user' => $user_name,
                             'event_id' => $event_id,
-                            'status' => 'confirmed'
+                            'status' => $request_status
                         ))
                     ));
                     PushNotification::app('invitedIOS')->to($notification_user->device_token)->send($message);

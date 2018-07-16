@@ -419,7 +419,6 @@ class EventController extends Controller
 
             return JsonResponse::generateResponse(
                 [
-                    'status' => 'success',
                     'received_requests'=>$receivedRequest->values()
                 ], 200
             );

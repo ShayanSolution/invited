@@ -78,14 +78,14 @@ class ListController extends Controller
                $index++;
            }
            $users = json_decode($list->contact_list);
-           return response()->json(
+           return JsonResponse::generateResponse(
                [
                    'status' => 'success',
                    'user_contact_list' => $user_contact_list,
                ], 200
            );
        }else{
-           return response()->json(
+           return JsonResponse::generateResponse(
                [
                    'status' => 'error',
                    'message' => 'Unable to find list'

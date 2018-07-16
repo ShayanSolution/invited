@@ -198,7 +198,6 @@ class EventController extends Controller
 
             return JsonResponse::generateResponse(
                 [
-                    'status' => 'success',
                     'total_events'=>$total_events,
                     'totl_invited'=>count($user_list),
                     'user_events' => $events

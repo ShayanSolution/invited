@@ -234,7 +234,6 @@ class EventController extends Controller
             Log::info("Response received =>".print_r($total_count['event_request'],true));
             return JsonResponse::generateResponse(
                 [
-                    'status' => 'success',
                     'event_requests' => $total_count['event_request'],
                 ], 200
             );

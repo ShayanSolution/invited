@@ -15,6 +15,7 @@ use App\Models\PhoneCode;
 use Log;
 use App\Helpers\General;
 use App\Helpers\JsonResponse;
+use App\Helpers\TwilioHelper;
 
 class SmsController extends Controller
 {
@@ -52,68 +53,57 @@ class SmsController extends Controller
 
         $client = new Client($accountSid, $authToken);
 
-        try
-        {
 
-            //$phone_code = new PhoneCode();
-            $phoneCode = PhoneCode::getPhoneNumber($phone);
+        //$phone_code = new PhoneCode();
+        $phoneCode = PhoneCode::getPhoneNumber($phone);
 
-            if($phoneCode && $phoneCode->verified == 1){
-                return JsonResponse::generateResponse(
-                    [
-                        'status' => 'error',
-                        'message' => 'Phone number already verified.'
-                    ],500
-                );
-            }
-            else
-            {
-                $code = $this->generateRandomCode();
-
-                $to_number = General::sanitizePhoneNumber($phone);
-                // Use the client to do fun stuff like send text messages!
-                $response=  $client->messages->create(
-                // the number you'd like to send the message to
-                    $to_number,
-                    array(
-                        // A Twilio phone number you purchased at twilio.com/console
-                        'from' => '+16162198881',
-                        // the body of the text message you'd like to send
-                        'body' => "Wellcome to Invited app. Your verification code is $code"
-                    )
-                );
-                //check $response is ok then do db operation
-
-                //phone number is not verified
-                if($phoneCode && $phoneCode->verified == 0){
-                    //update phone code
-                    $phoneCode->code = $code;
-                    $phoneCode->save();
-                }else{
-                    $phoneCode = new PhoneCode();
-                    $phoneCode->phone = $to_number;
-                    $phoneCode->code = $code;
-                    $phoneCode->save();
-                }
-            }
-
-            return JsonResponse::generateResponse(
-                [
-                    'status' => 'success',
-                    'message' => 'Phone code created successfully'
-                ],200
-            );
-
-        }
-        catch (TwilioException $e)
-        {
+        if($phoneCode && $phoneCode->verified == 1){
             return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
-                    'Error' => $e->getMessage(),
+                    'message' => 'Phone number already verified.'
                 ],500
             );
         }
+        else
+        {
+            $code = $this->generateRandomCode();
+
+            $toNumber = General::sanitizePhoneNumber($phone);
+            // Use the client to do fun stuff like send text messages!
+            $response=  TwilioHelper::sendCodeSms($toNumber, $code);
+
+            if ($response) {
+                //phone number is not verified
+                if ($phoneCode && $phoneCode->verified == 0) {
+                    //update phone code
+                    $phoneCode->code = $code;
+                    $phoneCode->save();
+                } else {
+                    $phoneCode = new PhoneCode();
+                    $phoneCode->phone = $toNumber;
+                    $phoneCode->code = $code;
+                    $phoneCode->save();
+                }
+                return JsonResponse::generateResponse(
+                    [
+                        'status' => 'success',
+                        'message' => 'Phone code created successfully'
+                    ],200
+                );
+            }
+            else{
+                return JsonResponse::generateResponse(
+                    [
+                        'status' => 'error',
+                        'message' => 'Unable to send SMS.'
+                    ],500
+                );
+            }
+        }
+
+        
+
     }
 
     public function sanitizePhoneNumber($phone){

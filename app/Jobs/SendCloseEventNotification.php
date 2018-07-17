@@ -63,7 +63,7 @@ class SendCloseEventNotification extends Job
             $optionBuilder = new OptionsBuilder();
             $optionBuilder->setTimeToLive(60*20);
             $notificationBuilder = new PayloadNotificationBuilder('Event Closed');
-            $notificationBuilder->setBody($this->event_title.' has been closed')->setSound('default');
+            $notificationBuilder->setBody('Too late. '.$this->event_title.' has been closed')->setSound('default');
 
             $dataBuilder = new PayloadDataBuilder();
             $dataBuilder->addData(['a_data' => 'my_data']);

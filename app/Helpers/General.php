@@ -10,13 +10,13 @@ class General
 {
     public static function sanitizePhoneNumber($number){
 
-
-        if (preg_match('/^[+]([0-9])/', $number)){
-            return $number;
-        }else{
-            $number = ltrim($number, '0');
-            return '+92'.$number;
-        }
+        return '+'.$number;
+//        if (preg_match('/^[+]([0-9])/', $number)){
+//            return $number;
+//        }else{
+//            $number = ltrim($number, '0');
+//            return '+92'.$number;
+//        }
     }
 
     public static function generateRandomCode($digits = 4){

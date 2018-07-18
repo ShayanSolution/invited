@@ -35,12 +35,16 @@ class Event extends Model
         'max_invited',
     ];
 
-    protected $appends = ['who_will_pay', 'event_type'];
+    protected $appends = ['who_will_pay', 'event_type', 'list_name'];
     protected $casts = [
         'title'=>'string',
         'event_address'=> 'string',
         'max_invited'=> 'integer',
     ];
+
+    public function getListNameAttribute(){
+        return $this->contactList->list_name;
+    }
 
     public function getWhoWillPayAttribute()
     {

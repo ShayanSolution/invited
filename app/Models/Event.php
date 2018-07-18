@@ -220,6 +220,11 @@ class Event extends Model
         return $this->belongsTo('App\ContactList', 'list_id', 'id');
     }
 
+    public function contactListName()
+    {
+        return $this->belongsTo('App\ContactList', 'list_id', 'id')->select(['id', 'list_name']);
+    }
+
 
     protected function castAttribute($key, $value)
     {

@@ -156,8 +156,8 @@ class RequestsEvent extends Model
         
         
         $eventIds = self::where(['request_to'=>$request_to, 'confirmed'=>1])->groupBy('event_id')->pluck('event_id')->toArray();
-        $events = Event::whereIn('id', $eventIds)->with('owner', 'acceptedRequests.invitee', 'contactList', 'contactListName')
-                    
+        $events = Event::whereIn('id', $eventIds)
+                    ->with('owner', 'acceptedRequests.invitee', 'contactList')
                     ->withCount(['requests', 'acceptedRequests'])
                     ->latest('updated_at')->get();
         return $events;
@@ -165,8 +165,8 @@ class RequestsEvent extends Model
 
     public static function eventSentByMe($created_by){
         $eventIds = self::where(['created_by'=>$created_by, 'confirmed'=>1])->groupBy('event_id')->pluck('event_id')->toArray();
-        $events = Event::whereIn('id', $eventIds)->with('owner', 'acceptedRequests.invitee', 'contactList', 'contactListName')
-                    
+        $events = Event::whereIn('id', $eventIds)
+                    ->with('owner', 'acceptedRequests.invitee', 'contactList')
                     ->withCount(['requests', 'acceptedRequests'])
                     ->latest('updated_at')->get();
         return $events;

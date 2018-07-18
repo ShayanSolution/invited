@@ -43,6 +43,9 @@ class Event extends Model
     ];
 
     public function getListNameAttribute(){
+        if(is_null($this->contactList)){
+            return '';
+        }
         return $this->contactList->list_name;
     }
 

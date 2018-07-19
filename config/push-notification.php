@@ -4,8 +4,8 @@ return array(
 
     'invitedIOS'     => array(
         'environment' =>'development',
-        'certificate' =>base_path().'/certificat.pem',
-        'passPhrase'  =>'password',
+        'certificate' =>base_path().env('INVITED_IOS_CERTIFICATE_PATH'),
+        'passPhrase'  =>env('INVITED_IOS_PASS_PHRASE'),
         'service'     =>'apns'
     ),
     'appNameAndroid' => array(

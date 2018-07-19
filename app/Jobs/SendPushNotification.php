@@ -5,6 +5,7 @@ use App\Models\Event;
 use Davibennun\LaravelPushNotification\Facades\PushNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
+use Log;
 
 class SendPushNotification extends Job
 {
@@ -64,6 +65,7 @@ class SendPushNotification extends Job
                 'status' => 'request'
             ))
         ));
-        PushNotification::app('invitedIOS')->to($this->token)->send($message);
+        $response = PushNotification::app('invitedIOS')->to($this->token)->send($message);
+        Log::info("Create Event Notification response: ".print_r($response));
     }
 }

@@ -97,7 +97,10 @@ Route::group(['prefix' => 'v2'], function () {
     });
 
 });
-
+// Generate random string
+$router->get('base_path', function () {
+    return base_path();
+});
 
 
 

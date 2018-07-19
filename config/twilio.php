@@ -1,7 +1,6 @@
 <?php
 return [
-    'accountId' => 'xxxxxxxxxxxxxx',
-//    'authKey' => 'a174861ea684bc1546523c6324d638d7',
-    'authKey' => 'xxxxxxxxxxxx',
-    'twilioNumber' => 'xxxxxxxx'
+    'accountId' => env('TWILIO_ACCOUNT_SID'),
+    'authKey' => env('TWILIO_AUTH_TOKEN'),
+    'twilioNumber' => env('TWILIO_NUMBER'),
 ];

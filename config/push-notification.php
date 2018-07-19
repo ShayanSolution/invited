@@ -13,5 +13,4 @@ return array(
         'apiKey'      =>'yourAPIKey',
         'service'     =>'gcm'
     )
-
 );

@@ -4,7 +4,7 @@ return array(
 
     'invitedIOS'     => array(
         'environment' =>'development',
-        'certificate' =>env('INVITED_IOS_CERTIFICATE_PATH'),
+        'certificate' =>base_path().env('INVITED_IOS_CERTIFICATE_PATH'),
         'passPhrase'  =>env('INVITED_IOS_PASS_PHRASE'),
         'service'     =>'apns'
     ),

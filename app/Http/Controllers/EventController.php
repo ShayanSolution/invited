@@ -279,7 +279,7 @@ class EventController extends Controller
         if($accepted['update']){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $accepted_user = User::where('id',$id)->first();
-            $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "accepted");
+            $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "confirmed");
             Log::info("Notification users ids for closed events: ".print_r($accepted['notification_users'],true));
             //if event has been closed, send notification remaining users for closed events
             if(!empty($accepted['notification_users'])){
@@ -607,10 +607,10 @@ class EventController extends Controller
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
         $dataBuilder = new PayloadDataBuilder();
-        if($request_status == 'accepted'){
+        if($request_status == 'confirmed'){
             //$notificationBuilder = new PayloadNotificationBuilder('Accepted');
             //$notificationBuilder->setBody($user_name.' accepted your request')->setSound('default');
-            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => $user_name.' accepted your request.']);
+            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => $user_name.' confirmed your request.']);
             Log::info("Event Accepted:");
         }
         elseif($request_status == 'rejected'){

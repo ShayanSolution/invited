@@ -117,6 +117,8 @@ class EventController extends Controller
                     $phone = substr($user_detail->phone, -9);//get last 9 digit of phone number.
 
                     $user = User::where('phone', 'like', '%'.$phone)->first();
+
+                    Log::info("sending notification to  => ".print_r($user));
                     //create event request
                     if(!empty($user)){
                         $request = RequestsEvent::CreateRequestEvent($created_by, $user, $event_id);

@@ -11,6 +11,7 @@ namespace App\Helpers;
 use Twilio\Rest\Client;
 use Twilio\Jwt\ClientToken;
 use Twilio\Exceptions\TwilioException;
+use Log;
 
 
 class TwilioHelper
@@ -21,7 +22,7 @@ class TwilioHelper
         $authToken  = config('twilio.authKey');
         $twilioNumber = config('twilio.twilioNumber');
 
-        
+        Log::info("sending code to: ".$toNumber);
         $client = new Client($accountSid, $authToken);
         try {
             
@@ -37,15 +38,17 @@ class TwilioHelper
                 )
             );
             if($response->sid){
-                
+                Log::info("code sent to: ".$toNumber);
                 return $response->sid;
             }else{
+                Log::info("code sending failed to: ".$toNumber);
                 return FALSE;
             }
             
         }
         catch (TwilioException $e)
         {
+            Log::info("code sending failed to: ".$toNumber);
             return FALSE;
         }
     }

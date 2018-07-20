@@ -118,9 +118,10 @@ class EventController extends Controller
 
                     $user = User::where('phone', 'like', '%'.$phone)->first();
 
-                    Log::info("sending notification to  => ".print_r($user));
+
                     //create event request
                     if(!empty($user)){
+                        Log::info("sending notification to  => ".$user->device_token);
                         $request = RequestsEvent::CreateRequestEvent($created_by, $user, $event_id);
                         $device_token = $user->device_token;
                         $user_id = $user->id;

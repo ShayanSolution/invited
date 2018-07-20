@@ -36,6 +36,7 @@ class SendPushNotification extends Job
      */
     public function handle()
     {
+        Log::info("Create Event Notification response: ".$this->event_id);
         $event = Event::where('id',$this->event_id)->first();
         $user = $this->user;
         $request_to = $this->request_to_user;

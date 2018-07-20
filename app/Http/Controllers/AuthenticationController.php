@@ -292,6 +292,7 @@ class AuthenticationController extends Controller
     public function registerValidation(Request $request){
         sleep(20);
 
+        
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
             'phone' => 'required|unique:users',

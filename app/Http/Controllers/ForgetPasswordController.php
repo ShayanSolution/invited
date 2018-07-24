@@ -47,10 +47,11 @@ class ForgetPasswordController extends Controller
         $toNumber = General::sanitizePhoneNumber($phone);
         $response=  TwilioHelper::sendPasswordCodeSms($toNumber, $code);
         if ($response) {
-                $passwordCode = new PasswordCode();
+                $passwordCode = PasswordCode::firstOrNew(['user_id' => $user->id, 'phone'=>$toNumber]);;
                 $passwordCode->user_id = $user->id;
                 $passwordCode->phone = $toNumber;
                 $passwordCode->code = $code;
+                $passwordCode->verified = 0;
                 $passwordCode->save();
 
             return JsonResponse::generateResponse(

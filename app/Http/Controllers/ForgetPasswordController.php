@@ -122,14 +122,14 @@ class ForgetPasswordController extends Controller
                 return JsonResponse::generateResponse(
                     [
                         'status' => 'success',
-                        'Error' => 'Password updated successfully.',
+                        'message' => 'Password updated successfully.',
                     ],500
                 );
             }else{
                 return JsonResponse::generateResponse(
                     [
                         'status' => 'error',
-                        'Error' => 'Unable to update password.',
+                        'message' => 'Unable to update password.',
                     ],500
                 );
             }
@@ -139,7 +139,7 @@ class ForgetPasswordController extends Controller
             return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
-                    'Error' => 'Invalid phone number.',
+                    'message' => 'Invalid phone number.',
                 ],500
             );
         }

@@ -57,7 +57,6 @@ class ForgetPasswordController extends Controller
                 [
                     'status' => 'success',
                     'message' => 'Password code created successfully',
-                    'user_id' => $user->id,
                     'phone' => $phone
                 ],200
             );
@@ -123,7 +122,7 @@ class ForgetPasswordController extends Controller
                     [
                         'status' => 'success',
                         'message' => 'Password updated successfully.',
-                    ],500
+                    ],200
                 );
             }else{
                 return JsonResponse::generateResponse(

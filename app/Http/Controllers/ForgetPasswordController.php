@@ -22,7 +22,7 @@ class ForgetPasswordController extends Controller
         $validator = Validator::make($request->all(), [
             'phone' => 'required',
         ]);
-        $response = User::generateErrorResponse($validator);
+        $response = JsonResponse::generateErrorResponse($validator);
         if($response['code'] == 500){
             return $response;
         }
@@ -68,7 +68,7 @@ class ForgetPasswordController extends Controller
             'phone' => 'required',
             'code' => 'required',
         ]);
-        $response = User::generateErrorResponse($validator);
+        $response = JsonResponse::generateErrorResponse($validator);
         if($response['code'] == 500){
             return $response;
         }
@@ -103,7 +103,7 @@ class ForgetPasswordController extends Controller
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required|min:6'
         ]);
-        $response = User::generateErrorResponse($validator);
+        $response = JsonResponse::generateErrorResponse($validator);
         if ($response['code'] == 500) {
             return $response;
         }

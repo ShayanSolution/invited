@@ -34,6 +34,12 @@ $router->post('login', 'AccessTokenController@createAccessToken');
 
 Route::get('/send','UserController@sendFirebaseNotifications');
 
+/****Forget Password Routes****/
+Route::post('/forget-password/send-code','ForgetPasswordController@sendPasswordCode');
+Route::post('/forget-password/verify-code','ForgetPasswordController@verifyPasswordCode');
+Route::post('/forget-password/update-password','ForgetPasswordController@updatePassword');
+/********/
+
 $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($router) {
 
     Route::get('/logout','UserController@logoutApi');

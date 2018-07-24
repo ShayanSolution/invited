@@ -142,6 +142,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         }
         return $user;
     }
+
+    public function scopeUpdatePassword($query, $password){
+
+        return $query->update(['password'=>Hash::make($password)]);
+    }
     
     public function findBookedUser($tutor_id){
         $user = User::select('users.*')
@@ -267,7 +272,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     public static function findByPhoneNumber($phone){
-        $phoneWithoutCode = substr($phone,-10);
+        $phoneWithoutCode = substr($phone,-9);
         return self::where('phone','like' ,'%'.$phoneWithoutCode)->first();
     }
 }

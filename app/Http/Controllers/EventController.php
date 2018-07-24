@@ -211,7 +211,7 @@ class EventController extends Controller
             return JsonResponse::generateResponse(
                 [
                     'status' => 'error',
-                    'message' => 'Unable find event list'
+                    'message' => 'Unable to find event list.'
                 ], 500
             );
         }

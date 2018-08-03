@@ -114,6 +114,9 @@ class EventController extends Controller
         if(!empty($user_list->first())) {
             foreach ($user_list as $list) {
                 foreach (json_decode($list->contact_list) as $user_detail) {
+                    $user_detail->phone = str_replace('(', '', trim($user_detail->phone));
+                    $user_detail->phone = str_replace(')', '', trim($user_detail->phone));
+                    $user_detail->phone = str_replace('-', '', trim($user_detail->phone));
                     $phone = substr($user_detail->phone, -9);//get last 9 digit of phone number.
 
                     $user = User::where('phone', 'like', '%'.$phone)->first();

@@ -541,7 +541,12 @@ class EventController extends Controller
             $event_list_id = $event_detail->list_id;
             $notification_usres_list = ContactList::getUserList($event_list_id);
             foreach (json_decode($notification_usres_list->contact_list) as $list){
-                $notification_user = User::where('phone',$list->phone)->first();
+                $list->phone = str_replace('(', '', trim($list->phone));
+                $list->phone = str_replace(')', '', trim($list->phone));
+                $list->phone = str_replace('-', '', trim($list->phone));
+                $phone = substr($list->phone, -9);//get last 9 digit of phone number.
+
+                $notification_user = User::where('phone', 'like', '%'.$phone)->first();
                 if($notification_user){
                     $user_device_token = $notification_user->device_token;
                     $user_id = $notification_user->id;

@@ -34,7 +34,7 @@ class TwilioHelper
                     // A Twilio phone number you purchased at twilio.com/console
                     'from' => $twilioNumber,
                     // the body of the text message you'd like to send
-                    'body' => "Wellcome to Invited app. Your verification code is $code"
+                    'body' => "Welcome to Invited app. Your verification code is $code"
                 )
             );
             if($response->sid){
@@ -70,7 +70,8 @@ class TwilioHelper
                     // A Twilio phone number you purchased at twilio.com/console
                     'from' => $twilioNumber,
                     // the body of the text message you'd like to send
-                    'body' => "Wellcome to Invited app. Your reset password code is $code"
+//                    'body' => "Wellcome to Invited app. Your reset password code is $code"
+                    'body' => "$code is your Invited password reset code."
                 )
             );
             if($response->sid){

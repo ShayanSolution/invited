@@ -40,6 +40,7 @@ class AccessTokenController extends Controller
     public function createAccessToken(Request $request)
     {
         $inputs = $request->all();
+        dd($request->all());
 
         //Set default scope with full access
         if (!isset($inputs['scope']) || empty($inputs['scope'])) {
@@ -48,7 +49,7 @@ class AccessTokenController extends Controller
 
         $tokenRequest = $request->create('/oauth/token', 'post', $inputs);
 
-        Log::info('Login api: ', $tokenRequest);
+        Log::info('Login api: ');
         // forward the request to the oauth token request endpoint
         return app()->dispatch($tokenRequest);
     }

@@ -66,6 +66,8 @@ $app->configure('twilio');
 // load push notification configurations
 $app->configure('push-notification');
 
+$app->configure('dompdf');
+
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -112,6 +114,8 @@ $app->register(\SwaggerLume\ServiceProvider::class);
 $app->register('Davibennun\LaravelPushNotification\LaravelPushNotificationServiceProvider');
 $app->register(LaravelFCM\FCMServiceProvider::class);
 LumenPassport::routes($app);
+
+$app->register(\Barryvdh\DomPDF\ServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

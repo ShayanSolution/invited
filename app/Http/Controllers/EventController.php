@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 use App\Models\Event;
 use App\ContactList;
 use App\Models\User;
 use Davibennun\LaravelPushNotification\Facades\PushNotification;
 use App\Models\RequestsEvent;
+use Illuminate\Support\Facades\Mail;
 use Log;
 use App\Jobs\SendPushNotification;
 use App\Jobs\SendCloseEventNotification;
@@ -19,6 +21,12 @@ use LaravelFCM\Message\PayloadNotificationBuilder;
 use LaravelFCM\Facades\FCM;
 use Auth;
 use App\Helpers\JsonResponse;
+use Barryvdh\DomPDF\Facade as PDF;
+
+
+//use Barryvdh\DomPDF\PDF;
+
+
 
 class EventController extends Controller
 {
@@ -657,6 +665,36 @@ class EventController extends Controller
         //send only data message payload
         $downstreamResponse = FCM::sendTo($device_token, $option, null, $data);
 
+    }
+
+    public function SendReport(Request $request){
+        $this->validate($request,[
+            'event_id' => 'required',
+            'email_address' => 'required'
+        ]);
+
+        $eventId = $request->event_id;
+        $emailAddress = $request->email_address;
+
+        $eventObj = Event::getEventByID($eventId);
+        $data = $eventObj->toArray();
+        $eventName = $data['title'];
+
+        //dd($data);
+        $view = view('sendReport.template', compact('data'));
+        $pdfName = storage_path("/pdf/".time().'_EventReport.pdf');
+        /*$pdf = PDF::loadHTML($view)->setPaper('a4', 'potrait')->setWarnings(false)->save('EventReport.pdf');*/
+        $pdf = PDF::loadHTML($view)->setPaper('a4', 'potrait')->setWarnings(false)->save($pdfName);
+        //dd($pdf);
+        Mail::send('emails.welcome', $data, function ($message) use($pdf, $emailAddress, $eventName, $pdfName){
+            $message->from('notification@shayansolutions.com', 'Invited');
+            $message->to($emailAddress)->subject('[Event Report] {'.$eventName.'}');
+            $message->attach($pdfName, [
+                'as' => $eventName.'.pdf',
+                'mime' => 'application/pdf',
+            ]);
+        });
+        dd("ok");
     }
     
     

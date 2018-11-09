@@ -669,8 +669,8 @@ class EventController extends Controller
 
     public function SendReport(Request $request){
         $this->validate($request,[
-            'event_id' => 'required',
-            'email_address' => 'required'
+            'event_id' => 'required ',
+            'email_address' => 'required | email'
         ]);
 
         $eventId = $request->event_id;
@@ -686,7 +686,8 @@ class EventController extends Controller
         /*$pdf = PDF::loadHTML($view)->setPaper('a4', 'potrait')->setWarnings(false)->save('EventReport.pdf');*/
         $pdf = PDF::loadHTML($view)->setPaper('a4', 'potrait')->setWarnings(false)->save($pdfName);
         //dd($pdf);
-        Mail::send('emails.welcome', $data, function ($message) use($pdf, $emailAddress, $eventName, $pdfName){
+
+        $sendMail = Mail::send('emails.welcome', $data, function ($message) use($pdf, $emailAddress, $eventName, $pdfName){
             $message->from('notification@shayansolutions.com', 'Invited');
             $message->to($emailAddress)->subject('[Event Report] {'.$eventName.'}');
             $message->attach($pdfName, [
@@ -694,7 +695,17 @@ class EventController extends Controller
                 'mime' => 'application/pdf',
             ]);
         });
-        dd("email Send successfully");
+
+        return JsonResponse::generateResponse(
+            [
+                'status' => 'success',
+                'message' => 'Email has been sent successfully'
+            ], 200
+        );
+        // respone null
+        //dd($sendMail);
+
+        //dd("email Send successfully");
     }
     
     

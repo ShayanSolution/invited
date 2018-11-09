@@ -694,7 +694,7 @@ class EventController extends Controller
                 'mime' => 'application/pdf',
             ]);
         });
-        dd("ok");
+        dd("email Send successfully");
     }
     
     

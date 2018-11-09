@@ -7,3 +7,4 @@ Homestead.yaml
 /.idea/
 /storage/*.key
 composer.lock
+copmoser.phar

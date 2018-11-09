@@ -22,11 +22,15 @@ class SendPushNotification extends Job
 
     public function __construct($token,$user,$event_id,$request_to_user,$message)
     {
+        Log::info("/********* IOS push notification job dispatch ************/");
         $this->token = $token;
         $this->user = $user;
         $this->event_id = $event_id;
         $this->request_to_user = $request_to_user;
         $this->message = $message;
+        Log::info("Eent ID: ". $this->event_id);
+        Log::info("device Token: ". $this->token);
+        Log::info("/********* End ************/");
     }
 
     /**

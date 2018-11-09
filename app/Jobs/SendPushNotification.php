@@ -22,7 +22,7 @@ class SendPushNotification extends Job
 
     public function __construct($token,$user,$event_id,$request_to_user,$message)
     {
-
+        Log::info("/********* IOS push notification job dispatch Constructor ************/");
         $this->token = $token;
         $this->user = $user;
         $this->event_id = $event_id;
@@ -42,7 +42,7 @@ class SendPushNotification extends Job
         Log::info("Eent ID: ". $this->event_id);
         Log::info("device Token: ". $this->token);
         Log::info("/********* End ************/");
-        
+
         Log::info("Create Event Notification response: ".$this->event_id);
         $event = Event::where('id',$this->event_id)->first();
         $user = $this->user;

@@ -145,8 +145,8 @@ class EventController extends Controller
                                 if ($platform == 'ios' || is_null($platform)) {
                                     //send notification to ios user list
                                     Log::info("Request Cycle with Queues Begins");
-                                    $job = new SendPushNotification($device_token, $created_user, $event_id, $user, $message);
-                                    dispatch($job);
+//                                    $job = new SendPushNotification($device_token, $created_user, $event_id, $user, $message);
+//                                    dispatch($job);
                                     Log::info('Request Cycle with Queues Ends');
                                 }
                                 else {

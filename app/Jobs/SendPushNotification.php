@@ -9,6 +9,7 @@ use Log;
 
 class SendPushNotification extends Job
 {
+    
     /**
      * Create a new job instance.
      *

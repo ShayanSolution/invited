@@ -689,7 +689,7 @@ class EventController extends Controller
 
         $sendMail = Mail::send('emails.welcome', $data, function ($message) use($pdf, $emailAddress, $eventName, $pdfName){
             $message->from('notification@shayansolutions.com', 'Invited');
-            $message->to($emailAddress)->subject('[Event Report] {'.$eventName.'}');
+            $message->to($emailAddress)->subject('Event Report - '. $eventName);
             $message->attach($pdfName, [
                 'as' => $eventName.'.pdf',
                 'mime' => 'application/pdf',

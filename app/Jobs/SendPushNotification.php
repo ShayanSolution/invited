@@ -81,6 +81,7 @@ class SendPushNotification extends Job
         ));
 
         try {
+            dd('helli');
             Log::info("========================== In Try".$this->token."======================");
             // Validate the value...
             $response = PushNotification::app('invitedIOS')->to($this->token)->send($message);

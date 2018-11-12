@@ -81,15 +81,17 @@ class SendPushNotification extends Job
         ));
 
         try {
-            dd('helli');
-            \Log::info("========================== In Try".$this->token."======================");
+
+            Log::info("========================== In Try".$this->token."======================");
             // Validate the value...
             $response = PushNotification::app('invitedIOS')->to($this->token)->send($message);
+            Log::info("response in try: ".print_r($response));
         } catch (\Exception $e) {
             Log::info("Notification response: ".$e);
             Log::info("Invalid device token.".$this->token);
             return true;
         }
         Log::info("Create Event Notification response: ".print_r($response));
+
     }
 }

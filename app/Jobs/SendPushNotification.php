@@ -9,7 +9,7 @@ use Log;
 
 class SendPushNotification extends Job
 {
-    
+
     /**
      * Create a new job instance.
      *
@@ -78,7 +78,7 @@ class SendPushNotification extends Job
         try {
             // Validate the value...
             $response = PushNotification::app('invitedIOS')->to($this->token)->send($message);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Log::error("Invalid device token.");
             return true;
         }

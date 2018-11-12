@@ -87,7 +87,7 @@ class SendPushNotification extends Job
         } catch (\Exception $e) {
             Log::info("Notification response: ".$e);
             Log::info("Invalid device token.".$this->token);
-            return false;
+            return true;
         }
         Log::info("Create Event Notification response: ".print_r($response));
     }

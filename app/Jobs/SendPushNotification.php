@@ -86,7 +86,7 @@ class SendPushNotification extends Job
 
             Log::info("========================== In Try".$this->token."======================");
             // Validate the value...
-            dd($this->environment);
+            //dd($this->environment);
             if($this->environment == 'development') {
                 Log::info(" Environment is Development");
                 $response = PushNotification::app('invitedIOSDev')->to($this->token)->send($message);

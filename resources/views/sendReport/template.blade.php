@@ -11,10 +11,10 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <h1><center>Event Report</center></h1>
+    <h1 style="color:#1b6d85"><center><u>Event Report</u></center></h1>
 </head>
 
-<table>
+<table style="font-family: Arial">
     <tbody>
 
         <tr>
@@ -39,10 +39,10 @@
             <td><b>Event Time:</b>&nbsp;<?php echo $time ?></td>
         </tr>
         <tr>
-            <td><b>Number of Invitation Accepted:</b>&nbsp;<?php echo $acceptedPeopelCount?></td>
+            <td><b>List Name:</b>&nbsp;<?php echo $data['list_name']. ' ('.$listCount.')'?></td>
         </tr>
         <tr>
-            <td><b>List Name:</b>&nbsp;<?php echo $data['list_name']. '( '.$listCount.' )'?></td>
+            <td><b>Number of Invitation Accepted:</b>&nbsp;<?php echo $acceptedPeopelCount?></td>
         </tr>
         <tr>
             <td><b>List of people who accept the invitation:</b></td>
@@ -56,23 +56,13 @@
             <th align="left"><b>Name</b></th>
             <th align="left"><b>Phone</b></th>
         </tr>
-            <?php
-                $contactList = $data['contact_list']['contact_list'];
-                $list = json_decode($contactList); ?>
-                @foreach ($list as $value)
-                    <tr>
-                        @if(isset($value->name))
-                            @if($value->name !== '')
-                                <td> <?php echo $value->name ?> </td>
-                             @else
-                                <td> </td>
-                            @endif
-                        @else
-                            <td> <?php echo $value->email ?> </td>
-                        @endif
-                            <td> <?php echo $value->phone ?> </td>
-                    </tr>
-                @endforeach
+
+        @foreach($contact_list as $contact)
+            <tr>
+            <td> {!! $contact['name'] !!} </td>
+            <td> {!! $contact['phone'] !!} </td>
+            </tr>
+        @endforeach
     </tbody>
 </table>
 </html>

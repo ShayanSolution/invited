@@ -694,14 +694,15 @@ class EventController extends Controller
         //get number of people accepted
         $created_by = $data['user_id'];
         $requests = RequestsEvent::acceptedRequestUsers($event_id, $created_by);
+        //dd($requests->toArray());
         $contact_list = [];
         foreach($requests as $request){
-            $contact_list[] = $request->phone;
+            $contact_list[] = ['name'=>$request->firstName?$request->firstName:$request->lastName, 'phone'=>$request->phone];
         }
         $acceptedPeopelCount = count($contact_list);
-        //dd($contact_list, count($contact_list));
+       // dd($contact_list, $acceptedPeopelCount);
 
-        $view = view('sendReport.template', compact('data', 'listCount', 'acceptedPeopelCount'));
+        $view = view('sendReport.template', compact('data', 'listCount', 'acceptedPeopelCount', 'contact_list'));
 
         //Create PDF
         $pdfName = storage_path("/pdf/".time().'_EventReport.pdf');

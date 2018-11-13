@@ -84,19 +84,21 @@ class SendPushNotification extends Job
 
         try {
 
-            Log::info("========================== In Try".$this->token."======================");
+            Log::info("========================== In Try======================");
             // Validate the value...
             //dd($this->environment);
             if($this->environment == 'development') {
-                Log::info(" Environment is Development");
+                Log::info(" Environment is Development-----".$this->token."---- Before Send");
                 $response = PushNotification::app('invitedIOSDev')->to($this->token)->send($message);
+                Log::info(" Environment is Development-----".$this->token."------After Send");
             } else{
-                Log::info(" Environment is Production");
+                Log::info(" Environment is Production-----".$this->token."---- Before Send");
                 $response = PushNotification::app('invitedIOS')->to($this->token)->send($message);
+                Log::info(" Environment is Production-----".$this->token."------After Send");
             }
             Log::info("response in try: ".print_r($response));
         } catch (\Exception $e) {
-            Log::info("Notification response: ".$e);
+            Log::info("========================== In Catch======================");
             Log::info("Invalid device token.".$this->token);
             return false;
         }

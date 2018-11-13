@@ -25,6 +25,7 @@ class SendPushNotification extends Job
     protected $event_id;
     protected $request_to_user;
     protected $message;
+    protected $environment;
 
     public function __construct($token,$user,$event_id,$request_to_user,$message)
     {
@@ -34,6 +35,7 @@ class SendPushNotification extends Job
         $this->event_id = $event_id;
         $this->request_to_user = $request_to_user;
         $this->message = $message;
+        $this->environment = 'development';
 
     }
 
@@ -84,7 +86,14 @@ class SendPushNotification extends Job
 
             Log::info("========================== In Try".$this->token."======================");
             // Validate the value...
-            $response = PushNotification::app('invitedIOS')->to($this->token)->send($message);
+            dd($this->environment);
+            if($this->environment == 'development') {
+                Log::info(" Environment is Development");
+                $response = PushNotification::app('invitedIOSDev')->to($this->token)->send($message);
+            } else{
+                Log::info(" Environment is Production");
+                $response = PushNotification::app('invitedIOS')->to($this->token)->send($message);
+            }
             Log::info("response in try: ".print_r($response));
         } catch (\Exception $e) {
             Log::info("Notification response: ".$e);

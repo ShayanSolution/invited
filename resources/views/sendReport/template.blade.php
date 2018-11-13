@@ -7,7 +7,6 @@
     $time = Carbon\Carbon::parse($input)->format($format2);
     $date2 = Carbon\Carbon::parse($input2)->format($format1);
     $time2 = Carbon\Carbon::parse($input2)->format($format2);
-    $GLOBALS ['count'] = 0;
 @endphp
 <html>
 <head>
@@ -40,10 +39,10 @@
             <td><b>Event Time:</b>&nbsp;<?php echo $time ?></td>
         </tr>
         <tr>
-            <td><b>Number of Invitation Accepted:</b>&nbsp;<?php echo $data['max_invited']?></td>
+            <td><b>Number of Invitation Accepted:</b>&nbsp;<?php echo $acceptedPeopelCount?></td>
         </tr>
         <tr>
-            <td><b>List Name:</b>&nbsp;<?php echo $data['list_name'].'('.$GLOBALS ['count'].')'?></td>
+            <td><b>List Name:</b>&nbsp;<?php echo $data['list_name']. '( '.$listCount.' )'?></td>
         </tr>
         <tr>
             <td><b>List of people who accept the invitation:</b></td>
@@ -61,18 +60,18 @@
                 $contactList = $data['contact_list']['contact_list'];
                 $list = json_decode($contactList); ?>
                 @foreach ($list as $value)
-                    <?php $GLOBALS ['count'] ++; ?>
-                    @if(isset($value->name))
-                        @if($value->name !== '')
-                            <td> <?php echo $value->name ?> </td>
-                         @else
-                            <td> </td>
+                    <tr>
+                        @if(isset($value->name))
+                            @if($value->name !== '')
+                                <td> <?php echo $value->name ?> </td>
+                             @else
+                                <td> </td>
+                            @endif
+                        @else
+                            <td> <?php echo $value->email ?> </td>
                         @endif
-                    @else
-                        <td> <?php echo $value->email ?> </td>
-                    @endif
-                        <td> <?php echo $value->phone ?> </td>
-                    <br>
+                            <td> <?php echo $value->phone ?> </td>
+                    </tr>
                 @endforeach
     </tbody>
 </table>

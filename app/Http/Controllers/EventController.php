@@ -673,15 +673,35 @@ class EventController extends Controller
             'email_address' => 'required | email'
         ]);
 
-        $eventId = $request->event_id;
+        $event_id = $request->event_id;
         $emailAddress = $request->email_address;
 
-        $eventObj = Event::getEventByID($eventId);
+        // get Event
+        $eventObj = Event::getEventByID($event_id);
         $data = $eventObj->toArray();
         $eventName = $data['title'];
 
-        //dd($data);
-        $view = view('sendReport.template', compact('data'));
+        //get count of contactList
+        $contactList = $data['contact_list']['contact_list'];
+        $list = json_decode($contactList);
+        $listCount = 0;
+        foreach ($list as $value) {
+            $listCount ++;
+        }
+
+        //get number of people accepted
+        $created_by = $data['user_id'];
+        $requests = RequestsEvent::acceptedRequestUsers($event_id, $created_by);
+        $contact_list = [];
+        foreach($requests as $request){
+            $contact_list[] = $request->phone;
+        }
+        $acceptedPeopelCount = count($contact_list);
+        //dd($contact_list, count($contact_list));
+
+        $view = view('sendReport.template', compact('data', 'listCount', 'acceptedPeopelCount'));
+
+        //Create PDF
         $pdfName = storage_path("/pdf/".time().'_EventReport.pdf');
         /*$pdf = PDF::loadHTML($view)->setPaper('a4', 'potrait')->setWarnings(false)->save('EventReport.pdf');*/
         $pdf = PDF::loadHTML($view)->setPaper('a4', 'potrait')->setWarnings(false)->save($pdfName);

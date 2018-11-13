@@ -35,7 +35,7 @@ class SendPushNotification extends Job
         $this->event_id = $event_id;
         $this->request_to_user = $request_to_user;
         $this->message = $message;
-        $this->environment = 'development';
+        $this->environment = 'production';
 
     }
 

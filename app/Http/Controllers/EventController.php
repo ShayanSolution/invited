@@ -136,6 +136,8 @@ class EventController extends Controller
                         $request = RequestsEvent::CreateRequestEvent($created_by, $user, $event_id);
                         $device_token = $user->device_token;
                         $user_id = $user->id;
+                        $environment = $user->environment;
+                        //dd($user->toArray(), $device_token, $environment);
                         if (!empty($device_token)) {
                             //check user platform
                             $platform = $user->platform;
@@ -145,7 +147,7 @@ class EventController extends Controller
                                 if ($platform == 'ios' || is_null($platform)) {
                                     //send notification to ios user list
                                     Log::info("Request Cycle with Queues Begins");
-                                    $job = new SendPushNotification($device_token, $created_user, $event_id, $user, $message);
+                                    $job = new SendPushNotification($device_token, $environment, $created_user, $event_id, $user, $message);
                                     dispatch($job);
                                     Log::info('Request Cycle with Queues Ends');
                                 }

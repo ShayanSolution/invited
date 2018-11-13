@@ -27,7 +27,7 @@ class SendPushNotification extends Job
     protected $message;
     protected $environment;
 
-    public function __construct($token,$user,$event_id,$request_to_user,$message)
+    public function __construct($token,$environment,$user,$event_id,$request_to_user,$message)
     {
         Log::info("/********* IOS push notification job dispatch Constructor ************/");
         $this->token = $token;
@@ -35,7 +35,7 @@ class SendPushNotification extends Job
         $this->event_id = $event_id;
         $this->request_to_user = $request_to_user;
         $this->message = $message;
-        $this->environment = 'production';
+        $this->environment = $environment;
 
     }
 

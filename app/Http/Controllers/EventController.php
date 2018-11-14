@@ -690,19 +690,46 @@ class EventController extends Controller
         foreach ($list as $value) {
             $listCount ++;
         }
+        //dd($list);
+        //key value array for match
+        $contactListPersonName = [];
+        foreach ($list as $value) {
+            if(isset($value->name)) {
+                $contactListPersonName[] = ['name' => $value->name, 'phone' => $value->phone];
+            }else{
+                $contactListPersonName[] = ['name' => $value->email, 'phone' => $value->phone];
+            }
+        }
 
         //get number of people accepted
         $created_by = $data['user_id'];
         $requests = RequestsEvent::acceptedRequestUsers($event_id, $created_by);
-        //dd($requests->toArray());
         $contact_list = [];
         foreach($requests as $request){
-            $contact_list[] = ['name'=>$request->firstName?$request->firstName:$request->lastName, 'phone'=>$request->phone];
+            //$contact_list[] = ['name'=>$request->firstName?$request->firstName:$request->lastName, 'phone'=>$request->phone];
+            $contact_list[] = ['phone'=>$request->phone];
         }
         $acceptedPeopelCount = count($contact_list);
-       // dd($contact_list, $acceptedPeopelCount);
+        dd($contact_list);
+        $filteredContacts = [];
+        foreach($contact_list as $item){
+            $isFound = false;
 
-        $view = view('sendReport.template', compact('data', 'listCount', 'acceptedPeopelCount', 'contact_list'));
+            foreach ($contactListPersonName as $contact){
+                if($contact['phone'] == $item['phone']){
+                    $filteredContacts[] = ['name'=>$contact['name'],'phone'=>$item['phone']];
+                    $isFound = true;
+                }
+            }
+            if(!$isFound){
+                $filteredContacts[]['phone'] = $item['phone'];
+            }
+
+        }
+
+       // dd($contactListPersonName, $contact_list,$filteredContacts);
+
+        $view = view('sendReport.template', compact('data', 'listCount', 'acceptedPeopelCount', 'contact_list', 'filteredContacts'));
 
         //Create PDF
         $pdfName = storage_path("/pdf/".time().'_EventReport.pdf');

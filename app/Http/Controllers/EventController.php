@@ -710,7 +710,7 @@ class EventController extends Controller
             $contact_list[] = ['phone'=>$request->phone];
         }
         $acceptedPeopelCount = count($contact_list);
-        dd($contact_list);
+        //dd($contact_list);
         $filteredContacts = [];
         foreach($contact_list as $item){
             $isFound = false;

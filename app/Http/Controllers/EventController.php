@@ -269,6 +269,18 @@ class EventController extends Controller
             'event_id' => 'required',
             'request_to' => 'required'
         ]);
+
+        $isEventPresent = Event::find($request->event_id);
+
+        if(!$isEventPresent){
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'error',
+                    'message' => 'Event has been deleted'
+                ], 200
+            );
+        }
+        
         $response = Event::generateErrorResponse($validator);
         if($response['code'] == 500){
             return $response;

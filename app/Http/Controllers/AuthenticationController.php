@@ -290,8 +290,9 @@ class AuthenticationController extends Controller
     }
 
     public function registerValidation(Request $request){
+        dd($request);
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:users',
+            //'email' => 'required|email|unique:users',
             'phone' => 'required|unique:users',
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required|min:6'
@@ -312,7 +313,11 @@ class AuthenticationController extends Controller
 
     public function postRegisterUser(Request $request){
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:users',
+            //'email' => 'required|email|unique:users',
+            'firstName' => 'required',
+            'lastName' => 'required',
+            'dob' => 'required',
+            'gender' => 'required',
             'phone' => 'required|unique:users',
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required|min:6'

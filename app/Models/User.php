@@ -41,6 +41,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'middleName',
         'email',
         'password',
+        'dob',
+        'dateofrelation',
+        'gender_id',
         'address',
         'zipCode',
         'username',
@@ -75,6 +78,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'middleName'=> 'string',
         'username'=> 'string',
         'dob'=> 'dob',
+        'dateofrelation' => 'dateofrelation',
+        'gender_id'=>'gender',
         'address'=> 'string',
         'zipCode'=> 'string',
         'phone'=> 'string',
@@ -224,16 +229,20 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
     
     public static function registerUser($request){
-        
+        // dd($request);
         $email = explode("@",$request['email']);
-        $first_name = $email[0];
+        //$first_name = $email[0];
         $user = User::create([
             'email' => $request['email'],
             'phone' => $request['phone'],
             'password' => Hash::make($request['password']),
             'uid' => md5(microtime()),
             //'device_token' => $request->device_token,
-            'firstName' => $first_name
+            'firstName'=> $request['firstName'],
+            'lastName'=>$request['lastName'],
+            'dob'=> $request['dob'],
+            'dateofrelation'=> $request['dateofrelation'],
+            'gender_id'=>$request['gender']
         ]);
         $user_id = $user['id'];
         $user->profile()->create(['user_id'=>$user_id]);

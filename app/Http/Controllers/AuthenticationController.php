@@ -313,11 +313,11 @@ class AuthenticationController extends Controller
 
     public function postRegisterUser(Request $request){
         $validator = Validator::make($request->all(), [
-            //'email' => 'required|email|unique:users',
-            'firstName' => 'required',
-            'lastName' => 'required',
-            'dob' => 'required',
-            'gender' => 'required',
+            'email' => 'required|email|unique:users',
+//            'firstName' => 'required',
+//            'lastName' => 'required',
+//            'dob' => 'required',
+//            'gender' => 'required',
             'phone' => 'required|unique:users',
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required|min:6'

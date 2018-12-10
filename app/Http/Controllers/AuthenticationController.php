@@ -314,7 +314,7 @@ class AuthenticationController extends Controller
     public function postRegisterUser(Request $request){
         $validator = Validator::make($request->all(), [
 //            'email' => 'required|email|unique:users',
-            'firstName' => 'required',
+ //           'firstName' => 'required',
             'lastName' => 'required',
             'dob' => 'required',
             'gender' => 'required',

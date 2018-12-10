@@ -230,7 +230,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     
     public static function registerUser($request){
         // dd($request);
-        $email = explode("@",$request['email']);
+        //$email = explode("@",$request['email']);
         //$first_name = $email[0];
         $user = User::create([
             'email' => $request['email'],

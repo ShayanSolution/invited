@@ -232,8 +232,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         // dd($request);
         //$email = explode("@",$request['email']);
         //$first_name = $email[0];
-        $user = User::create([
-            'email' => $request['email'],
+        $data = [
             'phone' => $request['phone'],
             'password' => Hash::make($request['password']),
             'uid' => md5(microtime()),
@@ -243,7 +242,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             'dob'=> $request['dob'],
 //            'dateofrelation'=> $request['dateofrelation'],
             'gender_id'=>$request['gender']
-        ]);
+        ];
+        if (!empty($request['email'])){
+            $data['email'] =   $request['email'];
+        }
+        $user = User::forceCreate($data);
         $user_id = $user['id'];
         $user->profile()->create(['user_id'=>$user_id]);
         return $user_id;

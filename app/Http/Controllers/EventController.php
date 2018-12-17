@@ -32,8 +32,8 @@ class EventController extends Controller
 {
     public function CreateEvent(Request $request){
 
-       Log::info("================= Create Event API =========================");
-       $validator = Validator::make($request->all(), [
+        Log::info("================= Create Event API =========================");
+        $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'payment_method' => 'required',
             'event_address' => 'required',
@@ -168,9 +168,9 @@ class EventController extends Controller
                                     //send data message payload
                                     $this->sendNotificationToAndoidUsers($device_token,$request_status,$message_title);
 
+                                }
                             }
-                         }
-                      }
+                        }
                     }
                     else
                     {
@@ -198,7 +198,7 @@ class EventController extends Controller
     }
 
     public function getUserEvents(Request $request){
-      $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'user_id' => 'required'
         ]);
         $response = Event::generateErrorResponse($validator);
@@ -263,7 +263,7 @@ class EventController extends Controller
             );
         }
     }
-    
+
     public function acceptRequest(Request $request){
         $validator = Validator::make($request->all(), [
             'event_id' => 'required',
@@ -280,7 +280,7 @@ class EventController extends Controller
                 ], 200
             );
         }
-        
+
         $response = Event::generateErrorResponse($validator);
         if($response['code'] == 500){
             return $response;
@@ -344,7 +344,7 @@ class EventController extends Controller
     }
 
     public function rejectRequest(Request $request){
-       $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'event_id' => 'required',
             'request_to' => 'required'
         ]);
@@ -433,7 +433,7 @@ class EventController extends Controller
 
         $id = Auth::user()->id;
 //        $requests = RequestsEvent::receivedRequest($id);
-        
+
         $acceptedByMe = RequestsEvent::eventAcceptedByMe($id);
         $sentByMe = RequestsEvent::eventSentByMe($id);
 
@@ -501,8 +501,8 @@ class EventController extends Controller
         }
 
     }
-    
-    
+
+
 
     public function updateUserEvent(Request $request){
         Log::info("================= Update Event API =========================");
@@ -634,7 +634,7 @@ class EventController extends Controller
         $file= base_path(). "/invited api calls.postman_collection.json";
         return response()->download($file);
     }
-    
+
     public function sendNotificationToAndoidUsers($device_token,$request_status,$user_name){
         Log::info("Request status received => ".$request_status);
         $optionBuilder = new OptionsBuilder();
@@ -739,9 +739,9 @@ class EventController extends Controller
 
         }
 
-       // dd($contactListPersonName, $contact_list,$filteredContacts);
+        // dd($contactListPersonName, $contact_list,$filteredContacts);
 
-        $view = view('sendReport.template', compact('data', 'listCount', 'acceptedPeopelCount', 'contact_list', 'filteredContacts'));
+        $view = view('sendReport.template', compact('data', 'listCount', 'acceptedPeopelCount', 'contact_list', 'filteredContacts', 'contactListPersonName'));
 
         //Create PDF
         $pdfName = storage_path("/pdf/".time().'_EventReport.pdf');
@@ -769,6 +769,6 @@ class EventController extends Controller
 
         //dd("email Send successfully");
     }
-    
-    
+
+
 }

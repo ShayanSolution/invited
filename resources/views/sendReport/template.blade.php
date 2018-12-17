@@ -57,7 +57,7 @@
             <th align="left"><b>Phone</b></th>
         </tr>
 
-        @foreach($filteredContacts as $contact)
+        @foreach($contactListPersonName as $contact)
             <tr>
             <td> {!! $contact['name'] or '' !!} </td>
             <td> {!! $contact['phone'] !!} </td>

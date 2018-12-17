@@ -741,7 +741,7 @@ class EventController extends Controller
 
        // dd($contactListPersonName, $contact_list,$filteredContacts);
 
-        $view = view('sendReport.template', compact('data', 'listCount', 'acceptedPeopelCount', 'contact_list', 'filteredContacts'));
+        $view = view('sendReport.template', compact('data', 'listCount', 'acceptedPeopelCount', 'contact_list', 'filteredContacts', 'contactListPersonName'));
 
         //Create PDF
         $pdfName = storage_path("/pdf/".time().'_EventReport.pdf');

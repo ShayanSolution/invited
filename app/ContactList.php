@@ -77,7 +77,7 @@ class ContactList extends Model
     }
 
     public static function getUserList($id){
-        return  self::where('id',$id)->first();
+        return  self::withTrashed()->where('id',$id)->first();
     }
 
     public static function getUserContactLists($user_id){

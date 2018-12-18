@@ -728,7 +728,7 @@ class EventController extends Controller
             $isFound = false;
 
             foreach ($contactListPersonName as $contact){
-                if($contact['phone'] == $item['phone']){
+                if(substr($contact['phone'], -9) == substr($item['phone'], -9)){
                     $filteredContacts[] = ['name'=>$contact['name'],'phone'=>$item['phone']];
                     $isFound = true;
                 }

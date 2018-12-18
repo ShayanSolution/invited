@@ -2,7 +2,7 @@
     $input  = $data['event_time'];
     $input2  = $data['created_at'];
     $format1 = 'Y-m-d';
-    $format2 = 'H:i:s';
+    $format2 = 'h:i A';
     $date = Carbon\Carbon::parse($input)->format($format1);
     $time = Carbon\Carbon::parse($input)->format($format2);
     $date2 = Carbon\Carbon::parse($input2)->format($format1);
@@ -57,7 +57,7 @@
             <th align="left"><b>Phone</b></th>
         </tr>
 
-        @foreach($contactListPersonName as $contact)
+        @foreach($filteredContacts as $contact)
             <tr>
             <td> {!! $contact['name'] or '' !!} </td>
             <td> {!! $contact['phone'] !!} </td>

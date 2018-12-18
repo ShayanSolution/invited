@@ -124,6 +124,7 @@ class Event extends Model
             $user_events[$index]['user_id'] = $event->user_id;
             $user_events[$index]['list_id'] = $event->list_id;
             $user_events[$index]['list_name'] = $event->list_name;
+            $user_events[$index]['deleted_at'] = $event->deleted_at;
             $user_list = ContactList::getUserList($event->list_id);
             $user_events[$index]['list_count'] = count(json_decode($user_list->contact_list));
             if($event->max_invited == ''){

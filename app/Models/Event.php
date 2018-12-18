@@ -103,7 +103,7 @@ class Event extends Model
     }
 
     public static function getEvents($id){
-        $events = self::select('events.*','contactlists.list_name')
+        $events = self::with('contactList')->select('events.*','contactlists.list_name', 'contactlists.deleted_at')
                    ->join('contactlists','contactlists.id','=','events.list_id')
                    ->where('events.user_id',$id)
                    ->orderBy('events.updated_at','desc')
@@ -224,7 +224,7 @@ class Event extends Model
 
     public function contactList()
     {
-        return $this->belongsTo('App\ContactList', 'list_id', 'id');
+        return $this->belongsTo('App\ContactList', 'list_id', 'id')->withTrashed();
     }
 
 

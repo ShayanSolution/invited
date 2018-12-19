@@ -35,7 +35,7 @@ class Event extends Model
         'max_invited',
     ];
 
-    protected $appends = ['who_will_pay', 'event_type', 'list_name'];
+    protected $appends = ['who_will_pay', 'event_type', 'list_name','list_count'];
     protected $casts = [
         'title'=>'string',
         'event_address'=> 'string',
@@ -226,6 +226,24 @@ class Event extends Model
     public function contactList()
     {
         return $this->belongsTo('App\ContactList', 'list_id', 'id')->withTrashed();
+    }
+
+    protected function contactListCount()
+    {
+        $contactList = $this->belongsTo('App\ContactList', 'list_id', 'id')->withTrashed();
+        $contactList = $contactList->get()->first();
+        if(!empty($contactList)){
+            return count(json_decode($contactList->contact_list));
+        }
+        else
+        {
+            return 0;
+        }
+
+    }
+
+    public function getListCountAttribute(){
+        return $this->contactListCount();
     }
 
 

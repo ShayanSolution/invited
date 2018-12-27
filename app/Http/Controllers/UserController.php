@@ -423,4 +423,42 @@ class UserController extends Controller
 
     }
 
+    //Update User Profile
+    public function updateUser(Request $request){
+        $validator = Validator::make($request->all(), [
+            'firstName' => 'required',
+            'lastName' => 'required',
+            'dob' => 'required',
+            //            'dateofrelation' => 'required',
+            'email' => 'required'
+        ]);
+        $response = User::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+        $updateUser = User::where('id',$request->user_id);
+        if($updateUser){
+            $updateUser->update([
+                "firstName"=> $request->input("firstName"),
+                "lastName"=> $request->input("lastName"),
+                "dob"=> $request->input("dob"),
+                "dateofrelation"=> $request->input("dateofrelation"),
+                "email"=> $request->input("email"),
+            ]);
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'message' => 'User update successfully'
+                ], 200
+            );
+        }else{
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to find user'
+                ], 422
+            );
+        }
+    }
+
 }

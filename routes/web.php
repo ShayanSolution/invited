@@ -76,6 +76,8 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     Route::post('/get-user','UserController@getUser');
 
+    Route::post('/update-user','UserController@updateUser');
+
 });
 
 

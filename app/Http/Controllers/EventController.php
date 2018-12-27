@@ -36,9 +36,9 @@ class EventController extends Controller
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'payment_method' => 'required',
-            'event_address' => 'required',
+//            'event_address' => 'required',
             'title' => 'required',
-            'event_time' => 'required',
+//            'event_time' => 'required',
             'list_id' => 'required',
             'max_invited' => 'required',
         ]);
@@ -114,6 +114,7 @@ class EventController extends Controller
         $request = $request->all();
         $created_by = $request['user_id'];
         $created_user = User::where('id',$created_by)->first();
+        $event = Event::where('id',$event_id)->first();
         //get list against user id.
         //$user_list = ContactList::getList($created_by,$list_id);
         Log::info("Getting List ID => ".$list_id);
@@ -147,6 +148,7 @@ class EventController extends Controller
                                 if ($platform == 'ios' || is_null($platform)) {
                                     //send notification to ios user list
                                     Log::info("Request Cycle with Queues Begins");
+                                    $message = $created_user->firstName.': '.$event->title.'('.$created_user->phone.')';
                                     $job = new SendPushNotification($device_token, $environment, $created_user, $event_id, $user, $message);
                                     dispatch($job);
                                     Log::info('Request Cycle with Queues Ends');
@@ -163,8 +165,8 @@ class EventController extends Controller
                                     }else{
                                         $request_status = 'created';
                                     }
-                                    $event = Event::where('id',$event_id)->first();
-                                    $message_title = $user_name.' '.$message.' '. $event->title.'.';
+//                                    $message_title = $user_name.' '.$message.' '. $event->title.'.';
+                                    $message_title = $created_user->firstName.': '.$event->title.'('.$created_user->phone.')';
                                     //send data message payload
                                     $this->sendNotificationToAndoidUsers($device_token,$request_status,$message_title);
 
@@ -414,7 +416,7 @@ class EventController extends Controller
                 }
                 else{
 
-                    $this->sendNotificationToAndoidUsers($notification_user->device_token,$request_status,$user_name);
+                    $this->sendNotificationToAndoidUsers($notification_user->device_token,$request_status,$user_name,$event_id);
                 }
             }
         }
@@ -635,21 +637,23 @@ class EventController extends Controller
         return response()->download($file);
     }
 
-    public function sendNotificationToAndoidUsers($device_token,$request_status,$user_name){
+    public function sendNotificationToAndoidUsers($device_token,$request_status,$user_name,$event_id){
         Log::info("Request status received => ".$request_status);
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
         $dataBuilder = new PayloadDataBuilder();
+        $event = Event::where('id',$event_id)->first();
         if($request_status == 'confirmed'){
             //$notificationBuilder = new PayloadNotificationBuilder('Accepted');
             //$notificationBuilder->setBody($user_name.' accepted your request')->setSound('default');
-            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => $user_name.' confirmed your request.']);
+//            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => $user_name.' confirmed your request.']);
+            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => 'Congratulations!'. $user_name.' replied with YES to:'.$event->title.'.']);
             Log::info("Event Accepted:");
         }
         elseif($request_status == 'rejected'){
             //$notificationBuilder = new PayloadNotificationBuilder('Canceled');
             //$notificationBuilder->setBody($user_name.' canceled your request')->setSound('default');
-            $dataBuilder->addData(['code' => '4','Title' => 'Canceled', 'Body' => $user_name.' rejected your request.']);
+            $dataBuilder->addData(['code' => '4','Title' => 'Canceled', 'Body' => $user_name.' replied with NO to:'.$event->title.'.']);
             Log::info("Event Rjected:");
         }
         elseif($request_status == 'deleted'){

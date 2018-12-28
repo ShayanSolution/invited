@@ -512,12 +512,12 @@ class EventController extends Controller
         $validator = Validator::make($request->all(), [
             'event_id' => 'required',
             'title' => 'required',
-            'event_address' => 'required',
-            'event_time' => 'required',
+//            'event_address' => 'required',
+//            'event_time' => 'required',
             'payment_method' => 'required',
             'list_id' => 'required',
-            'longitude' => 'required',
-            'latitude' => 'required',
+//            'longitude' => 'required',
+//            'latitude' => 'required',
             'user_id' => 'required',
             'max_invited' => 'required',
         ]);

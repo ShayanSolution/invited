@@ -166,7 +166,7 @@ class EventController extends Controller
                                         $request_status = 'created';
                                     }
 //                                    $message_title = $user_name.' '.$message.' '. $event->title.'.';
-                                    $message_title = $created_user->firstName.': '.$event->title.'('.$created_user->phone.')';
+                                    $message_title = $created_user->firstName.': '.$event->title.' ('.$created_user->phone.')';
                                     //send data message payload
                                     $this->sendNotificationToAndoidUsers($device_token,$request_status,$message_title,$event_id);
 
@@ -647,13 +647,13 @@ class EventController extends Controller
             //$notificationBuilder = new PayloadNotificationBuilder('Accepted');
             //$notificationBuilder->setBody($user_name.' accepted your request')->setSound('default');
 //            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => $user_name.' confirmed your request.']);
-            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => 'Congratulations!'. $user_name.' replied with YES to:'.$event->title.'.']);
+            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => 'Congratulations! '. $user_name.' replied with YES to: '.$event->title.'.']);
             Log::info("Event Accepted:");
         }
         elseif($request_status == 'rejected'){
             //$notificationBuilder = new PayloadNotificationBuilder('Canceled');
             //$notificationBuilder->setBody($user_name.' canceled your request')->setSound('default');
-            $dataBuilder->addData(['code' => '4','Title' => 'Canceled', 'Body' => $user_name.' replied with NO to:'.$event->title.'.']);
+            $dataBuilder->addData(['code' => '4','Title' => 'Canceled', 'Body' => $user_name.' replied with NO to: '.$event->title.'.']);
             Log::info("Event Rjected:");
         }
         elseif($request_status == 'deleted'){

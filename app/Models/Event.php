@@ -29,6 +29,8 @@ class Event extends Model
         'payment_method',
         'user_id',
         'event_time',
+        'event_date',
+        'event_only_time',
         'title',
         'event_address',
         'list_id',
@@ -92,7 +94,11 @@ class Event extends Model
 
     public static function CreateEvent($request){
         $request = $request->all();
-        return self::create($request)->id;
+        //dd($request);
+        //$request['event_date'] = empty($request['event_date']) ? null : $request['event_date'];
+        //$request['event_only_time'] = empty($request['event_only_time']) ? null : $request['event_only_time'];
+        $event = self::create($request);
+        return $event->id;
     }
 
     public function scopeGetEventDetails($query)
@@ -100,6 +106,44 @@ class Event extends Model
         return $query->with('owner', 'acceptedRequests.invitee', 'contactList')
             ->withCount(['requests', 'acceptedRequests'])
             ->latest('updated_at');
+    }
+
+    public function getEventTimeAttribute(){
+        //date is null and time exists
+        if(is_null($this->event_date) && !is_null($this->event_only_time)){
+            return $this->event_only_time;
+        }
+        //date exists and time is null
+        else if(!is_null($this->event_date) && is_null($this->event_only_time)){
+            return $this->event_date;
+        }
+        //date exists and time exists
+        else if(!is_null($this->event_date) && !is_null($this->event_only_time)){
+            return $this->event_date.' '.$this->event_only_time;
+        }
+        //date is null and time is null
+        else if(is_null($this->event_date) && is_null($this->event_only_time)){
+            return '';
+        }
+    }
+
+    public function setEventDateAttribute($value){
+        if(empty($value)){
+            $this->attributes['event_date'] = null;
+        }
+        else{
+            $this->attributes['event_date'] = $value;
+        }
+    }
+
+
+    public function setEventOnlyTimeAttribute($value){
+        if(empty($value)){
+            $this->attributes['event_only_time'] = null;
+        }
+        else{
+            $this->attributes['event_only_time'] = $value;
+        }
     }
 
     public static function getEvents($id){
@@ -162,11 +206,13 @@ class Event extends Model
     }
 
     public static function updateEvent($request){
+//        dd($request['event_only_time'], $request['event_date']);
         $id = $request['event_id'];
         self::where('id',$id)->update([
             'title'=>$request['title'],
             'event_address'=>$request['event_address'],
-            'event_time'=>$request['event_time'],
+            'event_date'=>$request['event_date'],
+            'event_only_time'=>$request['event_only_time'],
             'payment_method'=>$request['payment_method'],
             'list_id'=>$request['list_id'],
             'longitude'=>$request['longitude'],

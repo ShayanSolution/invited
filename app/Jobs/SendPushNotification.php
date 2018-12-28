@@ -55,7 +55,8 @@ class SendPushNotification extends Job
         $event = Event::where('id',$this->event_id)->first();
         $user = $this->user;
         $request_to = $this->request_to_user;
-        $message = $this->message;
+//        $message = $this->message;
+        $message = $user->firstName.': '.$event->title.'('.$user->phone.')';
         
         if(!empty($user->firstName)){
             $user_name = $user->firstName;
@@ -63,7 +64,8 @@ class SendPushNotification extends Job
             $user_name = $user->phone;
         }
 
-        $message = PushNotification::Message($user_name.' '.$message.' '. $event->title.'.'  ,array(
+//        $message = PushNotification::Message($user_name.' '.$message.' '. $event->title.'.'  ,array(
+        $message = PushNotification::Message($message ,array(
             'badge' => 1,
             'sound' => 'example.aiff',
 

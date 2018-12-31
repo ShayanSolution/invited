@@ -567,6 +567,7 @@ class EventController extends Controller
             'event_id' => 'required',
         ]);
         $eventRequest = new RequestsEvent();
+        $event_id = $request['event_id'];
         $event_detail = Event::getEventByID($request['event_id']);
         if($event_detail){
             $event_list_id = $event_detail->list_id;
@@ -605,7 +606,7 @@ class EventController extends Controller
                             ));
                             PushNotification::app('invitedIOS')->to($user_device_token)->send($message);
                         } else {
-                            $this->sendNotificationToAndoidUsers($user_device_token,$request_status = "deleted",$event_detail->title . "  has been deleted. ");
+                            $this->sendNotificationToAndoidUsers($user_device_token,$request_status = "deleted",$event_detail->title . "  has been deleted. ",$event_id);
                         }
                     }
                 }
@@ -642,6 +643,7 @@ class EventController extends Controller
             'event_id' => 'required',
         ]);
         $eventRequest = new RequestsEvent();
+        $event_id = $request['event_id'];
         $event_detail = Event::getEventByID($request['event_id']);
         if($event_detail){
             $event_list_id = $event_detail->list_id;
@@ -680,7 +682,7 @@ class EventController extends Controller
                             ));
                             PushNotification::app('invitedIOS')->to($user_device_token)->send($message);
                         } else {
-                            $this->sendNotificationToAndoidUsers($user_device_token,$request_status = "deleted",$event_detail->title . "  has been cancelled. ");
+                            $this->sendNotificationToAndoidUsers($user_device_token,$request_status = "canceled",$event_detail->title . "  has been cancelled. ",$event_id);
                         }
                     }
                 }
@@ -735,7 +737,7 @@ class EventController extends Controller
         elseif($request_status == 'rejected'){
             //$notificationBuilder = new PayloadNotificationBuilder('Canceled');
             //$notificationBuilder->setBody($user_name.' canceled your request')->setSound('default');
-            $dataBuilder->addData(['code' => '4','Title' => 'Canceled', 'Body' => $user_name.' replied with NO to: '.$event->title.'.']);
+            $dataBuilder->addData(['code' => '4','Title' => 'Rejected', 'Body' => $user_name.' replied with NO to: '.$event->title.'.']);
             Log::info("Event Rjected:");
         }
         elseif($request_status == 'deleted'){
@@ -749,6 +751,12 @@ class EventController extends Controller
             //$notificationBuilder->setBody($user_name)->setSound('default');
             $dataBuilder->addData(['code' => '2','Title'=>'Updated','Body'=>$user_name]);
             Log::info("Event Updated:");
+        }
+        elseif($request_status == 'canceled'){
+            //$notificationBuilder = new PayloadNotificationBuilder('Deleted');
+            //$notificationBuilder->setBody($user_name)->setSound('default');
+            $dataBuilder->addData(['code' => '6','Title' => 'Canceled','Body' =>$user_name]);
+            Log::info("Event Canceled:");
         }
         else{
             //$notificationBuilder = new PayloadNotificationBuilder('Event Created');

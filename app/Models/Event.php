@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\ContactList;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\RequestsEvent;
 use Log;
@@ -160,6 +161,7 @@ class Event extends Model
             $user_events[$index]['title'] = $event->title;
             $user_events[$index]['event_address'] = $event->event_address;
             $user_events[$index]['event_time'] = $event->event_time;
+            $user_events[$index]['canceled_at'] = $event->canceled_at;
             $user_events[$index]['event_created_time'] = date('Y-m-d H:i:s', strtotime($event->created_at));
             $user_events[$index]['event_update_time'] = date('Y-m-d H:i:s', strtotime($event->updated_at));
             $user_events[$index]['longitude'] = $event->longitude;
@@ -234,6 +236,19 @@ class Event extends Model
             return false;
         }
 
+    }
+
+    public static function cancelEvent($request){
+        $id = $request['event_id'];
+        $event = self::find($id);
+        if($event){
+            self::where('id',$id)->update([
+                'canceled_at'=>Carbon::now(),
+            ]);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public static function generateErrorResponse($validator){

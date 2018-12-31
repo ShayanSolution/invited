@@ -62,6 +62,8 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     Route::get('/delete-event','EventController@deleteEvent');
 
+    Route::get('/cancel-event','EventController@cancelEvent');
+
     Route::get('/get-request','EventController@getEventRequests');
 
     Route::get('/accept-request','EventController@acceptRequest');

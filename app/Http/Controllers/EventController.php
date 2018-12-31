@@ -303,7 +303,14 @@ class EventController extends Controller
                 ], 200
             );
         }
-
+        if($event_detail->canceled_at != null){
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'canceled',
+                    'message' => 'Event has been canceled'
+                ], 200
+            );
+        }
         $id = $request['request_to'];
         $accepted = RequestsEvent::acceptRequest($event_id,$id);
         if($accepted['update']){
@@ -579,6 +586,81 @@ class EventController extends Controller
                     //don't send notification to request rejected user.
                     if (isset($event_request->confirmed) && $event_request->confirmed != 0) {
                         if ($platform == 'ios' || is_null($platform)) {
+                            $message = PushNotification::Message($event_detail->title . "  has been deleted. ", array(
+                                'badge' => 1,
+                                'sound' => 'example.aiff',
+
+                                'actionLocKey' => 'Action button title!',
+                                'locKey' => 'localized key',
+                                'locArgs' => array(
+                                    'localized args',
+                                    'localized args',
+                                ),
+                                'launchImage' => 'image.jpg',
+
+                                'custom' => array('custom_data' => array(
+                                    'event_id' => $event_detail->id,
+                                    'status' => 'cancelled'
+                                ))
+                            ));
+                            PushNotification::app('invitedIOS')->to($user_device_token)->send($message);
+                        } else {
+                            $this->sendNotificationToAndoidUsers($user_device_token,$request_status = "deleted",$event_detail->title . "  has been deleted. ");
+                        }
+                    }
+                }
+            }
+            $event =Event::deleteEvent($request);
+            if($event){
+                return JsonResponse::generateResponse(
+                    [
+                        'status' => 'success',
+                        'message' => 'Event Deleted Successfully',
+                    ], 200
+                );
+            }else{
+                return JsonResponse::generateResponse(
+                    [
+                        'status' => 'error',
+                        'message' => 'Unable to Delete event',
+                    ], 500
+                );
+            }
+        }else{
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to Delete event',
+                ], 500
+            );
+        }
+
+    }
+
+    public function cancelEvent(Request $request){
+        $this->validate($request,[
+            'event_id' => 'required',
+        ]);
+        $eventRequest = new RequestsEvent();
+        $event_detail = Event::getEventByID($request['event_id']);
+        if($event_detail){
+            $event_list_id = $event_detail->list_id;
+            $notification_usres_list = ContactList::getUserList($event_list_id);
+            foreach (json_decode($notification_usres_list->contact_list) as $list){
+                $list->phone = str_replace('(', '', trim($list->phone));
+                $list->phone = str_replace(')', '', trim($list->phone));
+                $list->phone = str_replace('-', '', trim($list->phone));
+                $phone = substr($list->phone, -9);//get last 9 digit of phone number.
+
+                $notification_user = User::where('phone', 'like', '%'.$phone)->first();
+                if($notification_user){
+                    $user_device_token = $notification_user->device_token;
+                    $user_id = $notification_user->id;
+                    $platform = $notification_user->platform;
+                    $event_request = $eventRequest->getUserEventRequests($request['event_id'],$user_id);
+                    //don't send notification to request rejected user.
+                    if (isset($event_request->confirmed) && $event_request->confirmed != 0) {
+                        if ($platform == 'ios' || is_null($platform)) {
                             $message = PushNotification::Message($event_detail->title . "  has been cancelled. ", array(
                                 'badge' => 1,
                                 'sound' => 'example.aiff',
@@ -603,19 +685,19 @@ class EventController extends Controller
                     }
                 }
             }
-            $event =Event::deleteEvent($request);
+            $event =Event::cancelEvent($request);
             if($event){
                 return JsonResponse::generateResponse(
                     [
                         'status' => 'success',
-                        'message' => 'Event Deleted Successfully',
+                        'message' => 'Event Canceled Successfully',
                     ], 200
                 );
             }else{
                 return JsonResponse::generateResponse(
                     [
                         'status' => 'error',
-                        'message' => 'Unable to Delete event',
+                        'message' => 'Unable to Cancel event',
                     ], 500
                 );
             }

@@ -359,4 +359,45 @@ class AuthenticationController extends Controller
         }
     }
 
+    public function socialSignUpUser(Request $request){
+        $validator = Validator::make($request->all(), [
+            'phone' => 'required|unique:users',
+        ]);
+        $response = User::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+
+        $request = $request->all();
+
+        $phone = PhoneCode::getPhoneNumber($request['phone']);
+
+        if($phone && $phone->verified == 1){
+            $user = User::registerSocialSignUpUser($request);
+            if($user){
+                return JsonResponse::generateResponse(
+                    [
+                        'status' => 'success',
+                        'message' => 'User registered successfully',
+                        'user_id' => $user
+                    ],200
+                );
+            }else{
+                return JsonResponse::generateResponse(
+                    [
+                        'status' => 'error',
+                        'message' => 'Unable to register user',
+                    ], 500
+                );
+            }
+        }else{
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'error',
+                    'message' => 'Phone number is not verified.',
+                ], 500
+            );
+        }
+    }
+
 }

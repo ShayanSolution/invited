@@ -40,6 +40,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'lastName',
         'middleName',
         'email',
+        'facebook_id',
+        'instagram_id',
         'password',
         'dob',
         'dateofrelation',
@@ -136,11 +138,27 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function findForPassport($username) {
         $request  = Request::all();
+//        if(isset($request['username']) && !empty($request['username'])){
+//            //$user = self::where('phone', $username)->where('confirmed','=',1)->first();
+//            $user = self::where('phone', $username)->first();
+//            if(empty($user)){
+//                $user = self::where('email', $username)->first();
+//            }
+//        }
         if(isset($request['username']) && !empty($request['username'])){
-            //$user = self::where('phone', $username)->where('confirmed','=',1)->first();
             $user = self::where('phone', $username)->first();
+//            dd($user, "phone");
             if(empty($user)){
                 $user = self::where('email', $username)->first();
+//                dd($user, "email");
+            }
+            if(empty($user)){
+                $user = self::where('facebook_id', $username)->first();
+//                dd($user, "facebook_id");
+            }
+            if(empty($user)){
+                $user = self::where('instagram_id', $username)->first();
+//                dd($user, "instagram_id");
             }
         }
         if(!$user){
@@ -246,6 +264,41 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         if (!empty($request['email'])){
             $data['email'] =   $request['email'];
         }
+        $user = User::forceCreate($data);
+        $user_id = $user['id'];
+        $user->profile()->create(['user_id'=>$user_id]);
+        return $user_id;
+    }
+
+    public static function registerSocialSignUpUser($request){
+//         dd($request);
+        $data = [
+            'phone' => $request['phone'],
+            'password' => Hash::make($request['password']),
+            'uid' => md5(microtime()),
+        ];
+        if (!empty($request['firstName'])){
+            $data['firstName'] =   $request['firstName'];
+        }
+        if (!empty($request['lastName'])){
+            $data['lastName'] =   $request['lastName'];
+        }
+        if (!empty($request['email'])){
+            $data['email'] =   $request['email'];
+        }
+        if (!empty($request['dob'])){
+            $data['dob'] =   $request['dob'];
+        }
+        if (!empty($request['gender_id'])){
+            $data['gender_id'] =   $request['gender_id'];
+        }
+        if (!empty($request['facebook_id'])){
+            $data['facebook_id'] =   $request['facebook_id'];
+        }
+        if (!empty($request['instagram_id'])){
+            $data['instagram_id'] =   $request['instagram_id'];
+        }
+//        dd($data, "down");
         $user = User::forceCreate($data);
         $user_id = $user['id'];
         $user->profile()->create(['user_id'=>$user_id]);

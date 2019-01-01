@@ -23,6 +23,7 @@ $router->get('appKey', function () {
     return str_random('32');
 });
 $router->post('register-user', 'AuthenticationController@postRegisterUser');
+$router->post('social-signup-user', 'AuthenticationController@socialSignUpUser');
 Route::post('/register/validation', 'AuthenticationController@registerValidation');
 Route::post('/user-notification','UserController@sendUserNotification');
 Route::get('/download','EventController@getDownload');

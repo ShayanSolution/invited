@@ -162,6 +162,7 @@ class Event extends Model
             $user_events[$index]['event_address'] = $event->event_address;
             $user_events[$index]['event_time'] = $event->event_time;
             $user_events[$index]['canceled_at'] = $event->canceled_at;
+            $user_events[$index]['is_created_by_admin'] = $event->is_created_by_admin;
             $user_events[$index]['event_created_time'] = date('Y-m-d H:i:s', strtotime($event->created_at));
             $user_events[$index]['event_update_time'] = date('Y-m-d H:i:s', strtotime($event->updated_at));
             $user_events[$index]['longitude'] = $event->longitude;

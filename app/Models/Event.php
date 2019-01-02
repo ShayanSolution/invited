@@ -284,6 +284,16 @@ class Event extends Model
         return $this->hasMany('App\Models\RequestsEvent', 'event_id')->where('confirmed', 1)->latest('updated_at');
     }
 
+    public function rejectRequests()
+    {
+        return $this->hasMany('App\Models\RequestsEvent', 'event_id')->where('confirmed', 0)->latest('updated_at');
+    }
+
+    public function pendingRequests()
+    {
+        return $this->hasMany('App\Models\RequestsEvent', 'event_id')->where('confirmed', 2)->latest('updated_at');
+    }
+
     public function contactList()
     {
         return $this->belongsTo('App\ContactList', 'list_id', 'id');

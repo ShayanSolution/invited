@@ -208,19 +208,28 @@ class Event extends Model
     }
 
     public static function updateEvent($request){
-//        dd($request['event_only_time'], $request['event_date']);
-        $id = $request['event_id'];
-        self::where('id',$id)->update([
+        $data = [
             'title'=>$request['title'],
             'event_address'=>$request['event_address'],
-            'event_date'=>$request['event_date'],
-            'event_only_time'=>$request['event_only_time'],
             'payment_method'=>$request['payment_method'],
             'list_id'=>$request['list_id'],
             'longitude'=>$request['longitude'],
             'latitude'=>$request['latitude'],
             'max_invited'=>$request['max_invited'],
-        ]);
+        ];
+        if (!empty($request->input('event_date'))){
+            $data['event_date'] = $request->input('event_date');
+        } else {
+            $data['event_date'] = null;
+        }
+        if (!empty($request->input('event_only_time'))){
+            $data['event_only_time'] = $request->input('event_only_time');
+        } else {
+            $data['event_only_time'] = null;
+        }
+
+        $id = $request['event_id'];
+        self::where('id',$id)->update($data);
         return $id;
     }
 

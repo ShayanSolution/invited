@@ -1,10 +1,16 @@
 @php
+    if (!is_null($data['event_only_time'])){
+        $formatTime = 'h:i A';
+        $time = $data['event_only_time'];
+        $onlyTime = Carbon\Carbon::parse($time)->format($formatTime);
+    }else{
+        $onlyTime = "";
+    }
     $input  = $data['event_time'];
     $input2  = $data['created_at'];
     $format1 = 'Y-m-d';
     $format2 = 'h:i A';
     $date = Carbon\Carbon::parse($input)->format($format1);
-    $time = Carbon\Carbon::parse($input)->format($format2);
     $date2 = Carbon\Carbon::parse($input2)->format($format1);
     $time2 = Carbon\Carbon::parse($input2)->format($format2);
 @endphp
@@ -33,10 +39,10 @@
         <td><b>Event Sent Time:</b>&nbsp;<?php echo $time2?></td>
     </tr>
     <tr>
-        <td><b>Event Date:</b>&nbsp;<?php echo $date?></td>
+        <td><b>Event Date:</b>&nbsp;<?php echo $data['event_date']?></td>
     </tr>
     <tr>
-        <td><b>Event Time:</b>&nbsp;<?php echo $time ?></td>
+        <td><b>Event Time:</b>&nbsp;<?php echo $onlyTime ?></td>
     </tr>
     <tr>
         <td><b>List Name:</b>&nbsp;<?php echo $data['list_name']. ' ('.$listCount.')'?></td>

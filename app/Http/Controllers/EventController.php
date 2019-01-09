@@ -306,8 +306,8 @@ class EventController extends Controller
         if($event_detail->canceled_at != null){
             return JsonResponse::generateResponse(
                 [
-                    'status' => 'canceled',
-                    'message' => 'Event has been canceled'
+                    'status' => 'cancelled',
+                    'message' => 'Event has been cancelled'
                 ], 200
             );
         }
@@ -659,8 +659,8 @@ class EventController extends Controller
                     $user_device_token = $notification_user->device_token;
                     $user_id = $notification_user->id;
                     $platform = $notification_user->platform;
-                    $event_request = $eventRequest->getUserEventRequests($request['event_id'],$user_id);
-                    //don't send notification to request rejected user.
+                    $event_request = $eventRequest->getUserEventRequestsAccepted($request['event_id'],$user_id);
+                    //don't send notification to request rejected user and pending users.
                     if (isset($event_request->confirmed) && $event_request->confirmed != 0) {
                         if ($platform == 'ios' || is_null($platform)) {
                             $message = PushNotification::Message($event_detail->title . "  has been cancelled. ", array(
@@ -682,7 +682,7 @@ class EventController extends Controller
                             ));
                             PushNotification::app('invitedIOS')->to($user_device_token)->send($message);
                         } else {
-                            $this->sendNotificationToAndoidUsers($user_device_token,$request_status = "canceled",$event_detail->title . "  has been cancelled. ",$event_id);
+                            $this->sendNotificationToAndoidUsers($user_device_token,$request_status = "cancelled",$event_detail->title . "  has been cancelled. ",$event_id);
                         }
                     }
                 }
@@ -692,7 +692,7 @@ class EventController extends Controller
                 return JsonResponse::generateResponse(
                     [
                         'status' => 'success',
-                        'message' => 'Event Canceled Successfully',
+                        'message' => 'Event Cancelled Successfully',
                     ], 200
                 );
             }else{
@@ -735,8 +735,8 @@ class EventController extends Controller
             Log::info("Event Accepted:");
         }
         elseif($request_status == 'rejected'){
-            //$notificationBuilder = new PayloadNotificationBuilder('Canceled');
-            //$notificationBuilder->setBody($user_name.' canceled your request')->setSound('default');
+            //$notificationBuilder = new PayloadNotificationBuilder('Cancelled');
+            //$notificationBuilder->setBody($user_name.' cancelled your request')->setSound('default');
             $dataBuilder->addData(['code' => '4','Title' => 'Rejected', 'Body' => $user_name.' replied with NO to: '.$event->title.'.']);
             Log::info("Event Rjected:");
         }
@@ -752,11 +752,11 @@ class EventController extends Controller
             $dataBuilder->addData(['code' => '2','Title'=>'Updated','Body'=>$user_name]);
             Log::info("Event Updated:");
         }
-        elseif($request_status == 'canceled'){
+        elseif($request_status == 'cancelled'){
             //$notificationBuilder = new PayloadNotificationBuilder('Deleted');
             //$notificationBuilder->setBody($user_name)->setSound('default');
-            $dataBuilder->addData(['code' => '6','Title' => 'Canceled','Body' =>$user_name]);
-            Log::info("Event Canceled:");
+            $dataBuilder->addData(['code' => '6','Title' => 'Cancelled','Body' =>$user_name]);
+            Log::info("Event Cancelled:");
         }
         else{
             //$notificationBuilder = new PayloadNotificationBuilder('Event Created');

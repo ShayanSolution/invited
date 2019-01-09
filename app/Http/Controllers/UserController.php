@@ -438,13 +438,27 @@ class UserController extends Controller
         }
         $updateUser = User::where('id',$request->user_id);
         if($updateUser){
-            $updateUser->update([
-                "firstName"=> $request->input("firstName"),
-                "lastName"=> $request->input("lastName"),
-                "dob"=> $request->input("dob"),
-                "dateofrelation"=> $request->input("dateofrelation"),
-                "email"=> $request->input("email"),
-            ]);
+//            $updateUser->update([
+//                "firstName"=> $request->input("firstName"),
+//                "lastName"=> $request->input("lastName"),
+//                "dob"=> $request->input("dob"),
+//                "dateofrelation"=> $request->input("dateofrelation"),
+//                "email"=> $request->input("email"),
+//            ]);
+            $data = [
+                "firstName"=> $request["firstName"],
+                "lastName"=> $request["lastName"],
+                "dob"=> $request["dob"],
+                "email"=> $request["email"],
+            ];
+            if (!empty($request->input("dateofrelation"))){
+                $data['dateofrelation'] = $request->input("dateofrelation");
+            } else {
+                $data['dateofrelation'] = null;
+            }
+
+            $updateUser->update($data);
+
             return response()->json(
                 [
                     'status' => 'success',

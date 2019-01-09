@@ -56,8 +56,8 @@ class SendPushNotification extends Job
         $user = $this->user;
         $request_to = $this->request_to_user;
 //        $message = $this->message;
-        $message = $user->firstName.': '.$event->title.' ('.$user->phone.')';
-        
+        $message = $user->firstName.''.$user->lastName.': '.$event->title.' ('.$user->phone.')';
+
         if(!empty($user->firstName)){
             $user_name = $user->firstName;
         }else{

@@ -166,7 +166,7 @@ class EventController extends Controller
                                         $request_status = 'created';
                                     }
 //                                    $message_title = $user_name.' '.$message.' '. $event->title.'.';
-                                    $message_title = $created_user->firstName.': '.$event->title.' ('.$created_user->phone.')';
+                                    $message_title = $created_user->firstName.''.$created_user->lastName.': '.$event->title.' ('.$created_user->phone.')';
                                     //send data message payload
                                     $this->sendNotificationToAndoidUsers($device_token,$request_status,$message_title,$event_id);
 

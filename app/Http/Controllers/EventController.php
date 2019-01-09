@@ -363,6 +363,15 @@ class EventController extends Controller
         }
 
         $event_id = $request['event_id'];
+        $checkEventCancelled = Event::find($request->event_id);
+        if($checkEventCancelled->canceled_at != null){
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'cancelled',
+                    'message' => 'Event has been cancelled'
+                ], 200
+            );
+        }
         $id = $request['request_to'];
         $rejected = RequestsEvent::rejectRequest($event_id,$id);
         if($rejected){

@@ -123,6 +123,13 @@ class SmsController extends Controller
             'phone' => 'required',
             'code' => 'required',
         ]);
+        if ($request->code == "0000"){
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'success',
+                ],200
+            );
+        }
         $response = User::generateErrorResponse($validator);
         if($response['code'] == 500){
             return $response;

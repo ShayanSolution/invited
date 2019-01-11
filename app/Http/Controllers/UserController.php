@@ -429,7 +429,7 @@ class UserController extends Controller
             'firstName' => 'required',
             'lastName' => 'required',
             'dob' => 'required',
-//            'dateofrelation' => 'required',
+            //            'dateofrelation' => 'required',
             'email' => 'required'
         ]);
         $response = User::generateErrorResponse($validator);

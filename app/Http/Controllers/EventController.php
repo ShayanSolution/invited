@@ -410,24 +410,45 @@ class EventController extends Controller
                 Log::info("Device token: ".$notification_user->device_token);
                 $platform = $notification_user->platform;
                 if($platform == 'ios' || is_null($platform)) {
-                    $message = PushNotification::Message('Congratulations! '. $user_name.' replied with '.$request_status.' to: '.$event->title.'.', array(
-                        'badge' => 1,
-                        'sound' => 'example.aiff',
+                    if ($request_status == "YES") {
+                        $message = PushNotification::Message('Congratulations! ' . $user_name . ' replied with ' . $request_status . ' to: ' . $event->title . '.', array(
+                            'badge' => 1,
+                            'sound' => 'example.aiff',
 
-                        'actionLocKey' => 'Action button title!',
-                        'locKey' => 'localized key',
-                        'locArgs' => array(
-                            'localized args',
-                            'localized args',
-                        ),
-                        'launchImage' => 'image.jpg',
+                            'actionLocKey' => 'Action button title!',
+                            'locKey' => 'localized key',
+                            'locArgs' => array(
+                                'localized args',
+                                'localized args',
+                            ),
+                            'launchImage' => 'image.jpg',
 
-                        'custom' => array('custom_data' => array(
-                            'accepted_user' => $user_name,
-                            'event_id' => $event_id,
-                            'status' => $request_status
-                        ))
-                    ));
+                            'custom' => array('custom_data' => array(
+                                'accepted_user' => $user_name,
+                                'event_id' => $event_id,
+                                'status' => $request_status
+                            ))
+                        ));
+                    } else {
+                        $message = PushNotification::Message($user_name.' replied with '.$request_status.' to: '.$event->title.'.', array(
+                            'badge' => 1,
+                            'sound' => 'example.aiff',
+
+                            'actionLocKey' => 'Action button title!',
+                            'locKey' => 'localized key',
+                            'locArgs' => array(
+                                'localized args',
+                                'localized args',
+                            ),
+                            'launchImage' => 'image.jpg',
+
+                            'custom' => array('custom_data' => array(
+                                'accepted_user' => $user_name,
+                                'event_id' => $event_id,
+                                'status' => $request_status
+                            ))
+                        ));
+                    }
                     PushNotification::app('invitedIOS')->to($notification_user->device_token)->send($message);
                 }
                 else{

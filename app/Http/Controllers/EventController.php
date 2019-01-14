@@ -64,7 +64,7 @@ class EventController extends Controller
         //check platform
         $user_id = $request['user_id'];
         $user_platform = User::where('id',$user_id)->first();
-        $message = "would like to invite you on";
+        $message = "Created";
         Log::info("Before Send User Notification");
         $this->sendUserNotification($request,$event_id,$list_id,$message);
         if($event_id){

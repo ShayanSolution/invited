@@ -55,8 +55,12 @@ class SendPushNotification extends Job
         $event = Event::where('id',$this->event_id)->first();
         $user = $this->user;
         $request_to = $this->request_to_user;
-//        $message = $this->message;
-        $message = $user->firstName.' '.$user->lastName.': '.$event->title.' ('.$user->phone.')';
+        $message = $this->message;
+        if($message == "Created"){
+            $message_body = $user->firstName.' '.$user->lastName.': '.$event->title.' ('.$user->phone.')';
+        } else {
+            $message_body = $event->title.' has been updated.';
+        }
 
         if(!empty($user->firstName)){
             $user_name = $user->firstName;
@@ -64,8 +68,8 @@ class SendPushNotification extends Job
             $user_name = $user->phone;
         }
 
-//        $message = PushNotification::Message($user_name.' '.$message.' '. $event->title.'.'  ,array(
-        $message = PushNotification::Message($message ,array(
+//        $message_body = PushNotification::Message($user_name.' '.$message_body.' '. $event->title.'.'  ,array(
+        $message_body = PushNotification::Message($message_body ,array(
             'badge' => 1,
             'sound' => 'example.aiff',
 
@@ -91,11 +95,11 @@ class SendPushNotification extends Job
             //dd($this->environment);
             if($this->environment == 'development') {
                 Log::info(" Environment is Development-----".$this->token."---- Before Send and Environment:-----".$this->environment);
-                $response = PushNotification::app('invitedIOSDev')->to($this->token)->send($message);
+                $response = PushNotification::app('invitedIOSDev')->to($this->token)->send($message_body);
                 Log::info(" Environment is Development-----".$this->token."------After Send");
             } else{
                 Log::info(" Environment is Production-----".$this->token."---- Before Send and Environment:-----".$this->environment);
-                $response = PushNotification::app('invitedIOS')->to($this->token)->send($message);
+                $response = PushNotification::app('invitedIOS')->to($this->token)->send($message_body);
                 Log::info(" Environment is Production-----".$this->token."------After Send");
             }
             Log::info("response in try: ".print_r($response));

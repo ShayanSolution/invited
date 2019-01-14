@@ -316,7 +316,7 @@ class EventController extends Controller
         if($accepted['update']){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $accepted_user = User::where('id',$id)->first();
-            $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "confirmed");
+            $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "YES");
             Log::info("Notification users ids for closed events: ".print_r($accepted['notification_users'],true));
             //if event has been closed, send notification remaining users for closed events
             if(!empty($accepted['notification_users'])){
@@ -377,7 +377,7 @@ class EventController extends Controller
         if($rejected){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $rejected_user = User::where('id',$id)->first();
-            $this->sendRequestNotification($created_by->created_by,$event_id,$rejected_user,$request_status = "rejected");
+            $this->sendRequestNotification($created_by->created_by,$event_id,$rejected_user,$request_status = "NO");
             return JsonResponse::generateResponse(
                 [
                     'status' => 'Request rejected successfully',
@@ -395,13 +395,13 @@ class EventController extends Controller
 
     public function sendRequestNotification($id,$event_id,$accepted_user,$request_status=null){
         Log::info("================= Send Notification to event createer =========================");
-
+        $event = Event::where('id',$event_id)->first();
         $notification_user = User::where('id',$id)->first();
 
         if($accepted_user){
 
             if(!empty($accepted_user->firstName)){
-                $user_name = $accepted_user->firstName;
+                $user_name = $accepted_user->firstName." ".$accepted_user->lastName;
             }else{
                 $user_name = $accepted_user->phone;
             }
@@ -410,7 +410,7 @@ class EventController extends Controller
                 Log::info("Device token: ".$notification_user->device_token);
                 $platform = $notification_user->platform;
                 if($platform == 'ios' || is_null($platform)) {
-                    $message = PushNotification::Message($user_name . " $request_status your request ", array(
+                    $message = PushNotification::Message('Congratulations! '. $user_name.' replied with '.$request_status.' to: '.$event->title.'.', array(
                         'badge' => 1,
                         'sound' => 'example.aiff',
 

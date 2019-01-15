@@ -757,14 +757,14 @@ class EventController extends Controller
         $optionBuilder->setTimeToLive(60*20);
         $dataBuilder = new PayloadDataBuilder();
         $event = Event::where('id',$event_id)->first();
-        if($request_status == 'confirmed'){
+        if($request_status == "YES"){
             //$notificationBuilder = new PayloadNotificationBuilder('Accepted');
             //$notificationBuilder->setBody($user_name.' accepted your request')->setSound('default');
 //            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => $user_name.' confirmed your request.']);
             $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => 'Congratulations! '. $user_name.' replied with YES to: '.$event->title.'.']);
             Log::info("Event Accepted:");
         }
-        elseif($request_status == 'rejected'){
+        elseif($request_status == "NO"){
             //$notificationBuilder = new PayloadNotificationBuilder('Cancelled');
             //$notificationBuilder->setBody($user_name.' cancelled your request')->setSound('default');
             $dataBuilder->addData(['code' => '4','Title' => 'Rejected', 'Body' => $user_name.' replied with NO to: '.$event->title.'.']);

@@ -16,6 +16,7 @@ use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
 use LaravelFCM\Facades\FCM;
 use App\Helpers\JsonResponse;
+use Intervention\Image\ImageManagerStatic as Image;
 
 
 class UserController extends Controller
@@ -456,6 +457,22 @@ class UserController extends Controller
                 $data['dateofrelation'] = $request->input("dateofrelation");
             } else {
                 $data['dateofrelation'] = null;
+            }
+            if (!empty($request->file("profileImage"))) {
+
+                $originalImage= $request->file('profileImage');
+                $thumbnailImage = Image::make($originalImage);
+                $thumbnailPath = storage_path().'/thumbnail/';
+                $originalPath = storage_path().'/images/';
+                $thumbnailImage->save($originalPath.time().$originalImage->getClientOriginalName());
+                $thumbnailImage->resize(150,150);
+                $thumbnailImage->save($thumbnailPath.time().$originalImage->getClientOriginalName());
+                $path = storage_path().'/images/';
+                $uploadImagePath = $path.time().$originalImage->getClientOriginalName();
+                $data['profileImage'] = $uploadImagePath;
+
+            } else {
+                $data['profileImage'] = null;
             }
 
             $updateUser->update($data);

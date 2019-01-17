@@ -450,6 +450,7 @@ class UserController extends Controller
                 "lastName"=> $request["lastName"],
                 "dob"=> $request["dob"],
                 "email"=> $request["email"],
+                "gender_id"=> $request["gender"],
             ];
             if (!empty($request->input("dateofrelation"))){
                 $data['dateofrelation'] = $request->input("dateofrelation");

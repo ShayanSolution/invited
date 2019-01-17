@@ -467,9 +467,10 @@ class UserController extends Controller
                 $thumbnailImage->save($originalPath.time().$originalImage->getClientOriginalName());
                 $thumbnailImage->resize(150,150);
                 $thumbnailImage->save($thumbnailPath.time().$originalImage->getClientOriginalName());
-                $path = storage_path().'/images/';
-                $uploadImagePath = $path.time().$originalImage->getClientOriginalName();
+                $path = app("url")->asset("storage/images/");
+                $uploadImagePath = app("url")->asset("storage/images/")."/".time().$originalImage->getClientOriginalName();
                 $data['profileImage'] = $uploadImagePath;
+//                dd($uploadImagePath);
 
             } else {
                 $data['profileImage'] = null;

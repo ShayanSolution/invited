@@ -8,3 +8,5 @@ Homestead.yaml
 /storage/*.key
 composer.lock
 composer.phar
+public/storage
+/storage

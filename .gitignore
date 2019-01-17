@@ -9,4 +9,4 @@ Homestead.yaml
 composer.lock
 composer.phar
 public/storage
-/storage
+/storage/

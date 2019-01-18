@@ -66,6 +66,7 @@ class RequestsEvent extends Model
                    $request_count[$index]['create_by'] = $created_by->email;
                    $request_count[$index]['phone'] = $created_by->phone;
                    $request_count[$index]['invited_by'] = $created_by->firstName.' '.$created_by->lastName;
+                   $request_count[$index]['profileImage'] = $created_by->profileImage;
                    $request_count[$index]['mobile'] = $created_by->mobile;
                    $request_count[$index]['address'] = $event->event_address;
                    $request_count[$index]['event_time'] = $event->event_time;

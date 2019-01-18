@@ -74,6 +74,7 @@ class ListController extends Controller
            foreach($user_list as $list){
                $user_contact_list[$index]['id'] = $list->id;
                $user_contact_list[$index]['list_name'] = $list->list_name;
+               $user_contact_list[$index]['group_image'] = $list->group_image;
                $user_contact_list[$index]['contacts'] = json_decode($list->contact_list);
                $index++;
            }

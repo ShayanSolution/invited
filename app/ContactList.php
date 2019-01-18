@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Log;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Intervention\Image\ImageManagerStatic as Image;
+
 
 class ContactList extends Model
 {
@@ -67,9 +69,31 @@ class ContactList extends Model
         return self::create($request)->id;
     }
     public static function UpdateList($request){
+
+        $data = [
+            "contact_list"=> $request["contact_list"],
+            "list_name"=> $request["list_name"],
+        ];
+        if (!empty($request->file("group_image"))) {
+
+            $originalImage= $request->file('group_image');
+            $thumbnailImage = Image::make($originalImage);
+            $thumbnailPath = storage_path().'/thumbnail/';
+            $originalPath = storage_path().'/images/';
+            $thumbnailImage->save($originalPath.time().$originalImage->getClientOriginalName());
+            $thumbnailImage->resize(150,150);
+            $thumbnailImage->save($thumbnailPath.time().$originalImage->getClientOriginalName());
+            $path = app("url")->asset("storage/images/");
+            $uploadImagePath = app("url")->asset("storage/images/")."/".time().$originalImage->getClientOriginalName();
+            $data['group_image'] = $uploadImagePath;
+
+        } else {
+            $data['group_image'] = null;
+        }
         $request = $request->all();
         $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
-        return self::where('id',$request['list_id'])->update(['contact_list'=>$request['contact_list'],'list_name'=>$request['list_name'] ]);
+
+        return self::where('id',$request['list_id'])->update($data);
     }
 
     public static function getList($id){

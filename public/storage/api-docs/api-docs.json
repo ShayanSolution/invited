@@ -1,0 +1,396 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Invited API",
+        "description": "This is Invited api",
+        "termsOfService": "",
+        "contact": {
+            "email": "marslanali@gmail.com"
+        },
+        "license": {
+            "name": "Private License",
+            "url": "#"
+        },
+        "version": "1.0.0"
+    },
+    "host": "invited.shayansolutions.com",
+    "basePath": "/",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "paths": {
+        "/register-user": {
+            "post": {
+                "summary": "Register User",
+                "description": "",
+                "operationId": "addUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Email address",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "description": "Phone number",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "Password",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password_confirmation",
+                        "in": "query",
+                        "description": "Confirm Password",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password_confirmation",
+                        "in": "query",
+                        "description": "Confirm Password",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "device_token",
+                        "in": "query",
+                        "description": "Device Token",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User Registered Successfully"
+                    },
+                    "422": {
+                        "description": "Unable to register user"
+                    }
+                }
+            }
+        },
+        "/user-notification": {
+            "post": {
+                "summary": "Notification",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notification send successfully"
+                    },
+                    "422": {
+                        "description": "Unable to send notification"
+                    }
+                }
+            }
+        },
+        "/create-list": {
+            "post": {
+                "summary": "Create List",
+                "description": "",
+                "operationId": "addList",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "contact_list",
+                        "in": "query",
+                        "description": "Contact List",
+                        "required": true,
+                        "type": "string",
+                        "multiLine": true,
+                        "format": "text"
+                    },
+                    {
+                        "name": "list_name",
+                        "in": "query",
+                        "description": "List Name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Contact List Created Successfully"
+                    },
+                    "422": {
+                        "description": "Unable to create list"
+                    }
+                }
+            }
+        },
+        "/get-contact-list": {
+            "get": {
+                "summary": "Contact List",
+                "description": "",
+                "operationId": "getList",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Contact List Created Successfully"
+                    },
+                    "422": {
+                        "description": "Unable to create list"
+                    }
+                }
+            }
+        },
+        "/create-event": {
+            "post": {
+                "summary": "Create Event",
+                "description": "",
+                "operationId": "addEvent",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Event Title",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "event_address",
+                        "in": "query",
+                        "description": "Event Address",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "event_time",
+                        "in": "query",
+                        "description": "event_time",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "payment_method",
+                        "in": "query",
+                        "description": "Payment Method",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "description": "longitude",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "description": "latitude",
+                        "required": false,
+                        "type": "string"
+                    }
+
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Contact List Created Successfully"
+                    },
+                    "422": {
+                        "description": "Unable to create list"
+                    }
+                }
+            }
+        },
+        "/get-event": {
+            "get": {
+                "summary": "Get Event",
+                "description": "",
+                "operationId": "getEvent",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Event list"
+                    },
+                    "422": {
+                        "description": "Unable to find event list"
+                    }
+                }
+            }
+        },
+        "/get-request": {
+            "get": {
+                "summary": "Get Event Request",
+                "description": "",
+                "operationId": "getEventRequest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "request_to",
+                        "in": "query",
+                        "description": "Requst to",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Event requests"
+                    },
+                    "422": {
+                        "description": "Unable to find event request list"
+                    }
+                }
+            }
+        },
+        "/accept-request": {
+            "get": {
+                "summary": "Accept Request",
+                "description": "",
+                "operationId": "confirmRequest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Request id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request accepted successfully"
+                    },
+                    "422": {
+                        "description": "Unable to accept request"
+                    }
+                }
+            }
+        },
+        "/reject-request": {
+            "get": {
+                "summary": "Reject Request",
+                "description": "",
+                "operationId": "rejectRequest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Request id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request rejected "
+                    },
+                    "422": {
+                        "description": "Unable to reject request"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {}
+}

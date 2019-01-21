@@ -257,10 +257,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             //'device_token' => $request->device_token,
             'firstName'=> $request['firstName'],
             'lastName'=>$request['lastName'],
-            'dob'=> $request['dob'],
+//            'dob'=> $request['dob'],
 //            'dateofrelation'=> $request['dateofrelation'],
-            'gender_id'=>$request['gender']
+//            'gender_id'=>$request['gender']
         ];
+        if (!empty($request['dob'])){
+            $data['dob'] =   $request['dob'];
+        }
+        if (!empty($request['gender_id'])){
+            $data['gender_id'] =   $request['gender_id'];
+        }
         if (!empty($request['email'])){
             $data['email'] =   $request['email'];
         }

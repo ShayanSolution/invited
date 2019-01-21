@@ -54,7 +54,7 @@
         <td><b>Number of Invitation Rejected:</b>&nbsp;<?php echo $rejectPeopelCount?></td>
     </tr>
     <tr>
-        <td><b>Number of Invitation Rejected:</b>&nbsp;<?php echo $pendingPeopelCount?></td>
+        <td><b>Number of Invitation Pending:</b>&nbsp;<?php echo $pendingPeopelCount?></td>
     </tr>
     <tr>
         <td><b>List of people who accept the invitation:</b></td>

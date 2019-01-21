@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\NonUser;
 use Illuminate\Http\Request;
 use App\Models\Event;
 use App\ContactList;
@@ -61,6 +62,28 @@ class EventController extends Controller
         }
         //create event
         $event_id = Event::CreateEvent($request);
+        //non users entry in table
+        $listContactUser = $user_list['0']['contact_list'];
+        $listDecode = json_decode($listContactUser);
+        $contactListPersonName = [];
+        foreach ($listDecode as $value) {
+                $contactListPersonName[] = [$value->phone];
+        }
+        $onlyNonUsers = [];
+        foreach ($contactListPersonName as $key => $value){
+            $filterNonUsers = User::where('phone', '=', $value)->first();
+            foreach ($value as $phone){
+                if($filterNonUsers == null){
+                    $onlyNonUsers [] = $phone;
+                    $nonUser = new NonUser();
+                    $nonUser->event_id = $event_id;
+                    $nonUser->phone = $phone;
+                    $nonUser->save();
+                }
+            }
+        }
+        //Create comma string
+        $allNonUsers = implode(',',$onlyNonUsers);
         //check platform
         $user_id = $request['user_id'];
         $user_platform = User::where('id',$user_id)->first();
@@ -72,6 +95,7 @@ class EventController extends Controller
                 [
                     'status' => 'success',
                     'message' => 'Event Created Successfully',
+                    'non_users' => $allNonUsers,
                 ],200
             );
         }else{

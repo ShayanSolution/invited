@@ -431,7 +431,7 @@ class UserController extends Controller
             'lastName' => 'required',
             'dob' => 'required',
             //            'dateofrelation' => 'required',
-            'email' => 'required'
+            'email' => 'required|email'
         ]);
         $response = User::generateErrorResponse($validator);
         if($response['code'] == 500){

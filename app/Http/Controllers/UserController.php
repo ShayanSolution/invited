@@ -323,10 +323,11 @@ class UserController extends Controller
             return $query->select('id','event_date', 'user_id');
         }])->where('phone',  'like', '%'.$phoneMatch)->get();
         foreach ($findNonUsers as $nonUser){
+            $nonUserId = $nonUser->id;
             $event_id = $nonUser->eventNonuser ? $nonUser->eventNonuser->id : null;
             $created_user = User::where('id',$nonUser->eventNonuser->user_id)->first();
             if($event_id != null){
-                $this->sendNonUserNotification($device_token, $environment, $created_user, $event_id, $user, $message);
+                $this->sendNonUserNotification($device_token, $environment, $created_user, $event_id, $user, $message, $nonUserId);
             }
         }
         if($token){
@@ -515,7 +516,7 @@ class UserController extends Controller
         }
     }
 
-    public function sendNonUserNotification($device_token, $environment, $created_user, $event_id, $user, $message){
+    public function sendNonUserNotification($device_token, $environment, $created_user, $event_id, $user, $message, $nonUserId){
         $created_by = $created_user->id;
         $event = Event::where('id',$event_id)->first();
         $eventRequest = new RequestsEvent();
@@ -540,6 +541,8 @@ class UserController extends Controller
 //                                    $message = $created_user->firstName.': '.$event->title.'('.$created_user->phone.')';
                             $job = new SendPushNotification($device_token, $environment, $created_user, $event_id, $user, $message);
                             dispatch($job);
+                            $nonUserEntery = NonUser::find($nonUserId);
+                            $nonUserEntery->delete();
                             Log::info('Request Cycle with Queues Ends');
                         }
                         else {
@@ -552,6 +555,8 @@ class UserController extends Controller
                             $message_title = $created_user->firstName.' '.$created_user->lastName.': '.$event->title.' ('.$created_user->phone.')';
                             //send data message payload
                             $this->eventController->sendNotificationToAndoidUsers($device_token,$request_status,$message_title,$event_id);
+                            $nonUserEntery = NonUser::find($nonUserId);
+                            $nonUserEntery->delete();
 
                         }
                     }

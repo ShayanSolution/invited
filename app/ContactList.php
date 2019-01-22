@@ -74,24 +74,34 @@ class ContactList extends Model
             "contact_list"=> $request["contact_list"],
             "list_name"=> $request["list_name"],
         ];
+
+        $request = $request->all();
+        $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
+
+        return self::where('id',$request['list_id'])->update($data);
+    }
+
+    public static function UpdateListImage($request){
+
         if (!empty($request->file("group_image"))) {
 
             $originalImage= $request->file('group_image');
             $thumbnailImage = Image::make($originalImage);
             $thumbnailPath = storage_path().'/thumbnail/';
             $originalPath = storage_path().'/images/';
-            $thumbnailImage->save($originalPath.time().$originalImage->getClientOriginalName());
+            $fileName = time().$originalImage->getClientOriginalName();
+            $thumbnailImage->save($originalPath.$fileName);
             $thumbnailImage->resize(150,150);
-            $thumbnailImage->save($thumbnailPath.time().$originalImage->getClientOriginalName());
+            $thumbnailImage->save($thumbnailPath.$fileName);
             $path = app("url")->asset("storage/images/");
-            $uploadImagePath = app("url")->asset("storage/images/")."/".time().$originalImage->getClientOriginalName();
+            $uploadImagePath = app("url")->asset("storage/images/")."/".$fileName;
             $data['group_image'] = $uploadImagePath;
 
         } else {
             $data['group_image'] = null;
         }
+
         $request = $request->all();
-        $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
 
         return self::where('id',$request['list_id'])->update($data);
     }

@@ -61,6 +61,27 @@ class ListController extends Controller
             );
         }
     }
+    public function UpdateUserContactListImage(Request $request){
+        $this->validate($request,[
+            'list_id' => 'required',
+        ]);
+        $list = ContactList::UpdateListImage($request);
+        if($list){
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'success',
+                    'messages' => 'Group Image Updated Successfully',
+                ],200
+            );
+        }else{
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to Update Group Image'
+                ], 500
+            );
+        }
+    }
 
     public function getUserContactList(Request $request){
        $request = $request->all();

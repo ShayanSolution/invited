@@ -23,8 +23,8 @@ class NonUser extends Model
         'phone'
     ];
 
-    public function eventNonUser()
+    public function eventNonuser()
     {
-        return $this->hasOne('App\Models\Event');
+        return $this->belongsTo('App\Models\Event', 'event_id');
     }
 }

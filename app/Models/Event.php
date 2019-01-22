@@ -341,4 +341,7 @@ class Event extends Model
 
         return parent::castAttribute($key, $value);
     }
+    public function getNonusers(){
+        return $this->hasMany(NonUser::class);
+    }
 }

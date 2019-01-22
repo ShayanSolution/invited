@@ -71,8 +71,9 @@ class EventController extends Controller
         }
         $onlyNonUsers = [];
         foreach ($contactListPersonName as $key => $value){
-            $filterNonUsers = User::where('phone', '=', $value)->first();
             foreach ($value as $phone){
+                $phoneMatch = substr($phone, -9);
+                $filterNonUsers = User::where('phone',  'like', '%'.$phoneMatch)->first();
                 if($filterNonUsers == null){
                     $onlyNonUsers [] = $phone;
                     $nonUser = new NonUser();

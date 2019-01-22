@@ -318,9 +318,10 @@ class UserController extends Controller
         $user = User::where('id',$request->user_id)->first();
         $device_token = $user->device_token;
         $environment = $user->environment;
+        $phoneMatch = substr($user->phone, -9);
         $findNonUsers = NonUser::with(['eventNonuser'=>function($query){
             return $query->select('id','event_date', 'user_id');
-        }])->where('phone', '=', $user->phone)->get();
+        }])->where('phone',  'like', '%'.$phoneMatch)->get();
         foreach ($findNonUsers as $nonUser){
             $event_id = $nonUser->eventNonuser ? $nonUser->eventNonuser->id : null;
             $created_user = User::where('id',$nonUser->eventNonuser->user_id)->first();

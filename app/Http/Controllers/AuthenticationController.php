@@ -316,8 +316,8 @@ class AuthenticationController extends Controller
 //            'email' => 'required|email|unique:users',
             'firstName' => 'required',
             'lastName' => 'required',
-//            'dob' => 'required',
-//            'gender' => 'required',
+            'dob' => 'required',
+            'gender' => 'required',
             'phone' => 'required|unique:users',
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required|min:6'

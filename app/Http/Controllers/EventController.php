@@ -435,7 +435,7 @@ class EventController extends Controller
                 Log::info("Device token: ".$notification_user->device_token);
                 Log::info("Device token: ".$notification_user->environment);
                 $platform = $notification_user->platform;
-                $environment = $notification_user->environment;
+//                $environment = $notification_user->environment;
                 if($platform == 'ios' || is_null($platform)) {
                     if ($request_status == "YES") {
                         $message = PushNotification::Message('Congratulations! ' . $user_name . ' replied with ' . $request_status . ' to: ' . $event->title . '.', array(
@@ -477,7 +477,7 @@ class EventController extends Controller
                         ));
                     }
 //                    PushNotification::app('invitedIOS')->to($notification_user->device_token)->send($message);
-                    if($environment == 'development') {
+                    if($notification_user->environment == 'development') {
                         Log::info(" Environment is Development-----".$notification_user->device_token."---- Before Send and Environment:-----".$this->environment);
                         $response = PushNotification::app('invitedIOS')->to($notification_user->device_token)->send($message);
                         Log::info(" Environment is Development-----".$notification_user->device_token."------After Send");

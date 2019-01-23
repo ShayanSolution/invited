@@ -478,11 +478,11 @@ class EventController extends Controller
                     }
 //                    PushNotification::app('invitedIOS')->to($notification_user->device_token)->send($message);
                     if($notification_user->environment == 'development') {
-                        Log::info(" Environment is Development-----".$notification_user->device_token."---- Before Send and Environment:-----".$this->environment);
+                        Log::info(" Environment is Development-----".$notification_user->device_token."---- Before Send and Environment:-----".$notification_user->environment);
                         $response = PushNotification::app('invitedIOS')->to($notification_user->device_token)->send($message);
                         Log::info(" Environment is Development-----".$notification_user->device_token."------After Send");
                     } else{
-                        Log::info(" Environment is Production-----".$notification_user->device_token."---- Before Send and Environment:-----".$this->environment);
+                        Log::info(" Environment is Production-----".$notification_user->device_token."---- Before Send and Environment:-----".$notification_user->environment);
                         $response = PushNotification::app('invitedIOS')->to($notification_user->device_token)->send($message);
                         Log::info(" Environment is Production-----".$notification_user->device_token."------After Send");
                     }

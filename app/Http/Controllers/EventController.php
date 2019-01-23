@@ -433,6 +433,7 @@ class EventController extends Controller
 
             if(!empty($notification_user->device_token)){
                 Log::info("Device token: ".$notification_user->device_token);
+                Log::info("Device token: ".$notification_user->environment);
                 $platform = $notification_user->platform;
                 $environment = $notification_user->environment;
                 if($platform == 'ios' || is_null($platform)) {

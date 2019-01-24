@@ -494,8 +494,6 @@ class UserController extends Controller
                 $uploadImagePath = app("url")->asset("storage/images/")."/".$fileName;
                 $data['profileImage'] = $uploadImagePath;
 
-            } else {
-                $data['profileImage'] = null;
             }
 
             $updateUser->update($data);
@@ -504,6 +502,36 @@ class UserController extends Controller
                 [
                     'status' => 'success',
                     'message' => 'User update successfully'
+                ], 200
+            );
+        }else{
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to find user'
+                ], 422
+            );
+        }
+    }
+
+    public function deleteUserProfileImage(Request $request){
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+        ]);
+        $response = User::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+        $deleteUserImage = User::where('id',$request->user_id);
+        if($deleteUserImage){
+            $data['profileImage'] = null;
+
+            $deleteUserImage->update($data);
+
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'message' => 'User profile image remove successfully'
                 ], 200
             );
         }else{

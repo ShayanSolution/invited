@@ -51,6 +51,8 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     Route::post('/update-list-image','ListController@UpdateUserContactListImage');
 
+    Route::post('/delete-list-image','ListController@DeleteUserContactListImage');
+
     Route::get('/delete-list','ListController@DeleteUserContactList');
 
     Route::get('/get-event','EventController@getUserEvents');

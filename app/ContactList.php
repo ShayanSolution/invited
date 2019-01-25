@@ -33,7 +33,8 @@ class ContactList extends Model
     protected $fillable = [
         'user_id',
         'contact_list',
-        'list_name'
+        'list_name',
+        'group_image',
     ];
 
     protected $casts = [
@@ -82,7 +83,7 @@ class ContactList extends Model
     }
 
     public static function UpdateListImage($request){
-
+        $data = [];
         if (!empty($request->file("group_image"))) {
 
             $originalImage= $request->file('group_image');
@@ -97,8 +98,6 @@ class ContactList extends Model
             $uploadImagePath = app("url")->asset("storage/images/")."/".$fileName;
             $data['group_image'] = $uploadImagePath;
 
-        } else {
-            $data['group_image'] = null;
         }
 
         $request = $request->all();

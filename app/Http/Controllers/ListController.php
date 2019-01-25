@@ -83,6 +83,36 @@ class ListController extends Controller
         }
     }
 
+    public function DeleteUserContactListImage(Request $request){
+        $validator = Validator::make($request->all(), [
+            'list_id' => 'required',
+        ]);
+        $response = ContactList::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+        $deleteListImage = ContactList::where('id',$request->list_id);
+        if($deleteListImage){
+            $data['group_image'] = null;
+
+            $deleteListImage->update($data);
+
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'message' => 'Group image remove successfully'
+                ], 200
+            );
+        }else{
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to find group'
+                ], 422
+            );
+        }
+    }
+
     public function getUserContactList(Request $request){
        $request = $request->all();
        $user_id = $request['user_id'];

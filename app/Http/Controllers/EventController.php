@@ -328,10 +328,11 @@ class EventController extends Controller
                     if($user){
                         $device_token = $user->device_token;
                         $platform = $user->platform;
+                        $environment = $user->environment;
                         //send notification to ios user list
                         Log::info("device_token: ".$device_token);
                         Log::info("Request Cycle with Queues Begins");
-                        $job = new SendCloseEventNotification($device_token, $event_detail->title,$platform);
+                        $job = new SendCloseEventNotification($device_token, $event_detail->title,$platform,$environment);
                         dispatch($job);
                         Log::info('Request Cycle with Queues Ends now');
                     }

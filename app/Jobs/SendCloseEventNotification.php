@@ -59,13 +59,11 @@ class SendCloseEventNotification extends Job
             //            PushNotification::app('invitedIOS')->to($this->token)->send($message);
             if($this->environment == 'development') {
                 Log::info(" Environment is Development-----".$this->token."---- Before Send and Environment:-----".$this->environment);
-                $response = PushNotification::app('invitedIOSDev')->to($this->token)->send
-                ($message);
+                $response = PushNotification::app('invitedIOSDev')->to($this->token)->send($message);
                 Log::info(" Environment is Development-----".$this->token."------After Send");
             } else{
                 Log::info(" Environment is Production-----".$this->token."---- Before Send and Environment:-----".$this->environment);
-                $response = PushNotification::app('invitedIOS')->to($this->token)->send
-                ($message);
+                $response = PushNotification::app('invitedIOS')->to($this->token)->send($message);
                 Log::info(" Environment is Production-----".$this->token."------After Send");
             }
         }

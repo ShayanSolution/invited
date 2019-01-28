@@ -39,7 +39,7 @@ class SendCloseEventNotification extends Job
     {
         Log::info(" I am in queue ");
         if($this->platform == 'ios' || is_null($this->platform)) {
-            Log::info(" I am in queue ios platform");
+            Log::info(" I am in queue ios platform".$this->environment);
             $message = PushNotification::Message("Too late. ".$this->event_title . "  has been closed ", array(
                 'badge' => 1,
                 'sound' => 'example.aiff',

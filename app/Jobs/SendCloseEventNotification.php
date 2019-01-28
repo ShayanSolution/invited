@@ -20,13 +20,14 @@ class SendCloseEventNotification extends Job
     protected $token;
     protected $event_title;
     protected $platform;
-    
-    
-    public function __construct($token,$event_title,$platform)
+
+
+    public function __construct($token,$event_title,$platform,$environment)
     {
         $this->token = $token;
         $this->event_title = $event_title;
         $this->platform = $platform;
+        $this->environment = $environment;
     }
 
     /**
@@ -55,25 +56,46 @@ class SendCloseEventNotification extends Job
                 ))
 
             ));
-            PushNotification::app('invitedIOS')->to($this->token)->send($message);
+            //            PushNotification::app('invitedIOS')->to($this->token)->send($message);
+            if($this->environment == 'development') {
+                Log::info(" Environment is Development-----".$this->token."---- Before Send and Environment:-----".$this->environment);
+                $response = PushNotification::app('invitedIOSDev')->to($this->token)->send
+                ($message);
+                Log::info(" Environment is Development-----".$this->token."------After Send");
+            } else{
+                Log::info(" Environment is Production-----".$this->token."---- Before Send and Environment:-----".$this->environment);
+                $response = PushNotification::app('invitedIOS')->to($this->token)->send
+                ($message);
+                Log::info(" Environment is Production-----".$this->token."------After Send");
+            }
         }
         else{
             Log::info(" I am in queue ios android");
-           // Log::info(" Send notification to android users ");
+            $request_status = "TooLate";
+            // Log::info(" Send notification to android users ");
             $optionBuilder = new OptionsBuilder();
             $optionBuilder->setTimeToLive(60*20);
-            $notificationBuilder = new PayloadNotificationBuilder('Event Closed');
-            $notificationBuilder->setBody('Too late. '.$this->event_title.' has been closed')->setSound('default');
-
             $dataBuilder = new PayloadDataBuilder();
-            $dataBuilder->addData(['a_data' => 'my_data']);
+            if($request_status == "TooLate"){
+                //$notificationBuilder = new PayloadNotificationBuilder('Accepted');
+                //$notificationBuilder->setBody($user_name.' accepted your request')->setSound
+                ('default');
+//            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => $user_name.'confirmed your request.']);
+                $dataBuilder->addData(['code' => '7','Title' => 'Accepted','Body' => 'Too late. '.$this->event_title.' has been closed']);
+                Log::info("Event Too Late:");
+            }
+//            $notificationBuilder = new PayloadNotificationBuilder('Event Closed');
+//            $notificationBuilder->setBody('Too late. '.$this->event_title.' has beenclosed')->setSound('default');
+//
+//
+//            $dataBuilder->addData(['a_data' => 'my_data']);
 
             $option = $optionBuilder->build();
-            $notification = $notificationBuilder->build();
+//            $notification = $notificationBuilder->build();
             $data = $dataBuilder->build();
 
            // Log::info("Sending push notification to $this->token");
-            $downstreamResponse = FCM::sendTo($this->token, $option, $notification, $data);
+            $downstreamResponse = FCM::sendTo($this->token, $option, null, $data);
         }
     }
 }

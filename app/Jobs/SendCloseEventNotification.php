@@ -20,6 +20,7 @@ class SendCloseEventNotification extends Job
     protected $token;
     protected $event_title;
     protected $platform;
+    protected $environment;
 
 
     public function __construct($token,$event_title,$platform,$environment)

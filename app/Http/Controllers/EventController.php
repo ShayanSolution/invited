@@ -812,41 +812,42 @@ class EventController extends Controller
         $optionBuilder->setTimeToLive(60*20);
         $dataBuilder = new PayloadDataBuilder();
         $event = Event::where('id',$event_id)->first();
+        $entity = "Message";
         if($request_status == "YES"){
             //$notificationBuilder = new PayloadNotificationBuilder('Accepted');
             //$notificationBuilder->setBody($user_name.' accepted your request')->setSound('default');
 //            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => $user_name.' confirmed your request.']);
-            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => 'Congratulations! '. $user_name.' replied with YES to: '.$event->title.'.']);
+            $dataBuilder->addData(['code' => '3','Title' => $entity.' Accepted','Body' => 'Congratulations! '. $user_name.' replied with YES to: '.$event->title.'.']);
             Log::info("Event Accepted:");
         }
         elseif($request_status == "NO"){
             //$notificationBuilder = new PayloadNotificationBuilder('Cancelled');
             //$notificationBuilder->setBody($user_name.' cancelled your request')->setSound('default');
-            $dataBuilder->addData(['code' => '4','Title' => 'Rejected', 'Body' => $user_name.' replied with NO to: '.$event->title.'.']);
+            $dataBuilder->addData(['code' => '4','Title' => $entity.' Rejected', 'Body' => $user_name.' replied with NO to: '.$event->title.'.']);
             Log::info("Event Rjected:");
         }
         elseif($request_status == 'deleted'){
             //$notificationBuilder = new PayloadNotificationBuilder('Deleted');
             //$notificationBuilder->setBody($user_name)->setSound('default');
-            $dataBuilder->addData(['code' => '5','Title' => 'Deleted','Body' =>$user_name]);
+            $dataBuilder->addData(['code' => '5','Title' => $entity.' Deleted','Body' =>$user_name]);
             Log::info("Event Deleted:");
         }
         elseif($request_status == 'Updated'){
             //$notificationBuilder = new PayloadNotificationBuilder('Updated');
             //$notificationBuilder->setBody($user_name)->setSound('default');
-            $dataBuilder->addData(['code' => '2','Title'=>'Updated','Body'=>$user_name]);
+            $dataBuilder->addData(['code' => '2','Title'=>$entity.' Updated','Body'=>$user_name]);
             Log::info("Event Updated:");
         }
         elseif($request_status == 'cancelled'){
             //$notificationBuilder = new PayloadNotificationBuilder('Deleted');
             //$notificationBuilder->setBody($user_name)->setSound('default');
-            $dataBuilder->addData(['code' => '6','Title' => 'Cancelled','Body' =>$user_name]);
+            $dataBuilder->addData(['code' => '6','Title' => $entity.' Cancelled','Body' =>$user_name]);
             Log::info("Event Cancelled:");
         }
         else{
             //$notificationBuilder = new PayloadNotificationBuilder('Event Created');
             //$notificationBuilder->setBody(' Event Created Successfully ')->setSound('default');
-            $dataBuilder->addData(['code' => '1','Title'=>'Event Created','Body'=>$user_name]);
+            $dataBuilder->addData(['code' => '1','Title'=>$entity.' Received','Body'=>$user_name]);
             Log::info("Event Created:");
         }
 

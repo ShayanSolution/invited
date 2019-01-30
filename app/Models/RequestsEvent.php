@@ -220,7 +220,7 @@ class RequestsEvent extends Model
 
     public function invitee()
     {
-        return $this->belongsTo('App\Models\User', 'request_to', 'id')->select('id', 'firstName', 'lastName', 'username', 'email', 'phone');
+        return $this->belongsTo('App\Models\User', 'request_to', 'id')->select('id', 'firstName', 'lastName', 'username', 'email', 'phone', 'profileImage');
     }
 
     public function event()

@@ -914,7 +914,7 @@ class EventController extends Controller
         $acceptedPeopelCount = count($accept_contact_list);
         $rejectPeopelCount = count($reject_contact_list);
         $pendingPeopelCount = count($pending_contact_list);
-//        dd($requests->toArray(),"REJECT",$reject_contact_list, "ACCEPT",$accept_contact_list, "pending",$pending_contact_list);
+//        dd("REJECT",$reject_contact_list, "ACCEPT",$accept_contact_list, "pending",$pending_contact_list);
         $rejectFilteredContacts = [];
         foreach($reject_contact_list as $item){
             $isFound = false;

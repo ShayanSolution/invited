@@ -48,66 +48,80 @@
         <td><b>List Name:</b>&nbsp;<?php echo $data['list_name']. ' ('.$listCount.')'?></td>
     </tr>
     <tr>
-        <td><b>Number of Invitation Accepted:</b>&nbsp;<?php echo $acceptedPeopelCount?></td>
+        <td><b>Yes Count:</b>&nbsp;<?php echo $acceptedPeopelCount?></td>
     </tr>
     <tr>
-        <td><b>Number of Invitation Rejected:</b>&nbsp;<?php echo $rejectPeopelCount?></td>
+        <td><b>No Count:</b>&nbsp;<?php echo $rejectPeopelCount?></td>
     </tr>
     <tr>
-        <td><b>Number of Invitation Pending:</b>&nbsp;<?php echo $pendingPeopelCount?></td>
+        <td><b>No Response Count:</b>&nbsp;<?php echo $pendingPeopelCount?></td>
     </tr>
     <tr>
-        <td><b>List of people who accept the invitation:</b></td>
+        <td> </td><td><b><u>List Of People</u></b></td>
     </tr>
     </tbody>
 </table>
-
+<br>
+@if(!empty($acceptFilteredContacts))
 <table width="400" >
     <tbody >
-    <tr >
-        <td><b>List of people who replied with yes:</b></td>
-    </tr>
-    <tr >
-        <th align="left"><b>Name</b></th>
-        <th align="left"><b>Phone</b></th>
-    </tr>
-
-    @foreach($acceptFilteredContacts as $contact)
-        <tr>
-            <td> {!! $contact['name'] or '' !!} </td>
-            <td> {!! $contact['phone'] !!} </td>
+        <tr >
+            <td><b>List of people who replied with yes:</b></td>
         </tr>
-    @endforeach
-
-    <tr >
-        <td><b>List of people who rejected:</b></td>
-    </tr>
-    <tr >
-        <th align="left"><b>Name</b></th>
-        <th align="left"><b>Phone</b></th>
-    </tr>
-
-    @foreach($rejectFilteredContacts as $contact)
-        <tr>
-            <td> {!! $contact['name'] or '' !!} </td>
-            <td> {!! $contact['phone'] !!} </td>
+        <tr >
+            <th align="left"><b>Name</b></th>
+            <th align="left"><b>Phone</b></th>
         </tr>
-    @endforeach
 
-    <tr >
-        <td><b>List of people with no respone:</b></td>
-    </tr>
-    <tr >
-        <th align="left"><b>Name</b></th>
-        <th align="left"><b>Phone</b></th>
-    </tr>
-
-    @foreach($pendingFilteredContacts as $contact)
-        <tr>
-            <td> {!! $contact['name'] or '' !!} </td>
-            <td> {!! $contact['phone'] !!} </td>
-        </tr>
-    @endforeach
+        @foreach($acceptFilteredContacts as $contact)
+            <tr>
+                <td> {!! $contact['name'] or '' !!} </td>
+                <td> {!! $contact['phone'] !!} </td>
+            </tr>
+        @endforeach
     </tbody>
 </table>
+<p>======================================================</p>
+@endif
+@if(!empty($rejectFilteredContacts))
+<table width="400" >
+    <tbody >
+        <tr >
+            <td><b>List of people who replied with no:</b></td>
+        </tr>
+        <tr >
+            <th align="left"><b>Name</b></th>
+            <th align="left"><b>Phone</b></th>
+        </tr>
+
+        @foreach($rejectFilteredContacts as $contact)
+            <tr>
+                <td> {!! $contact['name'] or '' !!} </td>
+                <td> {!! $contact['phone'] !!} </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+<p>======================================================</p>
+@endif
+@if(!empty($pendingFilteredContacts))
+<table width="400" >
+    <tbody >
+        <tr >
+            <td><b>List of people with no response:</b></td>
+        </tr>
+        <tr >
+            <th align="left"><b>Name</b></th>
+            <th align="left"><b>Phone</b></th>
+        </tr>
+
+        @foreach($pendingFilteredContacts as $contact)
+            <tr>
+                <td> {!! $contact['name'] or '' !!} </td>
+                <td> {!! $contact['phone'] !!} </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+@endif
 </html>

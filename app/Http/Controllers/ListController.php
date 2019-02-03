@@ -100,7 +100,7 @@ class ListController extends Controller
             return response()->json(
                 [
                     'status' => 'success',
-                    'message' => 'Group image remove successfully'
+                    'message' => 'Group image removed successfully'
                 ], 200
             );
         }else{

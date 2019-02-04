@@ -320,8 +320,9 @@ class EventController extends Controller
         Log::info("================= Accept Request API Before Acceptance =========================");
         Log::info("Event maxi invited ".$event_detail->max_invited);
         Log::info("Request Confirmed ".$accepted_requests_count);
+        $id = $request['request_to'];
         if($event_detail->max_invited == $accepted_requests_count){
-            acceptRequestLimitEqual($event_id);
+            acceptRequestLimitEqual($event_id, $id);
             return JsonResponse::generateResponse(
                 [
                     'status' => 'closed',
@@ -337,7 +338,6 @@ class EventController extends Controller
                 ], 200
             );
         }
-        $id = $request['request_to'];
         $accepted = RequestsEvent::acceptRequest($event_id,$id);
         if($accepted['update']){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);

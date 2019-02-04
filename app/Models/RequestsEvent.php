@@ -111,6 +111,24 @@ class RequestsEvent extends Model
         return array('update'=>$update,'notification_users'=>$notification_users);
     }
 
+    public static function acceptRequestLimitEqual($event_id){
+        $accepted_requests = RequestsEvent::acceptedEventRequest($event_id);
+        $accepted_requests_count = count($accepted_requests);
+        $event_detail = Event::getEventByID($event_id);
+        Log::info("================= Accept Request API After Acceptance =========================");
+        $notification_users = [];
+        if($event_detail->max_invited == $accepted_requests_count){
+            //send notification only to pending request users
+            $not_accepted_event_request =   self::where('event_id',$event_id)->where('confirmed','!=',1)->where('confirmed','!=',0)->get();
+            foreach ( $not_accepted_event_request as $request) {
+                self::where('id',$request->id)->update(['confirmed'=>3]);
+                $notification_users[] = $request->request_to;
+            }
+
+        }
+        return array('notification_users'=>$notification_users);
+    }
+
     public static function acceptedEventRequest($event_id){
 
 

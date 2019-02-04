@@ -322,7 +322,7 @@ class EventController extends Controller
         Log::info("Request Confirmed ".$accepted_requests_count);
         $id = $request['request_to'];
         if($event_detail->max_invited == $accepted_requests_count){
-            acceptRequestLimitEqual($event_id, $id);
+            RequestsEvent::acceptRequestLimitEqual($event_id, $id);
             return JsonResponse::generateResponse(
                 [
                     'status' => 'closed',

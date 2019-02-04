@@ -264,8 +264,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         if (!empty($request['dob'])){
             $data['dob'] =   $request['dob'];
         }
-        if (!empty($request['gender_id'])){
-            $data['gender_id'] =   $request['gender_id'];
+        if (!empty($request['gender'])){
+            $data['gender_id'] =   $request['gender'];
         }
         if (!empty($request['email'])){
             $data['email'] =   $request['email'];

@@ -171,7 +171,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
         return $query->update(['password'=>Hash::make($password)]);
     }
-
+    
     public function findBookedUser($tutor_id){
         $user = User::select('users.*')
                 ->select('users.*','programmes.name as p_name','subjects.name as s_name'
@@ -199,17 +199,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
 
-
+    
     public static function updateProfileImage($tutor_id,$file_name,$role_id){
         User::where('id','=',$tutor_id)->where('role_id','=',$role_id)-> update(['profileImage'=>$file_name]);
     }
-
+    
     public static function updateUserProfile($tutor_id,$update_array,$role_id){
         User::where('id','=',$tutor_id)->where('role_id','=',$role_id)-> update($update_array);
     }
+    
 
-
-
+    
     public static function updateUserActiveStatus($id){
         $user = Self::where('id',$id)->first();
         if($user->is_active == 0){
@@ -245,7 +245,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         }
         return $tutor_detail;
     }
-
+    
     public static function registerUser($request){
         // dd($request);
         //$email = explode("@",$request['email']);
@@ -257,15 +257,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             //'device_token' => $request->device_token,
             'firstName'=> $request['firstName'],
             'lastName'=>$request['lastName'],
-            'dob'=> $request['dob'],
+//            'dob'=> $request['dob'],
 //            'dateofrelation'=> $request['dateofrelation'],
-            'gender_id'=>$request['gender']
+//            'gender_id'=>$request['gender']
         ];
         if (!empty($request['dob'])){
             $data['dob'] =   $request['dob'];
         }
-        if (!empty($request['gender_id'])){
-            $data['gender_id'] =   $request['gender_id'];
+        if (!empty($request['gender'])){
+            $data['gender_id'] =   $request['gender'];
         }
         if (!empty($request['email'])){
             $data['email'] =   $request['email'];

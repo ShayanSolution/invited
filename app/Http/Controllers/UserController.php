@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\ContactList;
 use App\Models\User;
+use App\Models\Event;
+use App\Models\NonUser;
+use App\Models\RequestsEvent;
 use App\Repositories\Contracts\UserRepository;
 use Illuminate\Http\Request;
 use App\Transformers\UserTransformer;
@@ -16,7 +19,8 @@ use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
 use LaravelFCM\Facades\FCM;
 use App\Helpers\JsonResponse;
-
+use Intervention\Image\ImageManagerStatic as Image;
+use App\Jobs\SendPushNotification;
 
 class UserController extends Controller
 {
@@ -33,6 +37,7 @@ class UserController extends Controller
      * @var UserTransformer
      */
     private $userTransformer;
+    private $eventController;
 
     /**
      * Constructor
@@ -40,10 +45,11 @@ class UserController extends Controller
      * @param UserRepository $userRepository
      * @param UserTransformer $userTransformer
      */
-    public function __construct(UserRepository $userRepository, UserTransformer $userTransformer)
+    public function __construct(UserRepository $userRepository, UserTransformer $userTransformer, EventController $eventController)
     {
         $this->userRepository = $userRepository;
         $this->userTransformer = $userTransformer;
+        $this->eventController = $eventController;
 
         parent::__construct();
     }
@@ -307,6 +313,23 @@ class UserController extends Controller
             return $response;
         }
         $token = User::updateToken($request);
+
+        $message = "Created";
+        $user = User::where('id',$request->user_id)->first();
+        $device_token = $user->device_token;
+        $environment = $user->environment;
+        $phoneMatch = substr($user->phone, -9);
+        $findNonUsers = NonUser::with(['eventNonuser'=>function($query){
+            return $query->select('id','event_date', 'user_id');
+        }])->where('phone',  'like', '%'.$phoneMatch)->get();
+        foreach ($findNonUsers as $nonUser){
+            $nonUserId = $nonUser->id;
+            $event_id = $nonUser->eventNonuser ? $nonUser->eventNonuser->id : null;
+            $created_user = User::where('id',$nonUser->eventNonuser->user_id)->first();
+            if($event_id != null){
+                $this->sendNonUserNotification($device_token, $environment, $created_user, $event_id, $user, $message, $nonUserId);
+            }
+        }
         if($token){
             return response()->json(
                 [
@@ -430,7 +453,7 @@ class UserController extends Controller
             'lastName' => 'required',
             'dob' => 'required',
             //            'dateofrelation' => 'required',
-            'email' => 'required'
+            'email' => 'required|email'
         ]);
         $response = User::generateErrorResponse($validator);
         if($response['code'] == 500){
@@ -457,6 +480,21 @@ class UserController extends Controller
             } else {
                 $data['dateofrelation'] = null;
             }
+            if (!empty($request->file("profileImage"))) {
+
+                $originalImage= $request->file('profileImage');
+                $thumbnailImage = Image::make($originalImage);
+                $thumbnailPath = storage_path().'/thumbnail/';
+                $originalPath = storage_path().'/images/';
+                $fileName = time().$originalImage->getClientOriginalName();
+                $thumbnailImage->save($originalPath.$fileName);
+                $thumbnailImage->resize(150,150);
+                $thumbnailImage->save($thumbnailPath.$fileName);
+                $path = app("url")->asset("storage/images/");
+                $uploadImagePath = app("url")->asset("storage/images/")."/".$fileName;
+                $data['profileImage'] = $uploadImagePath;
+
+            }
 
             $updateUser->update($data);
 
@@ -473,6 +511,93 @@ class UserController extends Controller
                     'message' => 'Unable to find user'
                 ], 422
             );
+        }
+    }
+
+    public function deleteUserProfileImage(Request $request){
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+        ]);
+        $response = User::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+        $deleteUserImage = User::where('id',$request->user_id);
+        if($deleteUserImage){
+            $data['profileImage'] = null;
+
+            $deleteUserImage->update($data);
+
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'message' => 'User profile image remove successfully'
+                ], 200
+            );
+        }else{
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to find user'
+                ], 422
+            );
+        }
+    }
+
+    public function sendNonUserNotification($device_token, $environment, $created_user, $event_id, $user, $message, $nonUserId){
+        $created_by = $created_user->id;
+        $event = Event::where('id',$event_id)->first();
+        $eventRequest = new RequestsEvent();
+        if(!empty($device_token)) {
+            //create event request
+            if(!empty($user)){
+                Log::info("sending notification to  => ".$user->device_token);
+                $request = RequestsEvent::CreateRequestEvent($created_by, $user, $event_id);
+                $device_token = $device_token;
+                $user_id = $user->id;
+                $environment = $environment;
+//                dd($device_token, $user_id, $environment,$user->platform);
+                if (!empty($device_token)) {
+                    //check user platform
+                    $platform = $user->platform;
+                    $event_request = $eventRequest->getUserEventRequests($event_id, $user_id);
+                    //don't send notification to rejected user
+                    if ($event_request->confirmed != 0) {
+                        if ($platform == 'ios' || is_null($platform)) {
+                            //send notification to ios user list
+                            Log::info("Request Cycle with Queues Begins");
+//                                    $message = $created_user->firstName.': '.$event->title.'('.$created_user->phone.')';
+                            $job = new SendPushNotification($device_token, $environment, $created_user, $event_id, $user, $message);
+                            dispatch($job);
+                            $nonUserEntery = NonUser::find($nonUserId);
+                            $nonUserEntery->delete();
+                            Log::info('Request Cycle with Queues Ends');
+                        }
+                        else {
+                            Log::info("Before Sending Push notification to {$user->email} device token =>".$device_token);
+                            if($message == 'Created'){
+                                $request_status = 'created';
+                            }else{
+                                $request_status = 'created';
+                            }
+                            $message_title = $created_user->firstName.' '.$created_user->lastName.': '.$event->title.' ('.$created_user->phone.')';
+                            //send data message payload
+                            $this->eventController->sendNotificationToAndoidUsers($device_token,$request_status,$message_title,$event_id);
+                            $nonUserEntery = NonUser::find($nonUserId);
+                            $nonUserEntery->delete();
+
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Log::info("No push notification sending to phone number $created_user->id as phone number not found in database");
+            }
+        }
+        else
+        {
+            Log::info("I am getting empty user list");
         }
     }
 

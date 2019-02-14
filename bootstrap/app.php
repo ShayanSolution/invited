@@ -22,6 +22,7 @@ try {
 */
 class_alias(\LaravelFCM\Facades\FCM::class, 'FCM');
 class_alias(\LaravelFCM\Facades\FCMGroup::class, 'FCMGroup');
+class_alias('Intervention\Image\Facades\Image', 'Image');
 
 $app = new Laravel\Lumen\Application(
     realpath(__DIR__.'/../')
@@ -116,6 +117,7 @@ $app->register(LaravelFCM\FCMServiceProvider::class);
 LumenPassport::routes($app);
 
 $app->register(\Barryvdh\DomPDF\ServiceProvider::class);
+$app->register(Intervention\Image\ImageServiceProviderLumen::class);
 
 /*
 |--------------------------------------------------------------------------

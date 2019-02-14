@@ -66,6 +66,7 @@ class RequestsEvent extends Model
                    $request_count[$index]['create_by'] = $created_by->email;
                    $request_count[$index]['phone'] = $created_by->phone;
                    $request_count[$index]['invited_by'] = $created_by->firstName.' '.$created_by->lastName;
+                   $request_count[$index]['profileImage'] = $created_by->profileImage;
                    $request_count[$index]['mobile'] = $created_by->mobile;
                    $request_count[$index]['address'] = $event->event_address;
                    $request_count[$index]['event_time'] = $event->event_time;
@@ -108,6 +109,12 @@ class RequestsEvent extends Model
             
         }
         return array('update'=>$update,'notification_users'=>$notification_users);
+    }
+
+    public static function acceptRequestLimitEqual($event_id,$request_to){
+        $update = self::where('event_id',$event_id)->where('request_to',$request_to)->update(['confirmed'=>3]);
+
+        return array('update'=>$update);
     }
 
     public static function acceptedEventRequest($event_id){
@@ -167,8 +174,8 @@ class RequestsEvent extends Model
     public static function eventSentByMe($created_by){
         $eventIds = self::where(['created_by'=>$created_by, 'confirmed'=>1])->groupBy('event_id')->pluck('event_id')->toArray();
         $events = Event::whereIn('id', $eventIds)
-                    ->with('owner', 'acceptedRequests.invitee', 'rejectRequests.invitee', 'contactList')
-                    ->withCount(['requests', 'acceptedRequests', 'rejectRequests'])
+                    ->with('owner', 'acceptedRequests.invitee', 'rejectRequests.invitee', 'pendingRequests.invitee', 'contactList')
+                    ->withCount(['requests', 'acceptedRequests', 'rejectRequests', 'pendingRequests'])
                     ->latest('updated_at')->get();
         return $events;
     }
@@ -181,6 +188,17 @@ class RequestsEvent extends Model
             ->where('created_by',$created_by)
             ->where('event_id',$event_id)
             ->where('requests.confirmed',1)
+            ->orderBy('requests.updated_at','desc')
+            ->get();
+
+    }
+
+    public static function SendRequestAllUsers($event_id, $created_by){
+
+        return self::select('users.phone','users.firstName','users.lastName', 'requests.confirmed')
+            ->join('users','users.id','=','requests.request_to')
+            ->where('created_by',$created_by)
+            ->where('event_id',$event_id)
             ->orderBy('requests.updated_at','desc')
             ->get();
 
@@ -208,7 +226,7 @@ class RequestsEvent extends Model
 
     public function invitee()
     {
-        return $this->belongsTo('App\Models\User', 'request_to', 'id')->select('id', 'firstName', 'lastName', 'username', 'email', 'phone');
+        return $this->belongsTo('App\Models\User', 'request_to', 'id')->select('id', 'firstName', 'lastName', 'username', 'email', 'phone', 'profileImage');
     }
 
     public function event()

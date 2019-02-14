@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\NonUser;
 use Illuminate\Http\Request;
 use App\Models\Event;
 use App\ContactList;
@@ -61,6 +62,29 @@ class EventController extends Controller
         }
         //create event
         $event_id = Event::CreateEvent($request);
+        //non users entry in table
+        $listContactUser = $user_list['0']['contact_list'];
+        $listDecode = json_decode($listContactUser);
+        $contactListPersonName = [];
+        foreach ($listDecode as $value) {
+                $contactListPersonName[] = [$value->phone];
+        }
+        $onlyNonUsers = [];
+        foreach ($contactListPersonName as $key => $value){
+            foreach ($value as $phone){
+                $phoneMatch = substr($phone, -9);
+                $filterNonUsers = User::where('phone',  'like', '%'.$phoneMatch)->first();
+                if($filterNonUsers == null){
+                    $onlyNonUsers [] = $phone;
+                    $nonUser = new NonUser();
+                    $nonUser->event_id = $event_id;
+                    $nonUser->phone = $phone;
+                    $nonUser->save();
+                }
+            }
+        }
+        //Create comma string
+        $allNonUsers = implode(',',$onlyNonUsers);
         //check platform
         $user_id = $request['user_id'];
         $user_platform = User::where('id',$user_id)->first();
@@ -72,6 +96,7 @@ class EventController extends Controller
                 [
                     'status' => 'success',
                     'message' => 'Event Created Successfully',
+                    'non_users' => $allNonUsers,
                 ],200
             );
         }else{
@@ -295,7 +320,9 @@ class EventController extends Controller
         Log::info("================= Accept Request API Before Acceptance =========================");
         Log::info("Event maxi invited ".$event_detail->max_invited);
         Log::info("Request Confirmed ".$accepted_requests_count);
+        $id = $request['request_to'];
         if($event_detail->max_invited == $accepted_requests_count){
+            RequestsEvent::acceptRequestLimitEqual($event_id, $id);
             return JsonResponse::generateResponse(
                 [
                     'status' => 'closed',
@@ -311,7 +338,6 @@ class EventController extends Controller
                 ], 200
             );
         }
-        $id = $request['request_to'];
         $accepted = RequestsEvent::acceptRequest($event_id,$id);
         if($accepted['update']){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
@@ -330,7 +356,7 @@ class EventController extends Controller
                         $platform = $user->platform;
                         $environment = $user->environment;
                         //send notification to ios user list
-                        Log::info("device_token: ".$device_token);
+                        Log::info("device_token: ".$device_token. "-----". $environment);
                         Log::info("Request Cycle with Queues Begins");
                         $job = new SendCloseEventNotification($device_token, $event_detail->title,$platform,$environment);
                         dispatch($job);
@@ -409,8 +435,9 @@ class EventController extends Controller
 
             if(!empty($notification_user->device_token)){
                 Log::info("Device token: ".$notification_user->device_token);
+                Log::info("Device token: ".$notification_user->environment);
                 $platform = $notification_user->platform;
-                $environment = $notification_user->environment;
+//                $environment = $notification_user->environment;
                 if($platform == 'ios' || is_null($platform)) {
                     if ($request_status == "YES") {
                         $message = PushNotification::Message('Congratulations! ' . $user_name . ' replied with ' . $request_status . ' to: ' . $event->title . '.', array(
@@ -645,7 +672,16 @@ class EventController extends Controller
                                     'status' => 'cancelled'
                                 ))
                             ));
-                            PushNotification::app('invitedIOS')->to($user_device_token)->send($message);
+//                            PushNotification::app('invitedIOS')->to($user_device_token)->send($message);
+                            if($notification_user->environment == 'development') {
+                                Log::info(" Environment is Development(Delete)-----".$notification_user->device_token."---- Before Send and Environment:-----".$notification_user->environment);
+                                $response = PushNotification::app('invitedIOSDev')->to($notification_user->device_token)->send($message);
+                                Log::info(" Environment is Development-----".$notification_user->device_token."------After Send");
+                            } else{
+                                Log::info(" Environment is Production(Delete)-----".$notification_user->device_token."---- Before Send and Environment:-----".$notification_user->environment);
+                                $response = PushNotification::app('invitedIOS')->to($notification_user->device_token)->send($message);
+                                Log::info(" Environment is Production-----".$notification_user->device_token."------After Send");
+                            }
                         } else {
                             $this->sendNotificationToAndoidUsers($user_device_token,$request_status = "deleted",$event_detail->title . "  has been deleted. ",$event_id);
                         }
@@ -721,7 +757,16 @@ class EventController extends Controller
                                     'status' => 'cancelled'
                                 ))
                             ));
-                            PushNotification::app('invitedIOS')->to($user_device_token)->send($message);
+//                            PushNotification::app('invitedIOS')->to($user_device_token)->send($message);
+                            if($notification_user->environment == 'development') {
+                                Log::info(" Environment is Development(Cancel)-----".$notification_user->device_token."---- Before Send and Environment:-----".$notification_user->environment);
+                                $response = PushNotification::app('invitedIOSDev')->to($notification_user->device_token)->send($message);
+                                Log::info(" Environment is Development-----".$notification_user->device_token."------After Send");
+                            } else{
+                                Log::info(" Environment is Production(Cancel)-----".$notification_user->device_token."---- Before Send and Environment:-----".$notification_user->environment);
+                                $response = PushNotification::app('invitedIOS')->to($notification_user->device_token)->send($message);
+                                Log::info(" Environment is Production-----".$notification_user->device_token."------After Send");
+                            }
                         } else {
                             $this->sendNotificationToAndoidUsers($user_device_token,$request_status = "cancelled",$event_detail->title . "  has been cancelled. ",$event_id);
                         }
@@ -840,60 +885,88 @@ class EventController extends Controller
         }
         //dd($list);
         //key value array for match
-//        ini_set('memory_limit', '-1');
         $contactListPersonName = [];
-        $addedPhone = [];
         foreach ($list as $value) {
-            if (!empty($contactListPersonName)) {
-
-                if (!in_array($value->phone,$addedPhone)) {
-                    $addedPhone[] = $value->phone;
-                    if (isset($value->name)) {
-                        $contactListPersonName[] = ['name' => $value->name, 'phone' => $value->phone];
-                    } else {
-                        $contactListPersonName[] = ['name' => $value->email, 'phone' => $value->phone];
-                    }
-                }
-
-            } else {
-                $addedPhone[] = $value->phone;
-                if (isset($value->name)) {
-                    $contactListPersonName[] = ['name' => $value->name, 'phone' => $value->phone];
-                } else {
-                    $contactListPersonName[] = ['name' => $value->email, 'phone' => $value->phone];
-                }
+            if(isset($value->name)) {
+                $contactListPersonName[] = ['name' => $value->name, 'phone' => $value->phone];
+            }else{
+                $contactListPersonName[] = ['name' => $value->email, 'phone' => $value->phone];
             }
         }
-//dd($contactListPersonName);
+
         //get number of people accepted
         $created_by = $data['user_id'];
-        $requests = RequestsEvent::acceptedRequestUsers($event_id, $created_by);
-        $contact_list = [];
+        $requests = RequestsEvent::SendRequestAllUsers($event_id, $created_by);
+//        dd($requests->toArray());
+        $reject_contact_list = [];
+        $accept_contact_list = [];
+        $pending_contact_list = [];
+//        dd($requests->toArray());
         foreach($requests as $request){
-            //$contact_list[] = ['name'=>$request->firstName?$request->firstName:$request->lastName, 'phone'=>$request->phone];
-            $contact_list[] = ['phone'=>$request->phone];
+            if( $request->confirmed == 0 ) {
+                $reject_contact_list[] = ['phone' => $request->phone];
+            }elseif($request->confirmed == 1 ) {
+                $accept_contact_list[] = ['phone' => $request->phone];
+            }
+            elseif( $request->confirmed == 2 ) {
+                $pending_contact_list[] = ['phone' => $request->phone];
+            }
         }
-        $acceptedPeopelCount = count($contact_list);
-        //dd($contact_list);
-        $filteredContacts = [];
-        foreach($contact_list as $item){
+        $acceptedPeopelCount = count($accept_contact_list);
+        $rejectPeopelCount = count($reject_contact_list);
+        $pendingPeopelCount = count($pending_contact_list);
+//        dd("REJECT",$reject_contact_list, "ACCEPT",$accept_contact_list, "pending",$pending_contact_list);
+        $rejectFilteredContacts = [];
+        foreach($reject_contact_list as $item){
             $isFound = false;
 
             foreach ($contactListPersonName as $contact){
                 if(substr($contact['phone'], -9) == substr($item['phone'], -9)){
-                    $filteredContacts[] = ['name'=>$contact['name'],'phone'=>$item['phone']];
+                    $rejectFilteredContacts[] = ['name'=>$contact['name'],'phone'=>$item['phone']];
                     $isFound = true;
                 }
             }
             if(!$isFound){
-                $filteredContacts[]['phone'] = $item['phone'];
+                $rejectFilteredContacts[]['phone'] = $item['phone'];
+            }
+
+        }
+
+        $acceptFilteredContacts = [];
+        foreach($accept_contact_list as $item){
+            $isFound = false;
+
+            foreach ($contactListPersonName as $contact){
+                if(substr($contact['phone'], -9) == substr($item['phone'], -9)){
+                    $acceptFilteredContacts[] = ['name'=>$contact['name'],'phone'=>$item['phone']];
+                    $isFound = true;
+                }
+            }
+            if(!$isFound){
+                $acceptFilteredContacts[]['phone'] = $item['phone'];
+            }
+
+        }
+
+        $pendingFilteredContacts = [];
+        foreach($pending_contact_list as $item){
+            $isFound = false;
+
+            foreach ($contactListPersonName as $contact){
+                if(substr($contact['phone'], -9) == substr($item['phone'], -9)){
+                    $pendingFilteredContacts[] = ['name'=>$contact['name'],'phone'=>$item['phone']];
+                    $isFound = true;
+                }
+            }
+            if(!$isFound){
+                $pendingFilteredContacts[]['phone'] = $item['phone'];
             }
 
         }
 
         // dd($contactListPersonName, $contact_list,$filteredContacts);
 
-        $view = view('sendReport.template', compact('data', 'listCount', 'acceptedPeopelCount', 'contact_list', 'filteredContacts', 'contactListPersonName'));
+        $view = view('sendReport.template', compact('data', 'listCount', 'acceptedPeopelCount', 'rejectPeopelCount', 'pendingPeopelCount', 'contact_list', 'rejectFilteredContacts', 'acceptFilteredContacts', 'pendingFilteredContacts', 'contactListPersonName'));
 
         //Create PDF
         $pdfName = storage_path("/pdf/".time().'_EventReport.pdf');

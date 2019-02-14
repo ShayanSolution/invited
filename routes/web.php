@@ -49,6 +49,10 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     Route::post('/update-list','ListController@UpdateUserContactList');
 
+    Route::post('/update-list-image','ListController@UpdateUserContactListImage');
+
+    Route::post('/delete-list-image','ListController@DeleteUserContactListImage');
+
     Route::get('/delete-list','ListController@DeleteUserContactList');
 
     Route::get('/get-event','EventController@getUserEvents');
@@ -80,6 +84,8 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
     Route::post('/get-user','UserController@getUser');
 
     Route::post('/update-user','UserController@updateUser');
+
+    Route::post('/delete-user-profile-image','UserController@deleteUserProfileImage');
 
 });
 

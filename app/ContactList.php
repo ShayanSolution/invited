@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Log;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Intervention\Image\ImageManagerStatic as Image;
+
 
 class ContactList extends Model
 {
@@ -31,7 +33,8 @@ class ContactList extends Model
     protected $fillable = [
         'user_id',
         'contact_list',
-        'list_name'
+        'list_name',
+        'group_image',
     ];
 
     protected $casts = [
@@ -67,9 +70,39 @@ class ContactList extends Model
         return self::create($request)->id;
     }
     public static function UpdateList($request){
+
+        $data = [
+            "contact_list"=> $request["contact_list"],
+            "list_name"=> $request["list_name"],
+        ];
+
         $request = $request->all();
         $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
-        return self::where('id',$request['list_id'])->update(['contact_list'=>$request['contact_list'],'list_name'=>$request['list_name'] ]);
+
+        return self::where('id',$request['list_id'])->update($data);
+    }
+
+    public static function UpdateListImage($request){
+        $data = [];
+        if (!empty($request->file("group_image"))) {
+
+            $originalImage= $request->file('group_image');
+            $thumbnailImage = Image::make($originalImage);
+            $thumbnailPath = storage_path().'/thumbnail/';
+            $originalPath = storage_path().'/images/';
+            $fileName = time().$originalImage->getClientOriginalName();
+            $thumbnailImage->save($originalPath.$fileName);
+            $thumbnailImage->resize(150,150);
+            $thumbnailImage->save($thumbnailPath.$fileName);
+            $path = app("url")->asset("storage/images/");
+            $uploadImagePath = app("url")->asset("storage/images/")."/".$fileName;
+            $data['group_image'] = $uploadImagePath;
+
+        }
+
+        $request = $request->all();
+
+        return self::where('id',$request['list_id'])->update($data);
     }
 
     public static function getList($id){

@@ -281,7 +281,7 @@ class Event extends Model
 
     public function owner()
     {
-        return $this->belongsTo('App\Models\User', 'user_id', 'id')->select('id', 'firstName', 'lastName', 'username', 'email', 'phone');
+        return $this->belongsTo('App\Models\User', 'user_id', 'id')->select('id', 'firstName', 'lastName', 'username', 'email', 'phone', 'profileImage');
     }
 
     public function requests()
@@ -340,5 +340,8 @@ class Event extends Model
         }
 
         return parent::castAttribute($key, $value);
+    }
+    public function getNonusers(){
+        return $this->hasMany(NonUser::class);
     }
 }

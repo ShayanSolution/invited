@@ -172,7 +172,7 @@ class RequestsEvent extends Model
     }
 
     public static function eventSentByMe($created_by){
-        $eventIds = self::where(['created_by'=>$created_by, 'confirmed'=>1])->groupBy('event_id')->pluck('event_id')->toArray();
+        $eventIds = self::where('created_by',$created_by)->whereIn('confirmed',[1,0])->groupBy('event_id', 'request_to')->pluck('event_id')->toArray();
         $events = Event::whereIn('id', $eventIds)
                     ->with('owner', 'acceptedRequests.invitee', 'rejectRequests.invitee', 'pendingRequests.invitee', 'contactList')
                     ->withCount(['requests', 'acceptedRequests', 'rejectRequests', 'pendingRequests'])

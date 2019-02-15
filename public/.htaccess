@@ -5,6 +5,11 @@
 
     RewriteEngine On
 
+     RewriteBase /
+     RewriteCond %{REQUEST_FILENAME} !-f
+     RewriteCond %{REQUEST_URI} \.(jpg|png|gif)$
+     RewriteRule (.*) /storage/images/default.png [L]
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)/$ /$1 [L,R=301]

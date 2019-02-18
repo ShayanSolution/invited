@@ -459,15 +459,9 @@ class UserController extends Controller
         if($response['code'] == 500){
             return $response;
         }
-        $updateUser = User::where('id',$request->user_id);
+        $updateUser = User::where('id',$request->user_id)->first();
+        $uniquePhone = substr($updateUser->phone,-9);
         if($updateUser){
-//            $updateUser->update([
-//                "firstName"=> $request->input("firstName"),
-//                "lastName"=> $request->input("lastName"),
-//                "dob"=> $request->input("dob"),
-//                "dateofrelation"=> $request->input("dateofrelation"),
-//                "email"=> $request->input("email"),
-//            ]);
             $data = [
                 "firstName"=> $request["firstName"],
                 "lastName"=> $request["lastName"],
@@ -486,7 +480,7 @@ class UserController extends Controller
                 $thumbnailImage = Image::make($originalImage);
                 $thumbnailPath = storage_path().'/thumbnail/';
                 $originalPath = storage_path().'/images/';
-                $fileName = time().$originalImage->getClientOriginalName();
+                $fileName = $uniquePhone.".jpg";//coded for getting images for group list
                 $thumbnailImage->save($originalPath.$fileName);
                 $thumbnailImage->resize(150,150);
                 $thumbnailImage->save($thumbnailPath.$fileName);

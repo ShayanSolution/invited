@@ -83,6 +83,8 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     Route::post('/get-user','UserController@getUser');
 
+    Route::post('/update-profile-image','UserController@UpdateUserImage');
+
     Route::post('/update-user','UserController@updateUser');
 
     Route::post('/delete-user-profile-image','UserController@deleteUserProfileImage');

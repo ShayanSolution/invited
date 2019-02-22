@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Profile;
 use App\Helpers\General;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract
 {
@@ -347,5 +348,30 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public static function findByPhoneNumber($phone){
         $phoneWithoutCode = substr($phone,-9);
         return self::where('phone','like' ,'%'.$phoneWithoutCode)->first();
+    }
+
+    public static function UpdateImage($request){
+        $updateUser = User::where('id',$request->user_id)->first();
+        $uniquePhone = substr($updateUser->phone,-9);
+        $data = [];
+        if (!empty($request->file("profileImage"))) {
+
+            $originalImage= $request->file('profileImage');
+            $thumbnailImage = Image::make($originalImage);
+            $thumbnailPath = storage_path().'/thumbnail/';
+            $originalPath = storage_path().'/images/';
+            $fileName = $uniquePhone.".jpg";//coded for getting images for group list
+            $thumbnailImage->save($originalPath.$fileName);
+            $thumbnailImage->resize(150,150);
+            $thumbnailImage->save($thumbnailPath.$fileName);
+            $path = app("url")->asset("storage/images/");
+            $uploadImagePath = app("url")->asset("storage/images/")."/".$fileName;
+            $data['profileImage'] = $uploadImagePath;
+
+        }
+
+        $request = $request->all();
+
+        return self::where('id',$request['user_id'])->update($data);
     }
 }

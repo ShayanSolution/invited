@@ -474,21 +474,6 @@ class UserController extends Controller
             } else {
                 $data['dateofrelation'] = null;
             }
-            if (!empty($request->file("profileImage"))) {
-
-                $originalImage= $request->file('profileImage');
-                $thumbnailImage = Image::make($originalImage);
-                $thumbnailPath = storage_path().'/thumbnail/';
-                $originalPath = storage_path().'/images/';
-                $fileName = $uniquePhone.".jpg";//coded for getting images for group list
-                $thumbnailImage->save($originalPath.$fileName);
-                $thumbnailImage->resize(150,150);
-                $thumbnailImage->save($thumbnailPath.$fileName);
-                $path = app("url")->asset("storage/images/");
-                $uploadImagePath = app("url")->asset("storage/images/")."/".$fileName;
-                $data['profileImage'] = $uploadImagePath;
-
-            }
 
             $updateUser->update($data);
 
@@ -504,6 +489,28 @@ class UserController extends Controller
                     'status' => 'error',
                     'message' => 'Unable to find user'
                 ], 422
+            );
+        }
+    }
+
+    public function UpdateUserImage(Request $request){
+        $this->validate($request,[
+            'user_id' => 'required',
+        ]);
+        $user = User::UpdateImage($request);
+        if($user){
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'success',
+                    'messages' => 'Profile Image Updated Successfully',
+                ],200
+            );
+        }else{
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to Update Profile Image'
+                ], 500
             );
         }
     }

@@ -91,8 +91,13 @@ class ListController extends Controller
         if($response['code'] == 500){
             return $response;
         }
-        $deleteListImage = ContactList::where('id',$request->list_id);
+        $deleteListImage = ContactList::where('id',$request->list_id)->first();
         if($deleteListImage){
+            $deleteImagePath = $deleteListImage->group_image;
+            $ImageName = basename($deleteImagePath);
+            $deleteImageFullPath = 'storage/images/'.$ImageName;
+            unlink($deleteImageFullPath);
+
             $data['group_image'] = null;
 
             $deleteListImage->update($data);

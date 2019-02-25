@@ -523,8 +523,13 @@ class UserController extends Controller
         if($response['code'] == 500){
             return $response;
         }
-        $deleteUserImage = User::where('id',$request->user_id);
+        $deleteUserImage = User::where('id',$request->user_id)->first();
         if($deleteUserImage){
+            $deleteImagePath = $deleteUserImage->profileImage;
+            $ImageName = basename($deleteImagePath);
+            $deleteImageFullPath = 'storage/images/'.$ImageName;
+            unlink($deleteImageFullPath);
+
             $data['profileImage'] = null;
 
             $deleteUserImage->update($data);

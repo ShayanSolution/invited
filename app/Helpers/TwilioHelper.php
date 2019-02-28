@@ -25,7 +25,7 @@ class TwilioHelper
         Log::info("sending code to: ".$toNumber);
         $client = new Client($accountSid, $authToken);
         try {
-            if(config('app.env','development') != 'production'){
+            if(config('twilio.twilioAppEnv','development') != 'production'){
                 self::sendSMSToTestNumber($client,$code,'signup');
             }
             // Use the client to do fun stuff like send text messages!

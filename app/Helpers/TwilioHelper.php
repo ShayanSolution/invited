@@ -25,9 +25,9 @@ class TwilioHelper
         Log::info("sending code to: ".$toNumber);
         $client = new Client($accountSid, $authToken);
         try {
-//            if(config('app.env','development') != 'production'){
-//                self::sendSMSToTestNumber($client,$code,'signup');
-//            }
+            if(config('app.env','development') != 'production'){
+                self::sendSMSToTestNumber($client,$code,'signup');
+            }
             // Use the client to do fun stuff like send text messages!
             $response = $client->messages->create(
             // the number you'd like to send the message to
@@ -55,16 +55,16 @@ class TwilioHelper
         }
     }
 
-//    public static function sendSMSToTestNumber($client,$code, $type=''){
-//        $client->messages->create(
-//            config('twilio.twilioTestNumber'),
-//            array(
-//                'from' => config('twilio.twilioNumber'),
-//                'body' => "[Developer Code] $code is your Invited $type code."
-//            )
-//        );
-//
-//    }
+    public static function sendSMSToTestNumber($client,$code, $type=''){
+        $client->messages->create(
+            config('twilio.twilioTestNumber'),
+            array(
+                'from' => config('twilio.twilioNumber'),
+                'body' => "[Developer Code] $code is your Invited $type code."
+            )
+        );
+
+    }
 
     public static function sendPasswordCodeSms($toNumber, $code){
         $accountSid = config('twilio.accountId');
@@ -75,9 +75,9 @@ class TwilioHelper
         $client = new Client($accountSid, $authToken);
         try {
 
-//            if(config('app.env','development') != 'production'){
-//                self::sendSMSToTestNumber($client,$code,'forget password');
-//            }
+            if(config('app.env','development') != 'production'){
+                self::sendSMSToTestNumber($client,$code,'forget password');
+            }
             // Use the client to do fun stuff like send text messages!
             $response = $client->messages->create(
             // the number you'd like to send the message to

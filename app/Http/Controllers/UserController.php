@@ -608,7 +608,7 @@ class UserController extends Controller
     }
 
     public function getAllUsers(){
-        $users = User::all();
+        $users = User::paginate(25);
 
         if($users){
             return response()->json(

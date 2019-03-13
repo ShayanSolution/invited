@@ -89,6 +89,9 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     Route::post('/delete-user-profile-image','UserController@deleteUserProfileImage');
 
+    //API's for Admin
+    Route::get('/get-all-users', 'UserController@getAllUsers');
+
 });
 
 

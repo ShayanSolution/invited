@@ -607,4 +607,24 @@ class UserController extends Controller
         }
     }
 
+    public function getAllUsers(){
+        $users = User::all();
+
+        if($users){
+            return response()->json(
+                [
+                    'user' => $users,
+                ], 200
+            );
+        }else{
+
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'No user found'
+                ], 422
+            );
+        }
+    }
+
 }

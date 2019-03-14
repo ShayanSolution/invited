@@ -116,6 +116,11 @@ class RequestsEvent extends Model
 
         return array('update'=>$update);
     }
+    public static function eventExpire($event_id,$request_to){
+        $update = self::where('event_id',$event_id)->where('request_to',$request_to)->update(['confirmed'=>3]);
+
+        return array('update'=>$update);
+    }
 
     public static function acceptedEventRequest($event_id){
 

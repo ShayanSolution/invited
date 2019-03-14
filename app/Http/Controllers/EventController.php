@@ -298,7 +298,6 @@ class EventController extends Controller
         ]);
 
         $isEventPresent = Event::find($request->event_id);
-
         if(!$isEventPresent){
             return JsonResponse::generateResponse(
                 [
@@ -312,7 +311,45 @@ class EventController extends Controller
         if($response['code'] == 500){
             return $response;
         }
+
         $event_id = $request['event_id'];
+        $id = $request['request_to'];
+
+        // Event Expire
+        $currentDate = date("Y-m-d");
+        $currentDateMidNight = strtotime("today midnight");
+        $eventDate = $isEventPresent->event_date;
+        $eventExpireDate = strtotime($eventDate. ' + 1 days');
+
+        $currentTime = strtotime("now");
+        $eventTime = $isEventPresent->event_only_time;
+        $eventExpireTime = strtotime($eventTime);
+
+        // Expire on date and time
+        if(!$eventDate == null && !$eventTime == null){
+            if($currentDate == $eventDate){
+               if($currentTime >= $eventExpireTime){
+                   RequestsEvent::eventExpire($event_id, $id);
+                   return JsonResponse::generateResponse(
+                       [
+                           'status' => 'error',
+                           'message' => 'Event has been expired'
+                       ], 200
+                   );
+               }
+            }
+        }
+        // Expire only date
+        if($currentDateMidNight >= $eventExpireDate){
+            RequestsEvent::eventExpire($event_id, $id);
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'error',
+                    'message' => 'Event has been expired'
+                ], 200
+            );
+        }
+
         //accepted event requests
         $accepted_requests = RequestsEvent::acceptedEventRequest($event_id);
         $accepted_requests_count = count($accepted_requests);
@@ -320,7 +357,7 @@ class EventController extends Controller
         Log::info("================= Accept Request API Before Acceptance =========================");
         Log::info("Event maxi invited ".$event_detail->max_invited);
         Log::info("Request Confirmed ".$accepted_requests_count);
-        $id = $request['request_to'];
+
         if($event_detail->max_invited == $accepted_requests_count){
             RequestsEvent::acceptRequestLimitEqual($event_id, $id);
             return JsonResponse::generateResponse(

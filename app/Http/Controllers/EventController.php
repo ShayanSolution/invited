@@ -427,8 +427,10 @@ class EventController extends Controller
         }
 
         $event_id = $request['event_id'];
-        $checkEventCancelled = Event::find($request->event_id);
-        if($checkEventCancelled->canceled_at != null){
+        $id = $request['request_to'];
+
+        $checkEvent = Event::find($request->event_id);
+        if($checkEvent->canceled_at != null){
             return JsonResponse::generateResponse(
                 [
                     'status' => 'cancelled',
@@ -436,7 +438,42 @@ class EventController extends Controller
                 ], 200
             );
         }
-        $id = $request['request_to'];
+        // Event Expire
+        $currentDate = date("Y-m-d");
+        $currentDateMidNight = strtotime("today midnight");
+        $eventDate = $checkEvent->event_date;
+        $eventExpireDate = strtotime($eventDate. ' + 1 days');
+
+        $currentTime = strtotime("now");
+        $eventTime = $checkEvent->event_only_time;
+        $eventExpireTime = strtotime($eventTime);
+
+        // Expire on date and time
+        if(!$eventDate == null && !$eventTime == null) {
+            if ($currentDate == $eventDate) {
+                if ($currentTime >= $eventExpireTime) {
+                    RequestsEvent::eventExpire($event_id, $id);
+                    return JsonResponse::generateResponse(
+                        [
+                            'status' => 'error',
+                            'message' => 'Event has been expired'
+                        ], 200
+                    );
+                }
+            }
+        }
+
+        // Expire only date
+        if($currentDateMidNight >= $eventExpireDate){
+        RequestsEvent::eventExpire($event_id, $id);
+        	return JsonResponse::generateResponse(
+        		[
+        			'status' => 'error',
+        			'message' => 'Event has been expired'
+        		], 200
+        	);
+        }
+
         $rejected = RequestsEvent::rejectRequest($event_id,$id);
         if($rejected){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);

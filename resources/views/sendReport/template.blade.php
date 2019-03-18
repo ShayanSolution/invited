@@ -39,10 +39,10 @@
         <td><b>Event Sent Time:</b>&nbsp;<?php echo $time2?></td>
     </tr>
     <tr>
-        <td><b>Event Date:</b>&nbsp;<?php echo $data['event_date']?></td>
+        <td><b>Valid Till:</b>&nbsp;<?php echo $data['event_date']?></td>
     </tr>
     <tr>
-        <td><b>Event Time:</b>&nbsp;<?php echo $onlyTime ?></td>
+        <td><b>Valid Till:</b>&nbsp;<?php echo $onlyTime ?></td>
     </tr>
     <tr>
         <td><b>List Name:</b>&nbsp;<?php echo $data['list_name']. ' ('.$listCount.')'?></td>

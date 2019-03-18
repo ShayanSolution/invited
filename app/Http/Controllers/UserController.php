@@ -424,10 +424,14 @@ class UserController extends Controller
 
     }
 
-    public function getUser(){
+    public function getUser(Request $request){
+
+        $userId = $request->input('user_id',0);
 
         $user = Auth::user();
-
+        if($userId > 0){
+            $user  = User::find($userId);
+        }
         if($user){
             return response()->json(
                 [

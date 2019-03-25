@@ -91,6 +91,8 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     //API's for Admin
     Route::get('/get-all-users', 'UserController@getAllUsers');
+    Route::post('/block-user-status', 'UserController@postBlockUserStatus');
+    Route::get('/get-all-block-users', 'UserController@getAllBlockUsers');
 
 });
 

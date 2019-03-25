@@ -374,4 +374,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
         return self::where('id',$request['user_id'])->update($data);
     }
+
+    public static function blockUserStatus($request){
+        $unblock = 0;
+        $block = 1;
+        $blockUser = User::where('id',$request->user_id)->first();
+        if ($blockUser->block == 0){
+            return self::where('id',$request['user_id'])->update(['block'=>$block]);
+        } else {
+            return self::where('id',$request['user_id'])->update(['block'=>$unblock]);
+        }
+
+
+    }
 }

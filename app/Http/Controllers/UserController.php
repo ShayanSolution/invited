@@ -631,4 +631,45 @@ class UserController extends Controller
         }
     }
 
+    public function postBlockUserStatus(Request $request){
+        $this->validate($request,[
+            'user_id' => 'required',
+        ]);
+        $user = User::blockUserStatus($request);
+        if($user){
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'success',
+                    'messages' => 'Block Status Update Successfully',
+                ],200
+            );
+        }else{
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to Block User'
+                ], 500
+            );
+        }
+    }
+
+    public function getAllBlockUsers(){
+        $blockUsers = User::select('users.*')->where('block', 1)->get();
+        if($blockUsers){
+            return response()->json(
+                [
+                    'user' => $blockUsers,
+                ], 200
+            );
+        }else{
+
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'No block user found'
+                ], 422
+            );
+        }
+    }
+
 }

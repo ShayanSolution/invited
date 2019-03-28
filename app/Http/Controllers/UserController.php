@@ -478,6 +478,11 @@ class UserController extends Controller
             } else {
                 $data['dateofrelation'] = null;
             }
+            if (!empty($request->input("address"))){
+                $data['address'] = $request->input("address");
+            } else {
+                $data['address'] = null;
+            }
 
             $updateUser->update($data);
 

@@ -659,7 +659,7 @@ class UserController extends Controller
     }
 
     public function getAllBlockUsers(){
-        $blockUsers = User::select('users.*')->where('is_active', 1)->get();
+        $blockUsers = User::select('users.*')->where('is_active', 0)->get();
         if($blockUsers){
             return response()->json(
                 [

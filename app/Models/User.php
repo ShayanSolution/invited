@@ -258,6 +258,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             //'device_token' => $request->device_token,
             'firstName'=> $request['firstName'],
             'lastName'=>$request['lastName'],
+            'is_active'=>1,
 //            'dob'=> $request['dob'],
 //            'dateofrelation'=> $request['dateofrelation'],
 //            'gender_id'=>$request['gender']

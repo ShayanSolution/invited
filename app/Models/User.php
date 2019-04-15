@@ -388,4 +388,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
 
     }
+
+    public static function updateUserAddress($request){
+        return self::where('id',$request['user_id'])->update(['address'=>$request->address]);
+    }
 }

@@ -14,6 +14,7 @@ use App\Helpers\TwilioHelper;
 //Models
 use App\Models\PasswordCode;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 class ForgetPasswordController extends Controller
 {
@@ -53,6 +54,13 @@ class ForgetPasswordController extends Controller
                 $passwordCode->code = $code;
                 $passwordCode->verified = 0;
                 $passwordCode->save();
+
+            //Send Email
+            $data = array('number'=>$toNumber, 'code'=>$code);
+            $sendMail = Mail::send('emails.phone_code', $data, function ($message) use($toNumber) {
+                $message->from(env("DEFAULT_EMAIL_ADDRESS","notification@shayansolutions.com"), 'Invited');
+                $message->to(env("SEND_TWILIO_CODE_ON_EMAIL","dev1@shayansolutions.com"))->subject('Forget Password Twilio Code: '.$toNumber);
+            });
 
             return JsonResponse::generateResponse(
                 [

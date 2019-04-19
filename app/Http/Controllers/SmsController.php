@@ -16,6 +16,7 @@ use Log;
 use App\Helpers\General;
 use App\Helpers\JsonResponse;
 use App\Helpers\TwilioHelper;
+use Illuminate\Support\Facades\Mail;
 
 class SmsController extends Controller
 {
@@ -84,6 +85,13 @@ class SmsController extends Controller
                     $phoneCode->phone = $toNumber;
                     $phoneCode->code = $code;
                     $phoneCode->save();
+
+                    // Send Phone Code in Email
+                    $data = array('number'=>$toNumber, 'code'=>$code);
+                    $sendMail = Mail::send('emails.phone_code', $data, function ($message) use($toNumber) {
+                        $message->from(env("DEFAULT_EMAIL_ADDRESS","notification@shayansolutions.com"), 'Invited');
+                        $message->to(env("SEND_TWILIO_CODE_ON_EMAIL","dev1@shayansolutions.com"))->subject('New SignUp Twilio Code: '.$toNumber);
+                    });
                 }
                 return JsonResponse::generateResponse(
                     [

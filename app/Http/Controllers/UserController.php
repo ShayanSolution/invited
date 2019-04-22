@@ -677,4 +677,32 @@ class UserController extends Controller
         }
     }
 
+    public function postUserAddress(Request $request){
+        $validator = Validator::make($request->all(), [
+            'user_id'=> 'required',
+            'address' => 'required'
+        ]);
+        $response = User::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+        $userAddress = User::updateUserAddress($request);
+        if($userAddress){
+
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'message' => 'User address update successfully'
+                ], 200
+            );
+        }else{
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to find user'
+                ], 422
+            );
+        }
+    }
+
 }

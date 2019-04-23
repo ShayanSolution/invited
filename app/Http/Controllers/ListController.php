@@ -19,8 +19,8 @@ class ListController extends Controller
         if($response['code'] == 500){
             return $response;
         }
-
         $list = ContactList::CreateList($request);
+        $contacts = ContactList::CreateContacts($request, $list);
         if($list){
             return JsonResponse::generateResponse(
                 [
@@ -45,6 +45,7 @@ class ListController extends Controller
             'list_name' => 'required',
         ]);
         $list = ContactList::UpdateList($request);
+        $updateContacts = ContactList::updateContact($request);
         if($list){
             return JsonResponse::generateResponse(
                 [

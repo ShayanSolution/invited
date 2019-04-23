@@ -69,6 +69,22 @@ class ContactList extends Model
         $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
         return self::create($request)->id;
     }
+
+    public static function CreateContacts($request, $contactListId){
+        $request = $request->all();
+        $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
+        $decodedContacts = (array)(json_decode($request['contact_list'])) ;
+        foreach ($decodedContacts as $contact){
+            $contact = (array)$contact;
+            $contact['contact_list_id'] = $contactListId;
+            if(key_exists('email', $contact)){
+                $contact['name'] = $contact['email'];
+                unset($contact['email']);
+            }
+            Contact::create($contact);
+        }
+    }
+
     public static function UpdateList($request){
 
         $data = [
@@ -80,6 +96,22 @@ class ContactList extends Model
         $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
 
         return self::where('id',$request['list_id'])->update($data);
+    }
+
+    public static function updateContact($request){
+        Contact::where('contact_list_id', $request['list_id'])->forceDelete();
+        $request = $request->all();
+        $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
+        $decodedContacts = (array)(json_decode($request['contact_list'])) ;
+        foreach ($decodedContacts as $contact){
+            $contact = (array)$contact;
+            $contact['contact_list_id'] = $request['list_id'];
+            if(key_exists('email', $contact)){
+                $contact['name'] = $contact['email'];
+                unset($contact['email']);
+            }
+            Contact::create($contact);
+        }
     }
 
     public static function UpdateListImage($request){
@@ -136,9 +168,14 @@ class ContactList extends Model
     public static function deleteList($request){
         $id = $request['list_id'];
         $list = self::find($id);
+        self::deleteContact($id);
         if($list){
             return $list->delete();
         }
+    }
+
+    public static function deleteContact($id){
+        Contact::where('contact_list_id', $id)->delete();
     }
 
     public static function generateErrorResponse($validator){

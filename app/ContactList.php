@@ -146,7 +146,9 @@ class ContactList extends Model
     }
 
     public static function getUserContactLists($user_id){
-        return  self::where('user_id',$user_id)->orderBy('list_name')->get();
+        return  self::with(['contact'=>function($q){
+            $q->select('name', 'phone', 'contact_list_id');
+        }])->where('user_id',$user_id)->orderBy('list_name')->get();
     }
 
     public static function getUserListCount($user_id){
@@ -204,5 +206,9 @@ class ContactList extends Model
         }
 
         return parent::castAttribute($key, $value);
+    }
+
+    public function contact(){
+        return $this->hasMany('App\Contact', 'contact_list_id', 'id');
     }
 }

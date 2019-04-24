@@ -124,7 +124,7 @@ class ListController extends Controller
        $user_id = $request['user_id'];
        //$list_id = $request['list_id'];
        $user_list = ContactList::getUserContactLists($user_id);
-       
+
        if(!empty($user_list->first())){
            $user_contact_list =[];
            $index = 0;
@@ -132,7 +132,8 @@ class ListController extends Controller
                $user_contact_list[$index]['id'] = $list->id;
                $user_contact_list[$index]['list_name'] = $list->list_name;
                $user_contact_list[$index]['group_image'] = $list->group_image;
-               $user_contact_list[$index]['contacts'] = json_decode($list->contact_list);
+               //$user_contact_list[$index]['contacts'] = json_decode($list->contact_list);
+               $user_contact_list[$index]['contacts'] = $list->contact;
                $index++;
            }
            $users = json_decode($list->contact_list);

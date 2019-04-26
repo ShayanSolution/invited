@@ -39,6 +39,10 @@ class RequestsEvent extends Model
         }
     }
 
+    public function contact_list(){
+        return $this->hasMany('App\Contact', 'contact_list_id', 'list_id');
+    }
+
     public static function getEventRequest($request_to){
        $total_count =  self::where('request_to',$request_to)->count();
 
@@ -48,7 +52,8 @@ class RequestsEvent extends Model
 
        foreach ($request_event as $event)
        {
-           $event_requests  = self::select('requests.event_id','requests.created_by',DB::raw('count(requests.event_id) as total'),'confirmed', 'contactlists.list_name', 'contactlists.contact_list')
+           //@todo refactor join to get data from contacts with contactlists
+           $event_requests  = self::with('contact_list')->select('requests.event_id','requests.created_by',DB::raw('count(requests.event_id) as total'),'confirmed', 'contactlists.list_name', 'contactlists.contact_list')
                                ->join('events','events.id','=','requests.event_id')
                                ->join('contactlists','contactlists.id','=','events.list_id')
                                ->groupBy('event_id')

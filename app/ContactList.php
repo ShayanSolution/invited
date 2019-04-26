@@ -30,15 +30,16 @@ class ContactList extends Model
      *
      * @var array
      */
+    //@todo refactor remove contact_list from table as it will no longer needed and column will delete from table
     protected $fillable = [
         'user_id',
-        'contact_list',
+//        'contact_list',
         'list_name',
         'group_image',
     ];
-
+    //@todo refactor remove contact_list from table as it will no longer needed and column will delete from table
     protected $casts = [
-        'contact_list'=>'string',
+//        'contact_list'=>'string',
         'list_name'=> 'string',
     ];
 
@@ -84,21 +85,21 @@ class ContactList extends Model
             Contact::create($contact);
         }
     }
+//    public static function UpdateList($request){
+//        //@todo refactor remove contact_list from code below and only update
+//        $data = [
+//            "contact_list"=> $request["contact_list"],
+//            "list_name"=> $request["list_name"],
+//        ];
+//
+//        $request = $request->all();
+//        $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
+//
+//        return self::where('id',$request['list_id'])->update($data);
+//    }
 
-    public static function UpdateList($request){
-
-        $data = [
-            "contact_list"=> $request["contact_list"],
-            "list_name"=> $request["list_name"],
-        ];
-
-        $request = $request->all();
-        $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
-
-        return self::where('id',$request['list_id'])->update($data);
-    }
-
-    public static function updateContact($request){
+    public static function updateListAndContacts($request){
+        //Update Contacts in Contacts Table
         Contact::where('contact_list_id', $request['list_id'])->forceDelete();
         $request = $request->all();
         $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
@@ -112,6 +113,11 @@ class ContactList extends Model
             }
             Contact::create($contact);
         }
+        // Update list name in Contactlists Table
+        $data = [
+            "list_name"=> $request["list_name"],
+        ];
+        return self::where('id',$request['list_id'])->update($data);
     }
 
     public static function UpdateListImage($request){
@@ -142,7 +148,7 @@ class ContactList extends Model
     }
 
     public static function getUserList($id){
-        return  self::withTrashed()->where('id',$id)->first();
+        return  self::with('contact')->withTrashed()->where('id',$id)->first();
     }
 
     public static function getUserContactLists($user_id){
@@ -157,7 +163,7 @@ class ContactList extends Model
         $user_list = [];
         $index = 0;
         foreach ($lists as $list){
-            $users = json_decode($list->contact_list);
+            $users = $list->contact;
             foreach ($users as $user){
                 $user_list[$index]['phone'] = $user->phone;
                 $index++;
@@ -209,6 +215,9 @@ class ContactList extends Model
     }
 
     public function contact(){
-        return $this->hasMany('App\Contact', 'contact_list_id', 'id');
+        // withTrashed code added for deleteEvent and cancelEvent Api because we need to fetch list
+        // Unsure at the movent it will produce errors in other api's
+        // in case issues ocvur this api needs parametrs or clone
+        return $this->hasMany('App\Contact', 'contact_list_id', 'id')->withTrashed();
     }
 }

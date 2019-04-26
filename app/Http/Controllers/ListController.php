@@ -44,8 +44,8 @@ class ListController extends Controller
             'contact_list' => 'required',
             'list_name' => 'required',
         ]);
-        $list = ContactList::UpdateList($request);
-        $updateContacts = ContactList::updateContact($request);
+//        $list = ContactList::UpdateList($request);
+        $list = ContactList::updateListAndContacts($request);
         if($list){
             return JsonResponse::generateResponse(
                 [

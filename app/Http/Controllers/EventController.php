@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Contact;
 use App\Models\NonUser;
 use Illuminate\Http\Request;
 use App\Models\Event;
@@ -63,12 +64,15 @@ class EventController extends Controller
         //create event
         $event_id = Event::CreateEvent($request);
         //non users entry in table
-        $listContactUser = $user_list['0']['contact_list'];
-        $listDecode = json_decode($listContactUser);
-        $contactListPersonName = [];
-        foreach ($listDecode as $value) {
-                $contactListPersonName[] = [$value->phone];
-        }
+        //@todo refactor contact list to fetch from contacts table
+//        $listContactUser = $user_list['0']['contact_list'];
+//        $listDecode = json_decode($listContactUser);
+//        $contactListPersonName = [];
+//        foreach ($listDecode as $value) {
+//                $contactListPersonName[] = [$value->phone];
+//        }
+        $contactOfList = Contact::select('phone')->where('contact_list_id',$list_id)->get();
+        $contactListPersonName = $contactOfList->toArray();
         $onlyNonUsers = [];
         foreach ($contactListPersonName as $key => $value){
             foreach ($value as $phone){
@@ -109,6 +113,7 @@ class EventController extends Controller
         }
     }
 
+    //this function not in use
     public function getUserContactList(Request $request){
         $request = $request->all();
         $user_id = $request['user_id'];
@@ -147,7 +152,7 @@ class EventController extends Controller
         $eventRequest = new RequestsEvent();
         if(!empty($user_list->first())) {
             foreach ($user_list as $list) {
-                foreach (json_decode($list->contact_list) as $user_detail) {
+                foreach (json_decode($list->contact) as $user_detail) {
                     $user_detail->phone = str_replace('(', '', trim($user_detail->phone));
                     $user_detail->phone = str_replace(')', '', trim($user_detail->phone));
                     $user_detail->phone = str_replace('-', '', trim($user_detail->phone));
@@ -714,7 +719,8 @@ class EventController extends Controller
         if($event_detail){
             $event_list_id = $event_detail->list_id;
             $notification_usres_list = ContactList::getUserList($event_list_id);
-            foreach (json_decode($notification_usres_list->contact_list) as $list){
+//            dd($notification_usres_list->toArray());
+            foreach ($notification_usres_list->contact as $list){
                 $list->phone = str_replace('(', '', trim($list->phone));
                 $list->phone = str_replace(')', '', trim($list->phone));
                 $list->phone = str_replace('-', '', trim($list->phone));
@@ -799,7 +805,7 @@ class EventController extends Controller
         if($event_detail){
             $event_list_id = $event_detail->list_id;
             $notification_usres_list = ContactList::getUserList($event_list_id);
-            foreach (json_decode($notification_usres_list->contact_list) as $list){
+            foreach ($notification_usres_list->contact as $list){
                 $list->phone = str_replace('(', '', trim($list->phone));
                 $list->phone = str_replace(')', '', trim($list->phone));
                 $list->phone = str_replace('-', '', trim($list->phone));
@@ -951,7 +957,10 @@ class EventController extends Controller
         $eventName = $data['title'];
 
         //get count of contactList
-        $contactList = $data['contact_list']['contact_list'];
+        //@todo refactor contact list to fetch from contacts table
+//        $contactList = $data['contact_list']['contact_list'];
+//        $list = json_decode($contactList);
+        $contactList = Contact::select('name','phone')->where('contact_list_id',$data['list_id'])->get();
         $list = json_decode($contactList);
         $listCount = 0;
         foreach ($list as $value) {
@@ -1049,7 +1058,7 @@ class EventController extends Controller
         //dd($pdf);
 
         $sendMail = Mail::send('emails.welcome', $data, function ($message) use($pdf, $emailAddress, $eventName, $pdfName){
-            $message->from(env("DEFAULT_EMAIL_ADDRESS","notification@shayansolutions.com"), 'Invited');
+            $message->from('notification@shayansolutions.com', 'Invited');
             $message->to($emailAddress)->subject('Event Report - '. $eventName);
             $message->attach($pdfName, [
                 'as' => $eventName.'.pdf',

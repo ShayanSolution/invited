@@ -173,7 +173,7 @@ class Event extends Model
             $user_events[$index]['list_name'] = $event->list_name;
             $user_events[$index]['deleted_at'] = $event->deleted_at;
             $user_list = ContactList::getUserList($event->list_id);
-            $user_events[$index]['list_count'] = count(json_decode($user_list->contact_list));
+            $user_events[$index]['list_count'] = count($user_list->contact);
             if($event->max_invited == ''){
                 $user_events[$index]['max_invited'] = 0;
             }else{
@@ -182,7 +182,7 @@ class Event extends Model
 
             $list_index=0;
             $arr = [];
-            foreach (json_decode($user_list->contact_list) as $list){
+            foreach ($user_list->contact as $list){
                $user = User::where('phone',$list->phone)->first();
                //if user registered through app
                if($user){
@@ -313,8 +313,8 @@ class Event extends Model
     {
         $contactList = $this->belongsTo('App\ContactList', 'list_id', 'id')->withTrashed();
         $contactList = $contactList->get()->first();
-        if(!empty($contactList)){
-            return count(json_decode($contactList->contact_list));
+        if(!empty($contactList) && !empty($contactList->contact)){
+            return $contactList->contact->count();
         }
         else
         {

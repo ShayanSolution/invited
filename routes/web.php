@@ -96,6 +96,7 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
     Route::post('/block-user-status', 'UserController@postBlockUserStatus');
     Route::get('/get-all-block-users', 'UserController@getAllBlockUsers');
     Route::post('/search', 'UserController@filter');
+    Route::get('/locations', 'UserController@allLocations');
 
 });
 

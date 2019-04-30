@@ -739,4 +739,23 @@ class UserController extends Controller
         }
     }
 
+    public function allLocations(){
+        $locations = User::select('address')->whereNotNull('address')->groupBy('address')->get();
+        if($locations){
+            return response()->json(
+                [
+                    'locations' => $locations,
+                ], 200
+            );
+        }else{
+
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'No location found'
+                ], 422
+            );
+        }
+    }
+
 }

@@ -392,4 +392,22 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public static function updateUserAddress($request){
         return self::where('id',$request['user_id'])->update(['address'=>$request->address]);
     }
+
+    // use for filtering on admin panel
+    public function scopeAge($query, $range)
+    {
+        $dobs = $this->getDOBForRange($range);
+        return $query->whereBetween('dob', $dobs);
+    }
+
+    public function getDOBForRange($range){
+        $min = date('Y', strtotime('- '.$range['min'].' years')).date('-m-d');
+        $max = date('Y', strtotime('- '.$range['max'].' years')).date('-m-d');
+
+        $max = date('Y-m-d', strtotime($max));
+        $min = date('Y-m-d', strtotime($min));
+
+        return [$max, $min];
+    }
+
 }

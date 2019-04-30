@@ -705,4 +705,38 @@ class UserController extends Controller
         }
     }
 
+    public function filter(Request $request, User $user)
+    {
+        $user = $user->newQuery();
+
+        // Search for a user based on their location, gender, anniversary, active, date of birth.
+        foreach ($request->all() as $key=>$item){
+            if(!in_array($key, ['min', 'max']))
+                $user->where($key, $item);
+        }
+
+        // Search for a user based on their age.
+        if ($request->has('min') && $request->has('max')) {
+            $user->age(['min'=>$request->get('min'), 'max'=>$request->get('max')]);
+        }
+
+        // Get the results and return them.
+        $users = $user->get();
+        if($users){
+            return response()->json(
+                [
+                    'user' => $users,
+                ], 200
+            );
+        }else{
+
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'No user found'
+                ], 422
+            );
+        }
+    }
+
 }

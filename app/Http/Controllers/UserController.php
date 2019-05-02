@@ -687,6 +687,7 @@ class UserController extends Controller
             return $response;
         }
         $userAddress = User::updateUserAddress($request);
+        $user = User::updateLoginAt($request);
         if($userAddress){
 
             return response()->json(
@@ -754,28 +755,6 @@ class UserController extends Controller
                     'status' => 'error',
                     'message' => 'No location found'
                 ], 422
-            );
-        }
-    }
-
-    public function loginAt(Request $request){
-        $this->validate($request,[
-            'user_id' => 'required',
-        ]);
-        $user = User::updateLoginAt($request);
-        if($user){
-            return JsonResponse::generateResponse(
-                [
-                    'status' => 'success',
-                    'messages' => 'Login at updated successfully',
-                ],200
-            );
-        }else{
-            return JsonResponse::generateResponse(
-                [
-                    'status' => 'error',
-                    'message' => 'Unable to update login at'
-                ], 500
             );
         }
     }

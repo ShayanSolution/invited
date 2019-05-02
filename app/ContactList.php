@@ -36,6 +36,7 @@ class ContactList extends Model
 //        'contact_list',
         'list_name',
         'group_image',
+        'is_active'
     ];
     //@todo refactor remove contact_list from table as it will no longer needed and column will delete from table
     protected $casts = [

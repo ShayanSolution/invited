@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Profile;
 use App\Helpers\General;
 use Intervention\Image\ImageManagerStatic as Image;
+use Carbon\Carbon;
+use phpDocumentor\Reflection\Types\Null_;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract
 {
@@ -408,6 +410,19 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         $min = date('Y-m-d', strtotime($min));
 
         return [$max, $min];
+    }
+
+    public static function updateLoginAt($request){
+        return self::where('id',$request['user_id'])->update([
+            'login_at'=>Carbon::now(),
+            'logout_at'=>Null,
+        ]);
+    }
+
+    public static function updateLogoutAt($request){
+        return self::where('id',$request['user_id'])->update([
+            'logout_at'=>Carbon::now(),
+        ]);
     }
 
 }

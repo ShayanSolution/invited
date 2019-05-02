@@ -758,4 +758,47 @@ class UserController extends Controller
         }
     }
 
+    public function loginAt(Request $request){
+        $this->validate($request,[
+            'user_id' => 'required',
+        ]);
+        $user = User::updateLoginAt($request);
+        if($user){
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'success',
+                    'messages' => 'Login at updated successfully',
+                ],200
+            );
+        }else{
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to update login at'
+                ], 500
+            );
+        }
+    }
+
+    public function logoutAt(Request $request){
+        $this->validate($request,[
+            'user_id' => 'required',
+        ]);
+        $user = User::updateLogoutAt($request);
+        if($user){
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'success',
+                    'messages' => 'Logout at updated successfully',
+                ],200
+            );
+        }else{
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to update logout at'
+                ], 500
+            );
+        }
+    }
 }

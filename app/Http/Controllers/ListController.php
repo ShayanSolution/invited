@@ -132,7 +132,16 @@ class ListController extends Controller
                $user_contact_list[$index]['id'] = $list->id;
                $user_contact_list[$index]['list_name'] = $list->list_name;
                $user_contact_list[$index]['group_image'] = $list->group_image;
-               $user_contact_list[$index]['is_active'] = $list->is_active;
+               if(isset($list->is_active)){
+                   if ($list->is_active == 1){
+                        $user_contact_list[$index]['is_active'] = "Active";
+                   }
+                   if ($list->is_active == 0) {
+                       $user_contact_list[$index]['is_active'] = "In Active";
+                   }
+               } else {
+                   $user_contact_list[$index]['is_active'] = "";
+               }
                $user_contact_list[$index]['contacts'] = $list->contact;
                $index++;
            }

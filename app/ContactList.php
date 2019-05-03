@@ -54,12 +54,6 @@ class ContactList extends Model
         foreach($contactList as $key => $contact){
             Log::info("cleaning phone number =>".$contact->phone);
             $contact->phone = preg_replace('/\s+/', '', trim($contact->phone));
-//            $contact->phone = preg_replace('/^92|^092|^\+92/', '', trim($contact->phone));
-//            $phone = $contact->phone;
-//            if($phone[0]!=0){
-//                $phone='0'.$phone;
-//            }
-//            $contact->phone = $phone;
             Log::info("After cleaning phone number =>".$contact->phone);
             $contactList[$key] = $contact;
         }

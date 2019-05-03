@@ -52,10 +52,14 @@ class ContactList extends Model
     private static function cleanPhoneNumber($jsonContactList){
         $contactList = json_decode($jsonContactList);
         foreach($contactList as $key => $contact){
-            Log::info("check decode =>".$contactList);
-            Log::info("====================================================".$contactList);
             Log::info("cleaning phone number =>".$contact->phone);
             $contact->phone = preg_replace('/\s+/', '', trim($contact->phone));
+//            $contact->phone = preg_replace('/^92|^092|^\+92/', '', trim($contact->phone));
+//            $phone = $contact->phone;
+//            if($phone[0]!=0){
+//                $phone='0'.$phone;
+//            }
+//            $contact->phone = $phone;
             Log::info("After cleaning phone number =>".$contact->phone);
             $contactList[$key] = $contact;
         }

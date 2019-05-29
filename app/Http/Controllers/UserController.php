@@ -712,7 +712,7 @@ class UserController extends Controller
 
         // Search for a user based on their location, gender, anniversary, active, date of birth.
         foreach ($request->all() as $key=>$item){
-            if(!in_array($key, ['min', 'max']))
+            if(!in_array($key, ['min', 'max', 'startDateDOR', 'endDateDOR', 'startDateDOB', 'endDateDOB']))
                 $user->where($key, $item);
         }
 
@@ -721,8 +721,20 @@ class UserController extends Controller
             $user->age(['min'=>$request->get('min'), 'max'=>$request->get('max')]);
         }
 
+        //Search for a user based on date of relation range
+        if ($request->has('startDateDOR') && $request->has('endDateDOR')) {
+            $user->relation(['startDateDOR'=>$request->get('startDateDOR'), 'endDateDOR'=>$request->get('endDateDOR')]);
+        }
+
+        //Search for a user based on date of birth range
+        if ($request->has('startDateDOB') && $request->has('endDateDOB')) {
+            $user->birth(['startDateDOB'=>$request->get('startDateDOB'), 'endDateDOB'=>$request->get('endDateDOB')]);
+        }
+
         // Get the results and return them.
+//        \DB::connection()->enableQueryLog();
         $users = $user->get();
+//        dd(\DB::getQueryLog());
         if($users){
             return response()->json(
                 [

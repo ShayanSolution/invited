@@ -412,6 +412,28 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return [$max, $min];
     }
 
+    public function scopeRelation($query, $range){
+        $dors = $this->getDORForRange($range);
+        return $query->whereBetween('dateofrelation', $dors);
+    }
+
+    public function getDORForRange($range){
+        $startDateDOR = $range['startDateDOR'];
+        $endDateDOR = $range['endDateDOR'];
+        return [$startDateDOR, $endDateDOR];
+    }
+
+    public function scopeBirth($query, $range){
+        $dobs = $this->getDOBRange($range);
+        return $query->whereBetween('dob', $dobs);
+    }
+
+    public function getDOBRange($range){
+        $startDateDOB = $range['startDateDOB'];
+        $endDateDOB = $range['endDateDOB'];
+        return [$startDateDOB, $endDateDOB];
+    }
+
     public static function updateLoginAt($request){
         return self::where('id',$request['user_id'])->update([
             'login_at'=>Carbon::now(),

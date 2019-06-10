@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Contact;
 use App\ContactList;
 use App\Models\User;
 use App\Models\Event;
@@ -618,7 +619,14 @@ class UserController extends Controller
 
     public function getAllUsers(){
 //        $users = User::paginate(10);
-        $users = User::all();
+        $allUsers = User::all();
+        $contacts = Contact::select([
+            'name as firstName',
+            'phone'
+        ])->get();
+
+        $users = $allUsers->merge($contacts);
+
         if($users){
             return response()->json(
                 [

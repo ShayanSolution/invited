@@ -13,4 +13,21 @@ class Contact extends Model
     protected $table = 'contacts';
 
     protected $fillable = ['name', 'phone', 'contact_list_id', 'deleted_at'];
+
+    protected $appends = array('lastName', 'dob', 'address');
+
+    public function getLastNameAttribute()
+    {
+        return '';
+    }
+
+    public function getDobAttribute()
+    {
+        return '';
+    }
+
+    public function getAddressAttribute()
+    {
+        return '';
+    }
 }

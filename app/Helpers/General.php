@@ -22,4 +22,31 @@ class General
     public static function generateRandomCode($digits = 4){
         return rand(pow(10, $digits-1), pow(10, $digits)-1);
     }
+
+    /**
+     * @param array $array
+     * @param int $keyIndex
+     * @param bool $addLeadingZero
+     * @description this function is for what
+     * @return array
+     */
+    public static function setArrayKeys($array = [], $keyIndex = 0, $addLeadingZero = false){
+        $arrayKeys = $array[$keyIndex];
+
+        $newArray = [];
+        foreach ($array as $key => $value){
+            if($key != $keyIndex){
+                if ($value[1] != '') {
+                    if ($addLeadingZero){
+                        if (strlen($value[1]) < 11){
+                            $value[1] = "0".$value[1];
+                        }
+                    }
+                    $newArray[] = [$arrayKeys[0] => $value[0], $arrayKeys[1] => $value[1]];
+                }
+            }
+        }
+        return $newArray;
+
+    }
 }

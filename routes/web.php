@@ -100,6 +100,7 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
     Route::get('/get-all-block-users', 'UserController@getAllBlockUsers');
     Route::post('/search', 'UserController@filter');
     Route::get('/locations', 'UserController@allLocations');
+    Route::post('/import-csv', 'ListController@importCsv');
 
 });
 

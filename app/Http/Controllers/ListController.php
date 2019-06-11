@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Contact;
+use App\Helpers\General;
 use Illuminate\Http\Request;
 use App\ContactList;
 use Illuminate\Support\Facades\Validator;
@@ -183,5 +185,47 @@ class ListController extends Controller
                 ], 500
             );
         }
+    }
+
+    public function importCsv(Request $request){
+        $this->validate($request,[
+            'file' => 'required|mimes:csv,txt',
+        ]);
+        if($request->hasfile('file')) {
+            $file = $request->file('file');
+            $directory = storage_path('files');
+
+            $path = $file->move($directory, time() . "-" . $file->getClientOriginalName());
+            $csvFile = fopen($path->getPathname(), 'r');
+            $fileData = [];
+            while (!feof($csvFile)){
+                $fileData[] = fgetcsv($csvFile);
+            }
+            fclose($csvFile);
+            $csvData = General::setArrayKeys($fileData,0,true);
+
+            $contactList = ContactList::create([
+                'list_name'=> basename($file->getClientOriginalName(),'.csv'),
+                'user_id' => $request->input('user_id', 0)
+            ]);
+            foreach ($csvData as $data){
+                $data['contact_list_id'] = $contactList->id;
+                Contact::create($data);
+            }
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'success',
+                    'message' => 'List Import Successfully',
+                ], 200
+            );
+        } else{
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'error',
+                    'message' => 'List unable to Import',
+                ], 500
+            );
+        }
+
     }
 }

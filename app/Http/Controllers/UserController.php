@@ -629,7 +629,7 @@ class UserController extends Controller
         ]);
 
         $contacts = Contact::select(DB::raw(
-            'name as firstName, phone, "" as lastName, "" as address, "" as dob'
+            'name as firstName, "" as lastName, phone, "" as address, "" as dob'
         ))->union($allUsers)->get();
 
         $users = $contacts;

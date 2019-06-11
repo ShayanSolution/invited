@@ -12,6 +12,7 @@ use App\Repositories\Contracts\UserRepository;
 use Illuminate\Http\Request;
 use App\Transformers\UserTransformer;
 use Davibennun\LaravelPushNotification\Facades\PushNotification;
+use Illuminate\Support\Facades\DB;
 use Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -619,13 +620,19 @@ class UserController extends Controller
 
     public function getAllUsers(){
 //        $users = User::paginate(10);
-        $allUsers = User::all();
-        $contacts = Contact::select([
-            'name as firstName',
-            'phone'
-        ])->get();
+        $allUsers = User::select([
+            'firstName',
+            'lastName',
+            'phone',
+            'address',
+            'dob'
+        ]);
 
-        $users = $allUsers->merge($contacts);
+        $contacts = Contact::select(DB::raw(
+            'name as firstName, phone, "" as lastName, "" as address, "" as dob'
+        ))->union($allUsers)->get();
+
+        $users = $contacts;
 
         if($users){
             return response()->json(

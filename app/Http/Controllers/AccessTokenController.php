@@ -52,8 +52,11 @@ class AccessTokenController extends Controller
             } else {
                 return response()->json(['error' => 'Unauthorized', 'message' => 'Account has been blocked. Please contact with your service provider'],403);
             }
+            // forward the request to the oauth token request endpoint
+            return app()->dispatch($tokenRequest);
+        } else {
+            return response()->json(['error' => 'Unauthorized', 'message' => 'The user credentials were incorrect.'],401);
         }
-        // forward the request to the oauth token request endpoint
-        return app()->dispatch($tokenRequest);
+
     }
 }

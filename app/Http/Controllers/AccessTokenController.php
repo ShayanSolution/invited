@@ -40,17 +40,18 @@ class AccessTokenController extends Controller
     {
         $phone = $request->input('username');
         $user = User::where('phone','=',$phone)->first();
-        $isActive = $user->is_active;
-
-        if ($isActive == 1) {
-            $inputs = $request->all();
-            //Set default scope with full access
-            if (!isset($inputs['scope']) || empty($inputs['scope'])) {
-                $inputs['scope'] = "*";
+        if ($user){
+            $isActive = $user->is_active;
+            if ($isActive == 1) {
+                $inputs = $request->all();
+                //Set default scope with full access
+                if (!isset($inputs['scope']) || empty($inputs['scope'])) {
+                    $inputs['scope'] = "*";
+                }
+                $tokenRequest = $request->create('/oauth/token', 'post', $inputs);
+            } else {
+                return response()->json(['error' => 'Unauthorized', 'message' => 'Account has been blocked. Please contact with your service provider'],403);
             }
-            $tokenRequest = $request->create('/oauth/token', 'post', $inputs);
-        } else {
-            return response()->json(['error' => 'Unauthorized', 'message' => 'Account has been blocked. Please contact with your service provider'],403);
         }
         // forward the request to the oauth token request endpoint
         return app()->dispatch($tokenRequest);

@@ -32,6 +32,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $table = 'users';
 
+    protected $appends = array('age');
+
     /**
      * The attributes that are mass assignable.
      *
@@ -104,6 +106,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return (isset($this->role) ? $this->role : self::BASIC_ROLE) == self::ADMIN_ROLE;
     }
+
+    public function getAgeAttribute()
+    {
+        $UserAge = $this->dob;
+        $today = Carbon::now()->format('Y-m-d');
+        $ageCalculated = date_diff(date_create($today),date_create($UserAge));
+        $age = $ageCalculated->y;
+
+        return $age;
+    }
+
 
     public function profile()
     {

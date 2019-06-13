@@ -618,6 +618,27 @@ class UserController extends Controller
         }
     }
 
+    public function getAllUsersManagement(){
+//        $users = User::paginate(10);
+        $users = User::all();
+
+        if($users){
+            return response()->json(
+                [
+                    'user' => $users,
+                ], 200
+            );
+        }else{
+
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'No user found'
+                ], 422
+            );
+        }
+    }
+
     public function getAllUsers(){
 //        $users = User::paginate(10);
         $allUsers = User::select([

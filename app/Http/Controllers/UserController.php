@@ -708,12 +708,13 @@ class UserController extends Controller
                 'lastName',
                 'phone',
                 'address',
-                'dob'
+                'dob',
+                \DB::raw('YEAR(CURRENT_TIMESTAMP) - YEAR(dob) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(dob, 5)) as age'),
             ]);
 
             if ($contactLists) {
                 $contacts = Contact::select(DB::raw(
-                    'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob'
+                    'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob, "0" as age'
                 ))->join('contactlists', 'contactlists.id', '=', 'contacts.contact_list_id')->where([
                     'contactlists.user_id' => $contactLists->user_id,
                 ])->union($allUsers)->get();

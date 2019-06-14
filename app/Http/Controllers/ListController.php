@@ -228,4 +228,25 @@ class ListController extends Controller
         }
 
     }
+
+    public function getAllLists(Request $request){
+        $roleId = $request->role_id;
+        $userId = $request->user_id;
+
+        if ($roleId == 1){
+            $lists = ContactList::select('id', 'list_name')->get();
+            return response()->json(
+                [
+                    'lists' => $lists,
+                ], 200
+            );
+        } else {
+            $lists = ContactList::select('id', 'list_name')->where('user_id', $userId)->get();
+            return response()->json(
+                [
+                    'lists' => $lists,
+                ], 200
+            );
+        }
+    }
 }

@@ -715,8 +715,8 @@ class UserController extends Controller
             if ($contactLists) {
                 $contacts = Contact::select(DB::raw(
                     'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob, "0" as age'
-                ))->join('contactlists', 'contactlists.id', '=', 'contacts.contact_list_id')->where([
-                    'contactlists.user_id' => $contactLists->user_id,
+                ))->where([
+                    'contacts.contact_list_id' => $listId,
                 ])->union($allUsers)->get();
             } else {
                 $contacts = $allUsers->get();

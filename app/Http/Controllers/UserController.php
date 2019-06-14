@@ -639,8 +639,11 @@ class UserController extends Controller
         }
     }
 
-    public function getAllUsers(){
-//        $users = User::paginate(10);
+    public function getAllUsers(Request $request)
+    {
+        $userId = $request->input('user_id'); // userRole 1 = Admin
+        $userRole = $request->input('role_id'); // userRole 1 = Admin
+
         $allUsers = User::select([
             'firstName',
             'lastName',
@@ -649,24 +652,101 @@ class UserController extends Controller
             'dob'
         ]);
 
-        $contacts = Contact::select(DB::raw(
-            'name as firstName, "" as lastName, phone, "" as address, "" as dob'
-        ))->union($allUsers)->get();
+        if ($userRole == 1) {
+            $contacts = $allUsers->get();
+
+        } else if ($userRole != 1) {
+
+            $contacts = Contact::select(DB::raw(
+                'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob'
+            ))->join('contactlists', 'contactlists.id', '=', 'contacts.contact_list_id')->where([
+                'contactlists.user_id' => $userId,
+            ])->get();
+
+        }
 
         $users = $contacts;
 
-        if($users){
+        if ($users) {
             return response()->json(
                 [
                     'user' => $users,
                 ], 200
             );
-        }else{
+        } else {
 
             return response()->json(
                 [
                     'status' => 'error',
-                    'message' => 'No user found'
+                    'message' => 'No existing record found'
+                ], 422
+            );
+        }
+    }
+
+    public function getAllUsersEditList(Request $request)
+    {
+
+        $userId = $request->input('user_id'); // userRole 1 = Admin
+        $userRole = $request->input('role_id'); // userRole 1 = Admin
+        $listId = $request->input('list_id'); // mode edit or create
+
+        $allUsers = User::select([
+            'firstName',
+            'lastName',
+            'phone',
+            'address',
+            'dob'
+        ]);
+
+
+        if ($userRole == 1) {
+            $allUsers = User::select([
+                'firstName',
+                'lastName',
+                'phone',
+                'address',
+                'dob'
+            ]);
+            $contactLists = ContactList::where(['id' => $listId])->first();
+            if ($contactLists) {
+                $contacts = Contact::select(DB::raw(
+                    'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob'
+                ))->join('contactlists', 'contactlists.id', '=', 'contacts.contact_list_id')->where([
+                    'contactlists.user_id' => $contactLists->user_id,
+                ])->union($allUsers)->get();
+            } else {
+                $contacts = $allUsers->get();
+            }
+
+        } else if ($userRole != 1) {
+
+            $contacts = Contact::select(DB::raw(
+                'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob'
+            ))->join('contactlists', 'contactlists.id', '=', 'contacts.contact_list_id')->where([
+                'contactlists.user_id' => $userId,
+            ])->get();
+        }
+
+       $selectedContacts =   Contact::select(DB::raw(
+           'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob'))
+           ->where(['contact_list_id' => $listId])->get();
+
+        $users['contacts'] = $contacts;
+        $users['select_contacts'] = $selectedContacts;
+
+        if ($users) {
+            return response()->json(
+                [
+                     $users,
+                ], 200
+            );
+        } else {
+
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'No existing record found'
                 ], 422
             );
         }

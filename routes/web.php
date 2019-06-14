@@ -97,6 +97,7 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
     //API's for Admin
     Route::get('/get-all-users-management', 'UserController@getAllUsersManagement');
     Route::get('/get-all-users', 'UserController@getAllUsers');
+    Route::get('/get-all-users-edit-list', 'UserController@getAllUsersEditList');
     Route::post('/block-user-status', 'UserController@postBlockUserStatus');
     Route::get('/get-all-block-users', 'UserController@getAllBlockUsers');
     Route::post('/search', 'UserController@filter');

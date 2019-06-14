@@ -670,7 +670,7 @@ class UserController extends Controller
         if ($users) {
             return response()->json(
                 [
-                    'user' => $users,
+                    'contacts' => $users,
                 ], 200
             );
         } else {
@@ -691,6 +691,8 @@ class UserController extends Controller
         $userRole = $request->input('role_id'); // userRole 1 = Admin
         $listId = $request->input('list_id'); // mode edit or create
 
+        $contactLists = ContactList::where(['id' => $listId])->first();
+
         $allUsers = User::select([
             'firstName',
             'lastName',
@@ -708,7 +710,7 @@ class UserController extends Controller
                 'address',
                 'dob'
             ]);
-            $contactLists = ContactList::where(['id' => $listId])->first();
+
             if ($contactLists) {
                 $contacts = Contact::select(DB::raw(
                     'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob'
@@ -734,12 +736,13 @@ class UserController extends Controller
 
         $users['contacts'] = $contacts;
         $users['select_contacts'] = $selectedContacts;
+        $users['list_filter'] = $contactLists;
 
         if ($users) {
             return response()->json(
-                [
-                     $users,
-                ], 200
+
+                     $users
+                , 200
             );
         } else {
 

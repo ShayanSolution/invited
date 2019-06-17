@@ -661,7 +661,7 @@ class UserController extends Controller
                 'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob'
             ))->join('contactlists', 'contactlists.id', '=', 'contacts.contact_list_id')->where([
                 'contactlists.user_id' => $userId,
-            ])->get();
+            ])->groupBy('contacts.phone', 'contacts.name')->get();
 
         }
 
@@ -717,7 +717,7 @@ class UserController extends Controller
                     'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob, "0" as age'
                 ))->where([
                     'contacts.contact_list_id' => $listId,
-                ])->union($allUsers)->get();
+                ])->union($allUsers)->groupBy('phone', 'firstName')->get();
             } else {
                 $contacts = $allUsers->get();
             }
@@ -728,12 +728,12 @@ class UserController extends Controller
                 'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob'
             ))->join('contactlists', 'contactlists.id', '=', 'contacts.contact_list_id')->where([
                 'contactlists.user_id' => $userId,
-            ])->get();
+            ])->groupBy('contacts.phone', 'contacts.name')->get();
         }
 
        $selectedContacts =   Contact::select(DB::raw(
            'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob'))
-           ->where(['contact_list_id' => $listId])->get();
+           ->where(['contact_list_id' => $listId])->groupBy('contacts.phone', 'contacts.name')->get();
 
         $users['contacts'] = $contacts;
         $users['select_contacts'] = $selectedContacts;

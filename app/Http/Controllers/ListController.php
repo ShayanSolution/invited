@@ -234,18 +234,38 @@ class ListController extends Controller
         $userId = $request->user_id;
 
         if ($roleId == 1){
-            $lists = ContactList::select('id', 'list_name')->get();
+            $lists = ContactList::select('id', 'list_name',\DB::raw('(select count(*) from contacts where contacts.contact_list_id=contactlists.id) as listcount'))->get();
+
             return response()->json(
                 [
                     'lists' => $lists,
                 ], 200
             );
         } else {
-            $lists = ContactList::select('id', 'list_name')->where('user_id', $userId)->get();
+            $lists = ContactList::select('id', 'list_name', \DB::raw('(select count(*) from contacts where contacts.contact_list_id=contactlists.id) as listcount'))->where('user_id', $userId)->get();
             return response()->json(
                 [
                     'lists' => $lists,
                 ], 200
+            );
+        }
+    }
+
+    public function exportList(Request $request){
+        $lists = ContactList::where('id',$request->list_id)->first();
+        if ($lists){
+            $exportData = Contact::select('name','phone')->where('contact_list_id', $request->list_id)->get();
+            return response()->json(
+                [
+                    'exportData' => $exportData,
+                ], 200
+            );
+        } else {
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'error',
+                    'message' => 'List not found',
+                ], 500
             );
         }
     }

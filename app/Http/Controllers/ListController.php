@@ -252,12 +252,15 @@ class ListController extends Controller
     }
 
     public function exportList(Request $request){
-        $lists = ContactList::where('id',$request->list_id)->first();
+        $listsId = $request->list_id;
+        $lists = ContactList::where('id',$listsId)->first();
+        $listName = $lists->list_name;
         if ($lists){
-            $exportData = Contact::select('name','phone')->where('contact_list_id', $request->list_id)->get();
+            $exportData = Contact::select('name','phone')->where('contact_list_id', $listsId)->get();
             return response()->json(
                 [
                     'exportData' => $exportData,
+                    'listName' => $listName
                 ], 200
             );
         } else {

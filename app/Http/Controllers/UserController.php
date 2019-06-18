@@ -649,7 +649,8 @@ class UserController extends Controller
             'lastName',
             'phone',
             'address',
-            'dob'
+            'dob',
+            'dateofrelation'
         ]);
 
         if ($userRole == 1) {
@@ -658,7 +659,7 @@ class UserController extends Controller
         } else if ($userRole != 1) {
 
             $contacts = Contact::select(DB::raw(
-                'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob'
+                'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob, "0" as age, "" as dateofrelation'
             ))->join('contactlists', 'contactlists.id', '=', 'contacts.contact_list_id')->where([
                 'contactlists.user_id' => $userId,
             ])->groupBy('contacts.phone', 'contacts.name')->get();

@@ -699,7 +699,8 @@ class UserController extends Controller
             'lastName',
             'phone',
             'address',
-            'dob'
+            'dob',
+            'dateofrelation'
         ]);
 
 
@@ -711,11 +712,12 @@ class UserController extends Controller
                 'address',
                 'dob',
                 \DB::raw('YEAR(CURRENT_TIMESTAMP) - YEAR(dob) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(dob, 5)) as age'),
+                'dateofrelation'
             ]);
 
             if ($contactLists) {
                 $contacts = Contact::select(DB::raw(
-                    'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob, "0" as age'
+                    'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob, "0" as age, "" as dateofrelation'
                 ))->where([
                     'contacts.contact_list_id' => $listId,
                 ])->union($allUsers)->groupBy('phone', 'firstName')->get();
@@ -726,14 +728,14 @@ class UserController extends Controller
         } else if ($userRole != 1) {
 
             $contacts = Contact::select(DB::raw(
-                'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob'
+                'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob, "0" as age, "" as dateofrelation'
             ))->join('contactlists', 'contactlists.id', '=', 'contacts.contact_list_id')->where([
                 'contactlists.user_id' => $userId,
             ])->groupBy('contacts.phone', 'contacts.name')->get();
         }
 
        $selectedContacts =   Contact::select(DB::raw(
-           'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob'))
+           'contacts.name as firstName, "" as lastName, contacts.phone, "" as address, "" as dob, "0" as age, "" as dateofrelation'))
            ->where(['contact_list_id' => $listId])->groupBy('contacts.phone', 'contacts.name')->get();
 
         $users['contacts'] = $contacts;

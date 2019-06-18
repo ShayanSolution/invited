@@ -215,7 +215,7 @@ class ListController extends Controller
             return JsonResponse::generateResponse(
                 [
                     'status' => 'success',
-                    'message' => 'List Import Successfully',
+                    'message' => 'List has been imported successfully',
                 ], 200
             );
         } else{

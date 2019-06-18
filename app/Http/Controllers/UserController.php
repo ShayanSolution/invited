@@ -471,12 +471,12 @@ class UserController extends Controller
             $data = [
                 "firstName"=> $request["firstName"],
                 "lastName"=> $request["lastName"],
-                "dob"=> $request["dob"],
+                "dob"=> date("Y-m-d",strtotime($request["dob"])),
                 "email"=> $request["email"],
                 "gender_id"=> $request["gender"],
             ];
             if (!empty($request->input("dateofrelation"))){
-                $data['dateofrelation'] = $request->input("dateofrelation");
+                $data['dateofrelation'] = date("Y-m-d",strtotime($request->input("dateofrelation")));
             } else {
                 $data['dateofrelation'] = null;
             }

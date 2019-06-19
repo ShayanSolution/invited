@@ -75,7 +75,8 @@ class ContactList extends Model
     public static function CreateList($request){
         $request = $request->all();
         $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
-        $request = self::excludeEmpty($request);
+        $selfObject = new self();
+        $request = $selfObject->excludeEmptyArrayKeys($request);
         return self::create($request)->id;
     }
 
@@ -138,7 +139,8 @@ class ContactList extends Model
 
         $data['anniversary_filter'] = isset($request['anniversary_filter']) ? $request['anniversary_filter']:'';
 
-        $data = self::excludeEmpty($data);
+        $selfObject = new self();
+        $data = $selfObject->excludeEmptyArrayKeys($data);
 
         return self::where('id',$request['list_id'])->update($data);
     }

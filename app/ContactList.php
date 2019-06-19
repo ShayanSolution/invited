@@ -124,6 +124,26 @@ class ContactList extends Model
         $data = [
             "list_name"=> $request["list_name"],
         ];
+
+        if (!empty($request['location_filter'])){
+            $data['location_filter'] = $request['location_filter'];
+        }
+        if (!empty($request['gender_filter'])){
+            $data['gender_filter'] = $request['gender_filter'];
+        }
+        if (!empty($request['active_user_filter'])){
+            $data['active_user_filter'] = $request['active_user_filter'];
+        }
+        if (!empty($request['age_range_filter'])){
+            $data['age_range_filter'] = $request['age_range_filter'];
+        }
+        if (!empty($request['date_of_birth_filter'])){
+            $data['date_of_birth_filter'] = $request['date_of_birth_filter'];
+        }
+        if (!empty($request['anniversary_filter'])){
+            $data['anniversary_filter'] = $request['anniversary_filter'];
+        }
+
         return self::where('id',$request['list_id'])->update($data);
     }
 

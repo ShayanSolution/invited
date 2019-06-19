@@ -140,13 +140,7 @@ class ContactList extends Model
         $data['anniversary_filter'] = isset($request['anniversary_filter']) ? $request['anniversary_filter']:'';
 
         $data = General::excludeEmptyArrayKeys($data);
-        return JsonResponse::generateResponse(
-            [
-                'status' => 'success',
-                'messages' => 'tang na karrrr',
-                'data' => $data
-            ],200
-        );
+
         return self::where('id',$request['list_id'])->update($data);
     }
 

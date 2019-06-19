@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\General;
 use Illuminate\Database\Eloquent\Model;
 use Log;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -75,8 +76,7 @@ class ContactList extends Model
     public static function CreateList($request){
         $request = $request->all();
         $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
-        $selfObject = new self();
-        $request = $selfObject->excludeEmptyArrayKeys($request);
+        $request = General::excludeEmptyArrayKeys($request);
         return self::create($request)->id;
     }
 
@@ -139,8 +139,7 @@ class ContactList extends Model
 
         $data['anniversary_filter'] = isset($request['anniversary_filter']) ? $request['anniversary_filter']:'';
 
-        $selfObject = new self();
-        $data = $selfObject->excludeEmptyArrayKeys($data);
+        $data = General::excludeEmptyArrayKeys($data);
 
         return self::where('id',$request['list_id'])->update($data);
     }

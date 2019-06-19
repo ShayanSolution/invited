@@ -47,6 +47,20 @@ class General
             }
         }
         return $newArray;
+    }
 
+    /**
+     * @param array $data
+     * @return array
+     * @discription Tang karta tha zero
+     */
+    public static function excludeEmptyArrayKeys($data = []){
+        $filteredData = [];
+        foreach ($data as $key => $item){
+            if ((!empty($item) && $item !='' && $item !='null' && $item !=null) || $item == '0'){
+                $filteredData[$key] = $item;
+            }
+        }
+        return $filteredData;
     }
 }

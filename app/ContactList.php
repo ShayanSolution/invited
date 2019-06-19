@@ -75,6 +75,7 @@ class ContactList extends Model
     public static function CreateList($request){
         $request = $request->all();
         $request['contact_list'] = self::cleanPhoneNumber($request['contact_list']);
+        $request = self::excludeEmpty($request);
         return self::create($request)->id;
     }
 
@@ -125,24 +126,19 @@ class ContactList extends Model
             "list_name"=> $request["list_name"],
         ];
 
-        if (!empty($request['location_filter'])){
-            $data['location_filter'] = $request['location_filter'];
-        }
-        if (!empty($request['gender_filter'])){
-            $data['gender_filter'] = $request['gender_filter'];
-        }
-        if (!empty($request['active_user_filter'])){
-            $data['active_user_filter'] = $request['active_user_filter'];
-        }
-        if (!empty($request['age_range_filter'])){
-            $data['age_range_filter'] = $request['age_range_filter'];
-        }
-        if (!empty($request['date_of_birth_filter'])){
-            $data['date_of_birth_filter'] = $request['date_of_birth_filter'];
-        }
-        if (!empty($request['anniversary_filter'])){
-            $data['anniversary_filter'] = $request['anniversary_filter'];
-        }
+        $data['location_filter'] = isset($request['location_filter']) ? $request['location_filter']:'';
+
+        $data['gender_filter'] = isset($request['gender_filter']) ? $request['gender_filter']:'';
+
+        $data['active_user_filter'] = isset($request['active_user_filter']) ? $request['active_user_filter']:'';
+
+        $data['age_range_filter'] = isset($request['age_range_filter']) ? $request['age_range_filter']:'';
+
+        $data['date_of_birth_filter'] = isset($request['date_of_birth_filter']) ? $request['date_of_birth_filter']:'';
+
+        $data['anniversary_filter'] = isset($request['anniversary_filter']) ? $request['anniversary_filter']:'';
+
+        $data = self::excludeEmpty($data);
 
         return self::where('id',$request['list_id'])->update($data);
     }

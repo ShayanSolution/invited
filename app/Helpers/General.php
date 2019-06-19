@@ -59,6 +59,8 @@ class General
         foreach ($data as $key => $item){
             if ((!empty($item) && $item !='' && $item !='null' && $item !=null) || $item == '0'){
                 $filteredData[$key] = $item;
+            } else{
+                $filteredData[$key] = null;
             }
         }
         return $filteredData;

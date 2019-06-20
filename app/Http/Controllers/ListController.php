@@ -230,7 +230,10 @@ class ListController extends Controller
     }
 
     public function getAllLists(Request $request){
-        $roleId = $request->role_id;
+        $roleId = $request->input('role_id');
+        if($roleId == '' ){
+            $roleId = 2; // 2 is equals to corprate user
+        }
         $userId = $request->user_id;
 
         if ($roleId == 1){

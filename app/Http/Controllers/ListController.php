@@ -234,7 +234,7 @@ class ListController extends Controller
         $userId = $request->user_id;
 
         if ($roleId == 1){
-            $lists = ContactList::select('id', 'list_name',\DB::raw('(select count(*) from contacts where contacts.contact_list_id=contactlists.id) as listcount'))->get();
+            $lists = ContactList::select('id', 'list_name',\DB::raw('(select count(*) from contacts where contacts.contact_list_id=contactlists.id) as listcount'))->whereNull('deleted_at')->get();
 
             return response()->json(
                 [
@@ -242,7 +242,7 @@ class ListController extends Controller
                 ], 200
             );
         } else {
-            $lists = ContactList::select('id', 'list_name', \DB::raw('(select count(*) from contacts where contacts.contact_list_id=contactlists.id) as listcount'))->where('user_id', $userId)->get();
+            $lists = ContactList::select('id', 'list_name', \DB::raw('(select count(*) from contacts where contacts.contact_list_id=contactlists.id) as listcount'))->whereNull('deleted_at')->where('user_id', $userId)->get();
             return response()->json(
                 [
                     'lists' => $lists,

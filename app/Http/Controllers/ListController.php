@@ -133,6 +133,7 @@ class ListController extends Controller
            foreach($user_list as $list){
                $user_contact_list[$index]['id'] = $list->id;
                $user_contact_list[$index]['list_name'] = $list->list_name;
+               $user_contact_list[$index]['location_filter'] = $list->location_filter;
                $user_contact_list[$index]['group_image'] = $list->group_image;
                if(isset($list->is_active)){
                    if ($list->is_active == 1){

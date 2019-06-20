@@ -127,6 +127,8 @@ class ContactList extends Model
             "list_name"=> $request["list_name"],
         ];
 
+        $data['is_active'] = isset($request['is_active']) ? $request['is_active']:'';
+
         $data['location_filter'] = isset($request['location_filter']) ? $request['location_filter']:'';
 
         $data['gender_filter'] = isset($request['gender_filter']) ? $request['gender_filter']:'';

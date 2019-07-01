@@ -91,6 +91,8 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     Route::post('/user-address', 'UserController@postUserAddress');
 
+//    Route::post('/login-at', 'UserController@loginAt'); // loginAt merge in user-address api
+
     Route::post('/logout-at', 'UserController@logoutAt');
 
 

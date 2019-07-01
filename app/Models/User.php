@@ -457,6 +457,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public static function updateLogoutAt($request){
         return self::where('id',$request['user_id'])->update([
             'logout_at'=>Carbon::now(),
+            'login_at'=>Null,
         ]);
     }
 

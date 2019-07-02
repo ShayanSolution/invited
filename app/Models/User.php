@@ -460,5 +460,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             'login_at'=>Null,
         ]);
     }
+    public static function updateLogoutAtTokenBased($user_id){
+        return self::where('id',$user_id)->update([
+            'logout_at'=>Carbon::now(),
+            'login_at'=>Null,
+        ]);
+    }
 
 }

@@ -300,6 +300,7 @@ class UserController extends Controller
         if (Auth::check()) {
             $user_id =  Auth::user()->id;
             User::where('id', $user_id)->update(['device_token'=>'']);
+            User::updateLogoutAtTokenBased($user_id);
             Auth::user()->AauthAcessToken()->delete();
         }
     }

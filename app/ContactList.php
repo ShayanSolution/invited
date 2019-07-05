@@ -43,7 +43,8 @@ class ContactList extends Model
         'anniversary_filter',
         'date_of_birth_filter',
         'age_range_filter',
-        'active_user_filter'
+        'active_user_filter',
+        'logged_in_filter'
     ];
     //@todo refactor remove contact_list from table as it will no longer needed and column will delete from table
     protected $casts = [
@@ -140,6 +141,8 @@ class ContactList extends Model
         $data['date_of_birth_filter'] = isset($request['date_of_birth_filter']) ? $request['date_of_birth_filter']:'';
 
         $data['anniversary_filter'] = isset($request['anniversary_filter']) ? $request['anniversary_filter']:'';
+
+        $data['logged_in_filter'] = isset($request['logged_in_filter']) ? $request['logged_in_filter']:'';
 
         $data = General::excludeEmptyArrayKeys($data);
 

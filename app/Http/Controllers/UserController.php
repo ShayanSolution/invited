@@ -836,7 +836,7 @@ class UserController extends Controller
 
         // Search for a user based on their location, gender, anniversary, active, date of birth.
         foreach ($request->all() as $key=>$item){
-            if(!in_array($key, ['min', 'max', 'startDateDOR', 'endDateDOR', 'startDateDOB', 'endDateDOB']))
+            if(!in_array($key, ['min', 'max', 'startDateDOR', 'endDateDOR', 'startDateDOB', 'endDateDOB', 'loggedIn']))
                 $user->where($key, $item);
         }
 
@@ -853,6 +853,13 @@ class UserController extends Controller
         //Search for a user based on date of birth range
         if ($request->has('startDateDOB') && $request->has('endDateDOB')) {
             $user->birth(['startDateDOB'=>$request->get('startDateDOB'), 'endDateDOB'=>$request->get('endDateDOB')]);
+        }
+
+        if ($request->has('loggedIn')) {
+            if($request->get('loggedIn') == 1)
+                $user->whereNotNull('login_at');
+            else
+                $user->whereNull('login_at');
         }
 
         // Get the results and return them.

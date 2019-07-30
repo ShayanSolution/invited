@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 
 use App\Contact;
 use App\Models\NonUser;
+use App\Models\Notification;
+use App\Models\NotificationStatus;
 use Illuminate\Http\Request;
 use App\Models\Event;
 use App\ContactList;
@@ -151,6 +153,8 @@ class EventController extends Controller
         $user_list = ContactList::getList($list_id);
         $eventRequest = new RequestsEvent();
         if(!empty($user_list->first())) {
+            //Save notification
+            $saveNotificationId = Notification::saveNotification($event->title,$event_id,$list_id,$created_by);
             foreach ($user_list as $list) {
                 foreach (json_decode($list->contact) as $user_detail) {
                     $user_detail->phone = str_replace('(', '', trim($user_detail->phone));
@@ -170,6 +174,8 @@ class EventController extends Controller
                         $environment = $user->environment;
                         //dd($user->toArray(), $device_token, $environment);
                         if (!empty($device_token)) {
+                            // Save create notifications
+                            $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$user_id,$message);
                             //check user platform
                             $platform = $user->platform;
                             $event_request = $eventRequest->getUserEventRequests($event_id, $user_id);

@@ -95,6 +95,9 @@ $router->group(['middleware' => ['auth:api', 'throttle:60']], function () use ($
 
     Route::post('/logout-at', 'UserController@logoutAt');
 
+    //user notifications
+    Route::get('/notifications','EventController@getNotifications');
+    Route::post('/read_notification', 'EventController@readNotification');
 
     //API's for Admin
     Route::get('/get-all-users-management', 'UserController@getAllUsersManagement');

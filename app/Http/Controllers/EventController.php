@@ -390,6 +390,18 @@ class EventController extends Controller
         if($accepted['update']){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $accepted_user = User::where('id',$id)->first();
+
+            //Save Notification
+            if(!empty($accepted_user->firstName)){
+                $user_name = $accepted_user->firstName." ".$accepted_user->lastName;
+            }else{
+                $user_name = $accepted_user->phone;
+            }
+            $message = 'Congratulations! ' . $user_name . ' replied with YES to: ' . $event_detail->title . '.';
+            $saveNotificationId = Notification::saveNotification($message,$event_id,$event_detail->list_id,$id);
+            $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$event_detail->user_id,"Accept Event");
+            //
+
             $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "YES");
             Log::info("Notification users ids for closed events: ".print_r($accepted['notification_users'],true));
             //if event has been closed, send notification remaining users for closed events
@@ -489,6 +501,18 @@ class EventController extends Controller
         if($rejected){
             $created_by = RequestsEvent::createdByRequest($event_id,$id);
             $rejected_user = User::where('id',$id)->first();
+
+            //Save Notification
+            if(!empty($rejected_user->firstName)){
+                $user_name = $rejected_user->firstName." ".$rejected_user->lastName;
+            }else{
+                $user_name = $rejected_user->phone;
+            }
+            $message = $user_name . ' replied with NO to: ' . $checkEvent->title . '.';
+            $saveNotificationId = Notification::saveNotification($message,$event_id,$checkEvent->list_id,$id);
+            $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$checkEvent->user_id,"Reject Event");
+            //
+
             $this->sendRequestNotification($created_by->created_by,$event_id,$rejected_user,$request_status = "NO");
             return JsonResponse::generateResponse(
                 [
@@ -726,6 +750,8 @@ class EventController extends Controller
             $event_list_id = $event_detail->list_id;
             $notification_usres_list = ContactList::getUserList($event_list_id);
 //            dd($notification_usres_list);
+            $message = $event_detail->title.' has been deleted.';
+            $saveNotificationId = Notification::saveNotification($message,$event_id,$event_list_id,$event_detail->user_id);
             if ($notification_usres_list != null){
                 foreach ($notification_usres_list->contact as $list){
                     $list->phone = str_replace('(', '', trim($list->phone));
@@ -734,6 +760,10 @@ class EventController extends Controller
                     $phone = substr($list->phone, -9);//get last 9 digit of phone number.
 
                     $notification_user = User::where('phone', 'like', '%'.$phone)->first();
+
+                    //Save Notification status
+                    $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$notification_user->id,"Deleted Event");
+
                     if($notification_user){
                         $user_device_token = $notification_user->device_token;
                         $user_id = $notification_user->id;
@@ -813,6 +843,8 @@ class EventController extends Controller
         if($event_detail){
             $event_list_id = $event_detail->list_id;
             $notification_usres_list = ContactList::getUserList($event_list_id);
+            $message = $event_detail->title.' has been cancelled.';
+            $saveNotificationId = Notification::saveNotification($message,$event_id,$event_list_id,$event_detail->user_id);
             foreach ($notification_usres_list->contact as $list){
                 $list->phone = str_replace('(', '', trim($list->phone));
                 $list->phone = str_replace(')', '', trim($list->phone));
@@ -820,6 +852,9 @@ class EventController extends Controller
                 $phone = substr($list->phone, -9);//get last 9 digit of phone number.
 
                 $notification_user = User::where('phone', 'like', '%'.$phone)->first();
+
+                //Save notification status
+                $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$notification_user->id,"Cancelled Event");
                 if($notification_user){
                     $user_device_token = $notification_user->device_token;
                     $user_id = $notification_user->id;
@@ -1084,6 +1119,75 @@ class EventController extends Controller
         //dd($sendMail);
 
         //dd("email Send successfully");
+    }
+
+    public function getNotifications(Request $request){
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required'
+        ]);
+        $response = Event::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+
+        $request = $request->all();
+        $user_id = $request['user_id'];
+        $notifications = NotificationStatus::with('notification')->where('receiver_id', $user_id)->get();
+        $unReadNotification = $notifications->where('receiver_id', $user_id)->where('read_status', 0);
+        $unReadNotification_count = count($unReadNotification);
+        foreach ($notifications as $key => $notification){
+            if($notification->notification){
+                $notifications[$key]->message = $notification->notification->message;
+                $notifications[$key]->event_id = $notification->notification->event_id;
+                $notifications[$key]->list_id = $notification->notification->list_id;
+                $notifications[$key]->sender_id = $notification->notification->sender_id;
+            }
+            unset($notifications[$key]->notification);
+        }
+        if($notifications){
+
+            return JsonResponse::generateResponse(
+                [
+                    'unReadNotification_count'=>$unReadNotification_count,
+                    'notifications'=>$notifications,
+                ], 200
+            );
+        }else{
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to find notifications.'
+                ], 500
+            );
+        }
+    }
+
+    public function readNotification(Request $request){
+        $validator = Validator::make($request->all(), [
+            'notification_id' => 'required',
+        ]);
+        $response = Event::generateErrorResponse($validator);
+        if($response['code'] == 500){
+            return $response;
+        }
+        $notification_id = $request['notification_id'];
+        $notifications = NotificationStatus::where('notification_id', $notification_id)->update(['read_status' => 1]);
+
+        if($notifications){
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'success',
+                    'message' => 'Notification read successfully.'
+                ], 200
+            );
+        }else{
+            return JsonResponse::generateResponse(
+                [
+                    'status' => 'error',
+                    'message' => 'Unable to find notifications.'
+                ], 500
+            );
+        }
     }
 
 

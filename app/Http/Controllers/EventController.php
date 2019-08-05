@@ -1183,6 +1183,8 @@ class EventController extends Controller
                 $notifications[$key]->event_id = $notification->notification->event_id;
                 $notifications[$key]->list_id = $notification->notification->list_id;
                 $notifications[$key]->sender_id = $notification->notification->sender_id;
+                $notifications[$key]->sender_name = $notification->notification->sender_name;
+                $notifications[$key]->sender_image = $notification->notification->sender_image;
             }
             unset($notifications[$key]->notification);
         }

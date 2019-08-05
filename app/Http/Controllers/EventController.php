@@ -154,7 +154,17 @@ class EventController extends Controller
         $eventRequest = new RequestsEvent();
         if(!empty($user_list->first())) {
             //Save notification
-            $saveNotificationId = Notification::saveNotification($event->title,$event_id,$list_id,$created_by);
+            if(!empty($created_user->firstName)){
+                $senderName = $created_user->firstName. " ". $created_user->lastName;
+            }else{
+                $senderName = $created_user->phone;
+            }
+            if(!empty($created_user->profileImage)){
+                $senderImage = $created_user->profileImage;
+            } else{
+                $senderImage = '';
+            }
+            $saveNotificationId = Notification::saveNotification($event->title,$event_id,$list_id,$senderName,$senderImage,$created_by);
             foreach ($user_list as $list) {
                 foreach (json_decode($list->contact) as $user_detail) {
                     $user_detail->phone = str_replace('(', '', trim($user_detail->phone));
@@ -397,8 +407,13 @@ class EventController extends Controller
             }else{
                 $user_name = $accepted_user->phone;
             }
+            if(!empty($accepted_user->profileImage)){
+                $senderImage = $accepted_user->profileImage;
+            } else{
+                $senderImage = '';
+            }
             $message = 'Congratulations! ' . $user_name . ' replied with YES to: ' . $event_detail->title . '.';
-            $saveNotificationId = Notification::saveNotification($message,$event_id,$event_detail->list_id,$id);
+            $saveNotificationId = Notification::saveNotification($message,$event_id,$event_detail->list_id,$user_name,$senderImage, $id);
             $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$event_detail->user_id,"Accept Event");
             //
 
@@ -508,8 +523,13 @@ class EventController extends Controller
             }else{
                 $user_name = $rejected_user->phone;
             }
+            if(!empty($rejected_user->profileImage)){
+                $senderImage = $rejected_user->profileImage;
+            } else{
+                $senderImage = '';
+            }
             $message = $user_name . ' replied with NO to: ' . $checkEvent->title . '.';
-            $saveNotificationId = Notification::saveNotification($message,$event_id,$checkEvent->list_id,$id);
+            $saveNotificationId = Notification::saveNotification($message,$event_id,$checkEvent->list_id,$user_name,$senderImage,$id);
             $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$checkEvent->user_id,"Reject Event");
             //
 
@@ -751,7 +771,18 @@ class EventController extends Controller
             $notification_usres_list = ContactList::getUserList($event_list_id);
 //            dd($notification_usres_list);
             $message = $event_detail->title.' has been deleted.';
-            $saveNotificationId = Notification::saveNotification($message,$event_id,$event_list_id,$event_detail->user_id);
+            $user = User::where('id',$event_detail->user_id)->first();
+            if(!empty($user->firstName)){
+                $userName = $user->firstName." ".$user->lastName;
+            }else{
+                $userName = $user->phone;
+            }
+            if(!empty($user->profileImage)){
+                $senderImage = $user->profileImage;
+            } else{
+                $senderImage = '';
+            }
+            $saveNotificationId = Notification::saveNotification($message,$event_id,$event_list_id,$userName,$senderImage,$event_detail->user_id);
             if ($notification_usres_list != null){
                 foreach ($notification_usres_list->contact as $list){
                     $list->phone = str_replace('(', '', trim($list->phone));
@@ -844,7 +875,18 @@ class EventController extends Controller
             $event_list_id = $event_detail->list_id;
             $notification_usres_list = ContactList::getUserList($event_list_id);
             $message = $event_detail->title.' has been cancelled.';
-            $saveNotificationId = Notification::saveNotification($message,$event_id,$event_list_id,$event_detail->user_id);
+            $user = User::where('id',$event_detail->user_id)->first();
+            if(!empty($user->firstName)){
+                $userName = $user->firstName." ".$user->lastName;
+            }else{
+                $userName = $user->phone;
+            }
+            if(!empty($user->profileImage)){
+                $senderImage = $user->profileImage;
+            } else{
+                $senderImage = '';
+            }
+            $saveNotificationId = Notification::saveNotification($message,$event_id,$event_list_id,$userName,$senderImage,$event_detail->user_id);
             foreach ($notification_usres_list->contact as $list){
                 $list->phone = str_replace('(', '', trim($list->phone));
                 $list->phone = str_replace(')', '', trim($list->phone));

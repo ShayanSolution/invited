@@ -14,10 +14,12 @@ class Notification extends Model
         'message',
         'event_id',
         'list_id',
+        'sender_name',
+        'sender_image',
         'sender_id',
     ];
 
-    public static function saveNotification($message,$event_id,$list_id,$user_id){
+    public static function saveNotification($message,$eventId,$listId,$senderName,$senderImage,$userId){
 //        $eventExist = Notification::where('event_id',$event_id)->first();
 //        if (!empty($eventExist)){
 //            NotificationStatus::where('notification_id',$eventExist->id)->delete();
@@ -25,9 +27,11 @@ class Notification extends Model
 //        }
         return Notification::create([
             'message' => $message,
-            'event_id' => $event_id,
-            'list_id' => $list_id,
-            'sender_id' => $user_id,
+            'event_id' => $eventId,
+            'list_id' => $listId,
+            'sender_name' => $senderName,
+            'sender_image' => $senderImage,
+            'sender_id' => $userId,
         ])->id;
     }
 

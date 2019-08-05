@@ -18,6 +18,8 @@ class CreateNotificationsTable extends Migration
             $table->text('message');
             $table->integer('event_id');
             $table->integer('list_id');
+            $table->string('sender_name');
+            $table->string('sender_image')->nullable();
             $table->integer('sender_id');
             $table->timestamps();
         });

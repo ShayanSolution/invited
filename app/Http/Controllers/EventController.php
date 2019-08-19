@@ -1174,7 +1174,7 @@ class EventController extends Controller
 
         $request = $request->all();
         $user_id = $request['user_id'];
-        $notifications = NotificationStatus::with('notification')->where('receiver_id', $user_id)->get();
+        $notifications = NotificationStatus::with('notification')->where('receiver_id', $user_id)->orderBy('notification_id', 'desc')->get();
         $unReadNotification = $notifications->where('receiver_id', $user_id)->where('read_status', 0);
         $unReadNotification_count = count($unReadNotification);
         foreach ($notifications as $key => $notification){

@@ -433,6 +433,22 @@ class EventController extends Controller
                         //send notification to ios user list
                         Log::info("device_token: ".$device_token. "-----". $environment);
                         Log::info("Request Cycle with Queues Begins");
+                        //Save Notification
+                        $senderUser = User::where('id',$event_detail->user_id)->first();
+                        if(!empty($senderUser->firstName)){
+                            $user_name = $senderUser->firstName." ".$senderUser->lastName;
+                        }else{
+                            $user_name = $senderUser->phone;
+                        }
+                        if(!empty($senderUser->profileImage)){
+                            $senderImage = $senderUser->profileImage;
+                        } else{
+                            $senderImage = '';
+                        }
+                        $message = "Too late. ".$event_detail->event_title . "  has been closed ";
+                        $saveNotificationId = Notification::saveNotification($message,$event_id,$event_detail->list_id,$user_name,$senderImage, $event_detail->user_id);
+                        $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$user_id,"Closed Event");
+                        //
                         $job = new SendCloseEventNotification($device_token, $event_detail->title,$platform,$environment);
                         dispatch($job);
                         Log::info('Request Cycle with Queues Ends now');

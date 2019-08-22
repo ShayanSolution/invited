@@ -445,7 +445,7 @@ class EventController extends Controller
                         } else{
                             $senderImage = '';
                         }
-                        $message = "Too late. ".$event_detail->event_title . "  has been closed ";
+                        $message = "Too late. ".$event_detail->title . "  has been closed ";
                         $saveNotificationId = Notification::saveNotification($message,$event_id,$event_detail->list_id,$user_name,$senderImage, $event_detail->user_id);
                         $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$user_id,"Closed Event");
                         //

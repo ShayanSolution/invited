@@ -86,10 +86,10 @@ class SendPushNotification extends Job
             'custom' => array('custom_data' => array(
                 'request_to' => $request_to->id,
                 'event_id' => $this->event_id,
+                'status' => 'request',
                 'notification_id' => $this->notificationId,
-                'status' => 'request'
             ))
-        ));dd($message_body);
+        ));
 
         try {
 
@@ -97,7 +97,7 @@ class SendPushNotification extends Job
             // Validate the value...
             //dd($this->environment);
             if($this->environment == 'development') {
-                Log::info(" Environment is Development-----".$this->token."---- Before Send and Environment:-----".$this->environment);
+                Log::info(" Environment is Development-----".$this->token."---- Before Send and Environment:-----".$this->environment."----NotiId--".$this->notificationId);
                 $response = PushNotification::app('invitedIOSDev')->to($this->token)->send($message_body);
                 Log::info(" Environment is Development-----".$this->token."------After Send");
             } else{

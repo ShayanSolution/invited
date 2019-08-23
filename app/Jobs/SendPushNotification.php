@@ -89,7 +89,7 @@ class SendPushNotification extends Job
                 'notification_id' => $this->notificationId,
                 'status' => 'request'
             ))
-        ));
+        ));dd($message_body);
 
         try {
 

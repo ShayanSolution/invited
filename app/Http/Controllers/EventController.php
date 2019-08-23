@@ -195,7 +195,7 @@ class EventController extends Controller
                                     //send notification to ios user list
                                     Log::info("Request Cycle with Queues Begins");
 //                                    $message = $created_user->firstName.': '.$event->title.'('.$created_user->phone.')';
-                                    $job = new SendPushNotification($device_token, $environment, $created_user, $event_id, $user, $message);
+                                    $job = new SendPushNotification($device_token, $environment, $created_user, $event_id, $user, $message, $saveNotificationId);
                                     dispatch($job);
                                     Log::info('Request Cycle with Queues Ends');
                                 }

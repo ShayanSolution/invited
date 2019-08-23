@@ -449,7 +449,7 @@ class EventController extends Controller
                         $saveNotificationId = Notification::saveNotification($message,$event_id,$event_detail->list_id,$user_name,$senderImage, $event_detail->user_id);
                         $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$user_id,"Closed Event");
                         //
-                        $job = new SendCloseEventNotification($device_token, $event_detail->title,$platform,$environment);
+                        $job = new SendCloseEventNotification($device_token, $event_detail->title,$platform,$environment,$saveNotificationId);
                         dispatch($job);
                         Log::info('Request Cycle with Queues Ends now');
                     }

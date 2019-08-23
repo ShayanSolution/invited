@@ -21,14 +21,16 @@ class SendCloseEventNotification extends Job
     protected $event_title;
     protected $platform;
     protected $environment;
+    protected $saveNotificationId;
 
 
-    public function __construct($token,$event_title,$platform,$environment)
+    public function __construct($token,$event_title,$platform,$environment,$saveNotificationId)
     {
         $this->token = $token;
         $this->event_title = $event_title;
         $this->platform = $platform;
         $this->environment = $environment;
+        $this->saveNotificationId = $saveNotificationId;
     }
 
     /**
@@ -53,7 +55,8 @@ class SendCloseEventNotification extends Job
                 ),
                 'launchImage' => 'image.jpg',
                 'custom' => array('custom_data' => array(
-                    'status' => 'closed'
+                    'status' => 'closed',
+                    'notification_id', $this->saveNotificationId
                 ))
 
             ));
@@ -80,7 +83,7 @@ class SendCloseEventNotification extends Job
                 //$notificationBuilder->setBody($user_name.' accepted your request')->setSound
                 ('default');
 //            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => $user_name.'confirmed your request.']);
-                $dataBuilder->addData(['code' => '7','Title' => 'Accepted','Body' => 'Too late. '.$this->event_title.' has been closed']);
+                $dataBuilder->addData(['code' => '7','notification_id' => $this->saveNotificationId,'Title' => 'Accepted','Body' => 'Too late. '.$this->event_title.' has been closed']);
                 Log::info("Event Too Late:");
             }
 //            $notificationBuilder = new PayloadNotificationBuilder('Event Closed');

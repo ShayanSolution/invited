@@ -26,9 +26,8 @@ class SendPushNotification extends Job
     protected $request_to_user;
     protected $message;
     protected $environment;
-    protected $notificationId;
 
-    public function __construct($token,$environment,$user,$event_id,$request_to_user,$message, $notificationId)
+    public function __construct($token,$environment,$user,$event_id,$request_to_user,$message)
     {
         Log::info("/********* IOS push notification job dispatch Constructor ************/");
         $this->token = $token;
@@ -37,7 +36,6 @@ class SendPushNotification extends Job
         $this->request_to_user = $request_to_user;
         $this->message = $message;
         $this->environment = $environment;
-        $this->notificationId = $notificationId;
 
     }
 
@@ -51,7 +49,6 @@ class SendPushNotification extends Job
         Log::info("/********* IOS push notification job dispatch ************/");
         Log::info("Eent ID: ". $this->event_id);
         Log::info("device Token: ". $this->token);
-        Log::info("NotiID: ". $this->notificationId);
         Log::info("/********* End ************/");
 
         Log::info("Create Event Notification response: ".$this->event_id);
@@ -59,7 +56,6 @@ class SendPushNotification extends Job
         $user = $this->user;
         $request_to = $this->request_to_user;
         $message = $this->message;
-        $notification_id = $this->notificationId;
         if($message == "Created"){
             $message_body = $user->firstName.' '.$user->lastName.': '.$event->title.' ('.$user->phone.')';
         } else {
@@ -88,7 +84,6 @@ class SendPushNotification extends Job
             'custom' => array('custom_data' => array(
                 'request_to' => $request_to->id,
                 'event_id' => $this->event_id,
-                'notification_id' => $notification_id,
                 'status' => 'request'
             ))
         ));

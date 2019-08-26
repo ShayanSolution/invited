@@ -91,8 +91,8 @@ class SendPushNotification extends Job
                 'notification_id' => $notification_id,
             ))
         ));
-        dd($message_body);
-
+        return ($message_body);
+exit();
         try {
 
             Log::info("========================== In Try======================");

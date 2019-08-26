@@ -37,7 +37,7 @@ class SendPushNotification extends Job
         $this->request_to_user = $request_to_user;
         $this->message = $message;
         $this->environment = $environment;
-        $this->saveNotificationId = $saveNotificationId;
+        $this->notificationId = $saveNotificationId;
 
     }
 
@@ -58,6 +58,7 @@ class SendPushNotification extends Job
         $user = $this->user;
         $request_to = $this->request_to_user;
         $message = $this->message;
+        $notification_id = $this->notificationId;
         if($message == "Created"){
             $message_body = $user->firstName.' '.$user->lastName.': '.$event->title.' ('.$user->phone.')';
         } else {
@@ -87,7 +88,7 @@ class SendPushNotification extends Job
                 'request_to' => $request_to->id,
                 'event_id' => $this->event_id,
                 'status' => 'request',
-                'notification_id' => $this->saveNotificationId,
+                'notification_id' => $notification_id,
             ))
         ));
 
@@ -97,7 +98,7 @@ class SendPushNotification extends Job
             // Validate the value...
             //dd($this->environment);
             if($this->environment == 'development') {
-                Log::info(" Environment is Development-----".$this->token."---- Before Send and Environment:-----".$this->environment."----NotiId--".$this->notificationId);
+                Log::info(" Environment is Development-----".$this->token."---- Before Send and Environment:-----".$this->environment);
                 $response = PushNotification::app('invitedIOSDev')->to($this->token)->send($message_body);
                 Log::info(" Environment is Development-----".$this->token."------After Send");
             } else{

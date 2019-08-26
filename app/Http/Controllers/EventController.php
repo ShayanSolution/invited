@@ -196,7 +196,6 @@ class EventController extends Controller
                                     Log::info("Request Cycle with Queues Begins and noti Id id: ". $saveNotificationId);
 //                                    $message = $created_user->firstName.': '.$event->title.'('.$created_user->phone.')';
                                     $job = new SendPushNotification($device_token, $environment, $created_user, $event_id, $user, $message, $saveNotificationId);
-                                    dd($job);
                                     dispatch($job);
                                     Log::info('Request Cycle with Queues Ends Checked by sarmad');
                                 }

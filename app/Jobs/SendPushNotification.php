@@ -91,6 +91,7 @@ class SendPushNotification extends Job
                 'notification_id' => $notification_id,
             ))
         ));
+        dd($message_body);
 
         try {
 

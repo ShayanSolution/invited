@@ -51,6 +51,7 @@ class SendPushNotification extends Job
         Log::info("/********* IOS push notification job dispatch ************/");
         Log::info("Eent ID: ". $this->event_id);
         Log::info("device Token: ". $this->token);
+        Log::info("NotiID: ". $this->notificationId);
         Log::info("/********* End ************/");
 
         Log::info("Create Event Notification response: ".$this->event_id);
@@ -87,8 +88,8 @@ class SendPushNotification extends Job
             'custom' => array('custom_data' => array(
                 'request_to' => $request_to->id,
                 'event_id' => $this->event_id,
-                'status' => 'request',
                 'notification_id' => $notification_id,
+                'status' => 'request'
             ))
         ));
 

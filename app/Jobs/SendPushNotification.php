@@ -26,7 +26,7 @@ class SendPushNotification extends Job
     protected $request_to_user;
     protected $message;
     protected $environment;
-    protected $saveNotificationId;
+    protected $notificationId;
 
     public function __construct($token,$environment,$user,$event_id,$request_to_user,$message, $saveNotificationId)
     {

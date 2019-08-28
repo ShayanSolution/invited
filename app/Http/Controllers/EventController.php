@@ -1235,7 +1235,7 @@ class EventController extends Controller
             return $response;
         }
         $notification_id = $request['notification_id'];
-        $notifications = NotificationStatus::where('notification_id', $notification_id)->update(['read_status' => 1]);
+        $notifications = NotificationStatus::where('id', $notification_id)->update(['read_status' => 1]);
 
         if($notifications){
             return JsonResponse::generateResponse(

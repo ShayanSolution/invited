@@ -891,6 +891,7 @@ class EventController extends Controller
         $event_id = $request['event_id'];
         $event_detail = Event::getEventByID($request['event_id']);
         if($event_detail){
+            $event =Event::cancelEvent($request);
             $event_list_id = $event_detail->list_id;
             $notification_usres_list = ContactList::getUserList($event_list_id);
             $message = $event_detail->title.' has been cancelled.';
@@ -920,7 +921,7 @@ class EventController extends Controller
                     $platform = $notification_user->platform;
                     $event_request = $eventRequest->getUserEventRequestsAccepted($request['event_id'],$user_id);
                     //Save notification status
-                    $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$event_request->request_to,"Cancelled Event");
+                    $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$user_id,"Cancelled Event");
 
                     //don't send notification to request rejected user and pending users.
                     if (isset($event_request->confirmed) && $event_request->confirmed != 0) {
@@ -959,7 +960,7 @@ class EventController extends Controller
                     }
                 }
             }
-            $event =Event::cancelEvent($request);
+
             if($event){
                 return JsonResponse::generateResponse(
                     [

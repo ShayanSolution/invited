@@ -913,8 +913,6 @@ class EventController extends Controller
                 $phone = substr($list->phone, -9);//get last 9 digit of phone number.
 
                 $notification_user = User::where('phone', 'like', '%'.$phone)->first();
-                //Save notification status
-                $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$event_request->request_to,"Cancelled Event");
 
                 if($notification_user){
                     $user_device_token = $notification_user->device_token;

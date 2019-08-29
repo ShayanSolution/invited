@@ -914,13 +914,14 @@ class EventController extends Controller
 
                 $notification_user = User::where('phone', 'like', '%'.$phone)->first();
 
-                //Save notification status
-                $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$notification_user->id,"Cancelled Event");
                 if($notification_user){
                     $user_device_token = $notification_user->device_token;
                     $user_id = $notification_user->id;
                     $platform = $notification_user->platform;
                     $event_request = $eventRequest->getUserEventRequestsAccepted($request['event_id'],$user_id);
+                    //Save notification status
+                    $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$event_request->request_to,"Cancelled Event");
+
                     //don't send notification to request rejected user and pending users.
                     if (isset($event_request->confirmed) && $event_request->confirmed != 0) {
                         if ($platform == 'ios' || is_null($platform)) {

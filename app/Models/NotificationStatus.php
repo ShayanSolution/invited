@@ -16,11 +16,11 @@ class NotificationStatus extends Model
     ];
 
     public static function saveNotificationStatus($notificationId,$receiverId,$relatedScreen){
-        NotificationStatus::create([
+        return NotificationStatus::create([
             'notification_id' => $notificationId,
             'receiver_id' => $receiverId,
             'related_screen' => $relatedScreen,
-        ]);
+        ])->id;
     }
 
     public function notification()

@@ -193,9 +193,9 @@ class EventController extends Controller
                             if ($event_request->confirmed != 0) {
                                 if ($platform == 'ios' || is_null($platform)) {
                                     //send notification to ios user list
-                                    Log::info("Request Cycle with Queues Begins and noti Id id: ". $saveNotificationId);
+                                    Log::info("Request Cycle with Queues Begins and noti Id id: ". $saveNotification);
 //                                    $message = $created_user->firstName.': '.$event->title.'('.$created_user->phone.')';
-                                    $job = new SendPushNotification($device_token, $environment, $created_user, $event_id, $user, $message, $saveNotificationId);
+                                    $job = new SendPushNotification($device_token, $environment, $created_user, $event_id, $user, $message, $saveNotification);
                                     dispatch($job);
                                     Log::info('Request Cycle with Queues Ends Checked by sarmad');
                                 }
@@ -214,7 +214,7 @@ class EventController extends Controller
 //                                    $message_title = $user_name.' '.$message.' '. $event->title.'.';
                                     $message_title = $created_user->firstName.' '.$created_user->lastName.': '.$event->title.' ('.$created_user->phone.')';
                                     //send data message payload
-                                    $this->sendNotificationToAndoidUsers($device_token,$request_status,$message_title,$event_id,$saveNotificationId);
+                                    $this->sendNotificationToAndoidUsers($device_token,$request_status,$message_title,$event_id,$saveNotification);
 
                                 }
                             }
@@ -417,7 +417,7 @@ class EventController extends Controller
             $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$event_detail->user_id,"Accept Event");
             //
 
-            $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "YES", $saveNotificationId);
+            $this->sendRequestNotification($created_by->created_by,$event_id,$accepted_user,$request_status = "YES", $saveNotification);
             Log::info("Notification users ids for closed events: ".print_r($accepted['notification_users'],true));
             //if event has been closed, send notification remaining users for closed events
             if(!empty($accepted['notification_users'])){
@@ -449,7 +449,7 @@ class EventController extends Controller
                         $saveNotificationId = Notification::saveNotification($message,$event_id,$event_detail->list_id,$user_name,$senderImage, $event_detail->user_id);
                         $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$user_id,"Closed Event");
                         //
-                        $job = new SendCloseEventNotification($device_token, $event_detail->title,$platform,$environment,$saveNotificationId);
+                        $job = new SendCloseEventNotification($device_token, $event_detail->title,$platform,$environment,$saveNotification);
                         dispatch($job);
                         Log::info('Request Cycle with Queues Ends now');
                     }
@@ -549,7 +549,7 @@ class EventController extends Controller
             $saveNotification = NotificationStatus::saveNotificationStatus($saveNotificationId,$checkEvent->user_id,"Reject Event");
             //
 
-            $this->sendRequestNotification($created_by->created_by,$event_id,$rejected_user,$request_status = "NO", $saveNotificationId);
+            $this->sendRequestNotification($created_by->created_by,$event_id,$rejected_user,$request_status = "NO", $saveNotification);
             return JsonResponse::generateResponse(
                 [
                     'status' => 'Request rejected successfully',
@@ -565,7 +565,7 @@ class EventController extends Controller
         }
     }
 
-    public function sendRequestNotification($id,$event_id,$accepted_user,$request_status=null, $saveNotificationId){
+    public function sendRequestNotification($id,$event_id,$accepted_user,$request_status=null, $saveNotification){
         Log::info("================= Send Notification to event createer =========================");
         $event = Event::where('id',$event_id)->first();
         $notification_user = User::where('id',$id)->first();
@@ -600,7 +600,7 @@ class EventController extends Controller
                             'custom' => array('custom_data' => array(
                                 'accepted_user' => $user_name,
                                 'event_id' => $event_id,
-                                'notification_id' => $saveNotificationId,
+                                'notification_id' => $saveNotification,
                                 'status' => $request_status
                             ))
                         ));
@@ -620,7 +620,7 @@ class EventController extends Controller
                             'custom' => array('custom_data' => array(
                                 'accepted_user' => $user_name,
                                 'event_id' => $event_id,
-                                'notification_id' => $saveNotificationId,
+                                'notification_id' => $saveNotification,
                                 'status' => $request_status
                             ))
                         ));
@@ -638,7 +638,7 @@ class EventController extends Controller
                 }
                 else{
 
-                    $this->sendNotificationToAndoidUsers($notification_user->device_token,$request_status,$user_name,$event_id,$saveNotificationId);
+                    $this->sendNotificationToAndoidUsers($notification_user->device_token,$request_status,$user_name,$event_id,$saveNotification);
                 }
             }
         }
@@ -835,7 +835,7 @@ class EventController extends Controller
 
                                     'custom' => array('custom_data' => array(
                                         'event_id' => $event_detail->id,
-                                        'notification_id' => $saveNotificationId,
+                                        'notification_id' => $saveNotification,
                                         'status' => 'cancelled'
                                     ))
                                 ));
@@ -850,7 +850,7 @@ class EventController extends Controller
                                     Log::info(" Environment is Production-----".$notification_user->device_token."------After Send");
                                 }
                             } else {
-                                $this->sendNotificationToAndoidUsers($user_device_token,$request_status = "deleted",$event_detail->title . "  has been deleted. ",$event_id,$saveNotificationId);
+                                $this->sendNotificationToAndoidUsers($user_device_token,$request_status = "deleted",$event_detail->title . "  has been deleted. ",$event_id,$saveNotification);
                             }
                         }
                     }
@@ -940,7 +940,7 @@ class EventController extends Controller
 
                                 'custom' => array('custom_data' => array(
                                     'event_id' => $event_detail->id,
-                                    'notification_id' => $saveNotificationId,
+                                    'notification_id' => $saveNotification,
                                     'status' => 'cancelled'
                                 ))
                             ));
@@ -955,7 +955,7 @@ class EventController extends Controller
                                 Log::info(" Environment is Production-----".$notification_user->device_token."------After Send");
                             }
                         } else {
-                            $this->sendNotificationToAndoidUsers($user_device_token,$request_status = "cancelled",$event_detail->title . "  has been cancelled. ",$event_id,$saveNotificationId);
+                            $this->sendNotificationToAndoidUsers($user_device_token,$request_status = "cancelled",$event_detail->title . "  has been cancelled. ",$event_id,$saveNotification);
                         }
                     }
                 }
@@ -994,7 +994,7 @@ class EventController extends Controller
         return response()->download($file);
     }
 
-    public function sendNotificationToAndoidUsers($device_token,$request_status,$user_name,$event_id,$saveNotificationId){
+    public function sendNotificationToAndoidUsers($device_token,$request_status,$user_name,$event_id,$saveNotification){
         Log::info("Request status received => ".$request_status);
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
@@ -1005,37 +1005,37 @@ class EventController extends Controller
             //$notificationBuilder = new PayloadNotificationBuilder('Accepted');
             //$notificationBuilder->setBody($user_name.' accepted your request')->setSound('default');
 //            $dataBuilder->addData(['code' => '3','Title' => 'Accepted','Body' => $user_name.' confirmed your request.']);
-            $dataBuilder->addData(['code' => '3','notification_id' => $saveNotificationId, 'Title' => $entity.' Accepted','Body' => 'Congratulations! '. $user_name.' replied with YES to: '.$event->title.'.']);
+            $dataBuilder->addData(['code' => '3','notification_id' => $saveNotification, 'Title' => $entity.' Accepted','Body' => 'Congratulations! '. $user_name.' replied with YES to: '.$event->title.'.']);
             Log::info("Event Accepted:");
         }
         elseif($request_status == "NO"){
             //$notificationBuilder = new PayloadNotificationBuilder('Cancelled');
             //$notificationBuilder->setBody($user_name.' cancelled your request')->setSound('default');
-            $dataBuilder->addData(['code' => '4','notification_id' => $saveNotificationId,'Title' => $entity.' Rejected', 'Body' => $user_name.' replied with NO to: '.$event->title.'.']);
+            $dataBuilder->addData(['code' => '4','notification_id' => $saveNotification,'Title' => $entity.' Rejected', 'Body' => $user_name.' replied with NO to: '.$event->title.'.']);
             Log::info("Event Rjected:");
         }
         elseif($request_status == 'deleted'){
             //$notificationBuilder = new PayloadNotificationBuilder('Deleted');
             //$notificationBuilder->setBody($user_name)->setSound('default');
-            $dataBuilder->addData(['code' => '5','notification_id' => $saveNotificationId,'Title' => $entity.' Deleted','Body' =>$user_name]);
+            $dataBuilder->addData(['code' => '5','notification_id' => $saveNotification,'Title' => $entity.' Deleted','Body' =>$user_name]);
             Log::info("Event Deleted:");
         }
         elseif($request_status == 'Updated'){
             //$notificationBuilder = new PayloadNotificationBuilder('Updated');
             //$notificationBuilder->setBody($user_name)->setSound('default');
-            $dataBuilder->addData(['code' => '2','notification_id' => $saveNotificationId,'Title'=>$entity.' Updated','Body'=>$user_name]);
+            $dataBuilder->addData(['code' => '2','notification_id' => $saveNotification,'Title'=>$entity.' Updated','Body'=>$user_name]);
             Log::info("Event Updated:");
         }
         elseif($request_status == 'cancelled'){
             //$notificationBuilder = new PayloadNotificationBuilder('Deleted');
             //$notificationBuilder->setBody($user_name)->setSound('default');
-            $dataBuilder->addData(['code' => '6','notification_id' => $saveNotificationId,'Title' => $entity.' Cancelled','Body' =>$user_name]);
+            $dataBuilder->addData(['code' => '6','notification_id' => $saveNotification,'Title' => $entity.' Cancelled','Body' =>$user_name]);
             Log::info("Event Cancelled:");
         }
         else{
             //$notificationBuilder = new PayloadNotificationBuilder('Event Created');
             //$notificationBuilder->setBody(' Event Created Successfully ')->setSound('default');
-            $dataBuilder->addData(['code' => '1','notification_id' => $saveNotificationId,'Title'=>$entity.' Received','Body'=>$user_name]);
+            $dataBuilder->addData(['code' => '1','notification_id' => $saveNotification,'Title'=>$entity.' Received','Body'=>$user_name]);
             Log::info("Event Created:");
         }
 

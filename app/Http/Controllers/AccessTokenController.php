@@ -53,7 +53,12 @@ class AccessTokenController extends Controller
                 return response()->json(['error' => 'Unauthorized', 'message' => 'Account has been blocked. Please contact with your service provider'],403);
             }
             // forward the request to the oauth token request endpoint
-            return app()->dispatch($tokenRequest);
+            //@todo have to push into git[userID enroll]
+            $response = app()->dispatch($tokenRequest);
+            $json = (array) json_decode($response->getContent());
+            $json['userId'] = (string) $user->id;
+            $response->setContent(json_encode($json));
+            return $response;
         } else {
             return response()->json(['error' => 'Unauthorized', 'message' => 'The user credentials were incorrect.'],401);
         }
